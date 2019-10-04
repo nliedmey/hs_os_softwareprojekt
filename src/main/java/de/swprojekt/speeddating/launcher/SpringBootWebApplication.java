@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 @SpringBootApplication
 public class SpringBootWebApplication {
 
-	@RequestMapping("/")
+	@RequestMapping("/")	//Standardverzeichnis ueber localhost:8080 erreichbar nach Starten
 	String home()
 	{
 		return "Hallo Welt";
