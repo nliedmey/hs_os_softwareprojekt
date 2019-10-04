@@ -12,7 +12,7 @@ public class SpringBootWebApplication {
 	@RequestMapping("/")	//Standardverzeichnis ueber localhost:8080 erreichbar nach Starten
 	String home()
 	{
-		return "Hallo Welt";
+		return "Hallo Welt 1";
 	}
 	
     public static void main(String[] args) {
