@@ -1,3 +1,0 @@
-das ist ein Test
-und eine zweite Zeile mit commit
-und dritte Zeile, dann push
