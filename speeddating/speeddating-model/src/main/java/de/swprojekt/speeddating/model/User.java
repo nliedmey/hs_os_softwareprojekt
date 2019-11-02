@@ -1,5 +1,6 @@
 package de.swprojekt.speeddating.model;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 import javax.persistence.Entity;
@@ -11,19 +12,18 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 @Entity
 public class User implements UserDetails {
-	
+
 	@Id
 	@GeneratedValue
 	private int id;
-	
+
 	private String username;
-	
+
 	private String password;
 
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
-		// TODO Auto-generated method stub
-		return null;
+		return new ArrayList<GrantedAuthority>();
 	}
 
 	@Override
@@ -54,6 +54,14 @@ public class User implements UserDetails {
 	@Override
 	public boolean isEnabled() {
 		return true;
+	}
+
+	public void setUsername(String username) {
+		this.username = username;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
 	}
 
 }

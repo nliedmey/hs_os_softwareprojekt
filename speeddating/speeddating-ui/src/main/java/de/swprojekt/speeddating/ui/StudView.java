@@ -11,7 +11,7 @@ import com.vaadin.flow.router.Route;
 import de.swprojekt.speeddating.model.Studierender;
 import de.swprojekt.speeddating.service.showstudierender.IShowStudierendeService;
 
-@Route("studs")
+@Route("ui/studs")
 public class StudView extends VerticalLayout {
 
 	@Autowired
