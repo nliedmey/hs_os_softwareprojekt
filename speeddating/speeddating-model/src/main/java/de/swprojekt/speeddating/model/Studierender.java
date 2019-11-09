@@ -9,7 +9,7 @@ import javax.persistence.Id;
 public class Studierender {
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
-	private int studId;
+	private int stud_id;
 	private String vorname;
 	private String nachname;
 	private String hauptfach;
@@ -18,20 +18,19 @@ public class Studierender {
 		// TODO Auto-generated constructor stub
 	}
 	
-	public Studierender(int studId, String vorname, String nachname, String hauptfach) {
+	public Studierender(String vorname, String nachname, String hauptfach) {
 		super();
-		this.studId = studId;
 		this.vorname = vorname;
 		this.nachname = nachname;
 		this.hauptfach = hauptfach;
 	}
 
 	public int getStudId() {
-		return studId;
+		return stud_id;
 	}
 
 	public void setStudId(int studId) {
-		this.studId = studId;
+		this.stud_id = studId;
 	}
 
 	public String getVorname() {

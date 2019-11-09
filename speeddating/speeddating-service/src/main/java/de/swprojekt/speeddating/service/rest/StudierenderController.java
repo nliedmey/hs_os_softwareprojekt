@@ -22,7 +22,7 @@ public class StudierenderController {
 	@Autowired
 	private IStudierenderRepository iStudierenderRepository;
 
-	@GetMapping("/studierende") // Anzeige existierender Studs (http://localhost:8080/speeddating-web2-2.0-SNAPSHOT/studierende/)
+	@GetMapping("/studierende") // Anzeige existierender Studs (http://localhost:8080/speeddating-web-7.0-SNAPSHOT/studierende/)
 	public List<Studierender> getAll() {
 		return iStudierenderRepository.findAll();
 	}

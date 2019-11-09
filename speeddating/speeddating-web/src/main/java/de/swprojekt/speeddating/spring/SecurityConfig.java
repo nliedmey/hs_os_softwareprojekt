@@ -11,6 +11,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
 
+import de.swprojekt.speeddating.ui.Login;
+
 @Configuration
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	@Autowired
@@ -30,9 +32,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 				.authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint("/login")).and().authorizeRequests()
 				.antMatchers("/VAADIN/**", "/PUSH/**", "/UIDL/**", "/login", "/signup", "/login/**", "/logout",
 						"/vaadinServlet/**")
-				.permitAll() // diese Pfade sind unauthentifiziert erreichbar
-				.antMatchers("/ui", "/ui/**").fullyAuthenticated(); // diese Pfade muessen authentifiziert betreten
-																	// werden 
+				.permitAll(); // diese Pfade sind unauthentifiziert erreichbar
+				
+				//ueber @Secured("ROLE_ADMIN")-Annotation an View kann diese auf die besagte Rolle beschraenkt werden,
+				//dies ist Sicherer als die Festlegung bestimmter gesicherter Bereiche (wie Zeile unten), da bei diesen
+				//bei Weiterleitungen ueber RouterLinks das Recht nicht erneut geprueft wird
+				 //.antMatchers("/ui", "/ui/**").fullyAuthenticated(); //diese Pfade muessen authentifiziert betreten werden													  
 	}
 
 	@Bean // wird somit in Kontext geladen, damit Autowire in andere Methoden moeglich

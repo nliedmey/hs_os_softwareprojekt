@@ -3,6 +3,8 @@ package de.swprojekt.speeddating.ui;
 import com.vaadin.flow.component.grid.Grid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.annotation.Secured;
+
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.data.provider.DataProvider;
 import com.vaadin.flow.data.provider.ListDataProvider;
@@ -12,6 +14,8 @@ import de.swprojekt.speeddating.model.Studierender;
 import de.swprojekt.speeddating.service.showstudierender.IShowStudierendeService;
 
 @Route("ui/studs")
+@Secured("ROLE_ADMIN")	//nur User mit Rolle ADMIN koennen auf Seite zugreifen, @Secured prueft auch bei RouterLink-Weiterleitungen
+//@Secured kann auch an einzelnen Methoden angewendet werden
 public class StudView extends VerticalLayout {
 
 	@Autowired

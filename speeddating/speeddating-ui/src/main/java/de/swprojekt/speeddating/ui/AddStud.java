@@ -22,7 +22,7 @@ import de.swprojekt.speeddating.model.Studierender;
 import de.swprojekt.speeddating.service.addstudierender.IAddStudierenderService;
 import de.swprojekt.speeddating.service.showstudierender.IShowStudierendeService;
 
-@Route(value = "studs/add", layout = MainLayout.class)
+@Route(value = "ui/studs/add", layout = MainLayout.class)
 public class AddStud extends VerticalLayout {
 
 	@Autowired

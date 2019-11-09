@@ -41,6 +41,7 @@ public class Login extends VerticalLayout {
 						passwordField.getValue());
 				Authentication authenticated = daoAuthenticationProvider.authenticate(auth);
 				SecurityContextHolder.getContext().setAuthentication(authenticated); // nach erfolgreicher Authentifizierung, User nun authenticated
+				System.out.println("Erfolgreich authentifiziert als: "+auth.getName()+", Authorities: "+auth.getAuthorities());
 				loginButton.getUI().ifPresent(ui->ui.navigate("ui/studs"));	//anschliessend auf Loginpage weiterleiten
 				//Logout: SecurityContextHolder.clearContext();
 			} catch (AuthenticationException e) {
@@ -54,7 +55,7 @@ public class Login extends VerticalLayout {
 			;
 		});
 
-		add(username, passwordField, loginButton, signupButton);
+		add(username,passwordField, loginButton, signupButton);
 	}
 
 }

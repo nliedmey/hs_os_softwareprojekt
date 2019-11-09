@@ -10,15 +10,21 @@ import de.swprojekt.speeddating.model.User;
 import de.swprojekt.speeddating.repository.IUserRepository;
 
 @Service
-public class UserServiceImpl implements UserDetailsService{
+public class UserServiceImpl implements UserDetailsService {
 
 	@Autowired
 	private IUserRepository iUserRepository;
-	
+
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-		User user=iUserRepository.findByUsername(username); //hier User aus Model
-		return new CustomUserDetails(user.getUsername(), user.getPassword(), true, true, true, true, user.getAuthorities());
+		User user = iUserRepository.findByUsername(username); // hier User aus Model
+		if (user != null) {
+			return new CustomUserDetails(user.getUsername(), user.getPassword(), true, true, true, true,
+					user.getAuthorities());
+		} else {
+			throw new UsernameNotFoundException("User: " + username + " existiert nicht!");
+		}
+
 	}
 
 }

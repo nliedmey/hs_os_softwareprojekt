@@ -1,6 +1,7 @@
 package de.swprojekt.speeddating.ui;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.annotation.Secured;
 
 import com.vaadin.flow.component.HasElement;
 import com.vaadin.flow.component.button.Button;
