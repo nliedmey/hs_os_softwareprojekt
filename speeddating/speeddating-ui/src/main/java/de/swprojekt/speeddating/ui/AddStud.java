@@ -25,7 +25,8 @@ import de.swprojekt.speeddating.service.showstudierender.IShowStudierendeService
 @Route(value = "ui/studs/add", layout = MainLayout.class)
 public class AddStud extends VerticalLayout {
 
-	@Autowired
+	@Autowired	//BestPractice: Konstruktor-Injection im Vergleich zu Attribut/Methoden-Injection
+				//Parameter (hier: IAddStudierenderService) wird also automatisch autowired
 	public AddStud(IAddStudierenderService iAddStudierenderService) {
 		TextField textfieldVorname;
 		TextField textfieldNachname;

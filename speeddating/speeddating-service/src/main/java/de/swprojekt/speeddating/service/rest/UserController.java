@@ -1,8 +1,10 @@
 package de.swprojekt.speeddating.service.rest;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -15,7 +17,9 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import de.swprojekt.speeddating.model.Role;
 import de.swprojekt.speeddating.model.User;
+import de.swprojekt.speeddating.repository.IRoleRepository;
 import de.swprojekt.speeddating.repository.IUserRepository;
 import de.swprojekt.speeddating.service.security.IRegisterUserService;
 
@@ -23,6 +27,9 @@ import de.swprojekt.speeddating.service.security.IRegisterUserService;
 public class UserController {
 	@Autowired
 	private IUserRepository iUserRepository;
+	
+	@Autowired
+	private IRoleRepository iRoleRepository;
 	
 	@Autowired
 	private BCryptPasswordEncoder passwordEncoder; //ist als Bean in SecurityConfig annotiert, kann deshalb geautowired werden
@@ -47,23 +54,33 @@ public class UserController {
 	}
 
 	@PostMapping("/user") // hinzufuegen von einem User
-	public User createStudierender(@RequestBody User einUser) {
+	public User createUser(@RequestBody User einUser) {
+		Set<Role> roles=new HashSet<Role>();
 		User einzufuegenerUser=new User();
+		for(Role r:einUser.getRoles())
+		{
+			roles.add(iRoleRepository.findByRolename(r.getRole()));
+		}
 		einzufuegenerUser.setUsername(einUser.getUsername());
 		einzufuegenerUser.setPassword(passwordEncoder.encode(einUser.getPassword()));
-		einzufuegenerUser.setRoles(einUser.getRoles());
+		einzufuegenerUser.setRoles(roles);
 		return iUserRepository.save(einzufuegenerUser);
 	}
 
 	@PutMapping("/user/{id}") // aendern von existierendem User
-	public User alterStudierender(@PathVariable int id, @RequestBody User einUser) {
+	public User alterUser(@PathVariable int id, @RequestBody User einUser) {
 		Optional<User> gefundenerUser;	//extra get() beim Setten aufgrund von Optional-Typ benoetigt
 		try {
 			gefundenerUser = iUserRepository.findById(id);
 			gefundenerUser.get().setUsername(einUser.getUsername());
 			gefundenerUser.get().setPassword(passwordEncoder.encode(einUser.getPassword()));
-//			System.out.println("PW RAW: "+einUser.getPassword()+", PW ENCODED: "+passwordEncoder.encode(einUser.getPassword()+", PW In gefUser: "+gefundenerUser.get().getPassword()));
-			gefundenerUser.get().setRoles(einUser.getRoles());
+			
+			Set<Role> roles=new HashSet<Role>();
+			for(Role r:einUser.getRoles())
+			{
+				roles.add(iRoleRepository.findByRolename(r.getRole()));
+			}
+			gefundenerUser.get().setRoles(roles);
 			//TODO: automatisches PW-Hashing auch ueber REST-Insert via Service-Aufruf
 			//return iRegisterUserService.save(gefundenerUser.get().getUsername(), gefundenerUser.get().getPassword());
 			return iUserRepository.save(gefundenerUser.get());
@@ -74,7 +91,7 @@ public class UserController {
 	}
 
 	@DeleteMapping("/user/{id}") // loeschen von existierendem User
-	public boolean deleteStudierender(@PathVariable int id) {
+	public boolean deleteUser(@PathVariable int id) {
 		try {
 			iUserRepository.deleteById(id);
 			return true;

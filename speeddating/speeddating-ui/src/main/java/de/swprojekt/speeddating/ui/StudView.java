@@ -1,9 +1,12 @@
 package de.swprojekt.speeddating.ui;
 
+import com.vaadin.flow.component.UI;
+import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.Grid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.data.provider.DataProvider;
@@ -20,10 +23,10 @@ public class StudView extends VerticalLayout {
 
 	@Autowired
 	public StudView(IShowStudierendeService iShowStudierendeService) {
-		System.out.println("X" + iShowStudierendeService);
-
+	
 		Grid<Studierender> studierenderGrid;
-
+		Button logoutButton=new Button("Logout");
+		
 		studierenderGrid = new Grid<>(Studierender.class);
 		ListDataProvider<Studierender> ldpStudent = DataProvider
 				.ofCollection(iShowStudierendeService.showStudierende());
@@ -31,8 +34,15 @@ public class StudView extends VerticalLayout {
 
 		studierenderGrid.removeColumnByKey("studId");
 		studierenderGrid.setColumns("vorname", "nachname", "hauptfach");
+		logoutButton.addClickListener(event -> {
+			SecurityContextHolder.clearContext();	//Spring-Security-Session leeren
+			getUI().get().getSession().close();		//Vaadin Session leeren
+			logoutButton.getUI().ifPresent(ui->ui.navigate("maincontent"));	//zurueck auf andere Seite 
+		});
+
 
 		add(studierenderGrid);
+		add(logoutButton);
 	}
 	//@PostConstruct
 	//public void init()

@@ -52,7 +52,7 @@ public class Login extends VerticalLayout {
 		});
 
 		signupButton.addClickListener(event -> {
-			;
+			signupButton.getUI().ifPresent(ui->ui.navigate("signup"));
 		});
 
 		add(username,passwordField, loginButton, signupButton);

@@ -6,6 +6,6 @@ import org.springframework.stereotype.Repository;
 import de.swprojekt.speeddating.model.Studierender;
 
 @Repository
-public interface IStudierenderRepository extends JpaRepository<Studierender,Integer> {
+public interface IStudierenderRepository extends JpaRepository<Studierender, Integer> {
 
 }

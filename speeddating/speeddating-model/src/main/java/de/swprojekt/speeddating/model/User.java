@@ -1,6 +1,5 @@
 package de.swprojekt.speeddating.model;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -12,6 +11,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 
 import org.springframework.security.core.GrantedAuthority;
@@ -29,10 +29,21 @@ public class User implements UserDetails {
 
 	private String password;
 
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER) // user kann mehrere Rollen haben
-	@JoinTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
+	//CascadeType nicht all inkl. Persist, da dann bei Setten von Rolle diese automatisch auch erneut gespeichert wuerde (ist aber bereits vorhanden)
+	@ManyToMany(cascade = {CascadeType.REFRESH,CascadeType.MERGE}, fetch = FetchType.EAGER) // ein user kann mehrere Rollen haben
+	@JoinTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))	//mappingtabelle user_role erstellen
 	private Set<Role> roles;
-
+	
+	public User()
+	{
+		//wird von JPA genutzt
+	}
+	
+	public User(Set<Role> roles)
+	{
+		this.roles=roles;
+	}
+	
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
 		for(Role r:this.roles)//Schleife zur Anzeige von Roles, welche der User innehat
