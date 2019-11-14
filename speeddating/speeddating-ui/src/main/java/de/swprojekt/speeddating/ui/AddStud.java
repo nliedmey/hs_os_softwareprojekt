@@ -2,7 +2,6 @@ package de.swprojekt.speeddating.ui;
 
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
-import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.notification.NotificationVariant;
@@ -14,15 +13,14 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.binder.ValidationException;
-import com.vaadin.flow.data.provider.DataProvider;
-import com.vaadin.flow.data.provider.ListDataProvider;
 import com.vaadin.flow.router.Route;
 
 import de.swprojekt.speeddating.model.Studierender;
 import de.swprojekt.speeddating.service.addstudierender.IAddStudierenderService;
-import de.swprojekt.speeddating.service.showstudierender.IShowStudierendeService;
-
-@Route(value = "ui/studs/add", layout = MainLayout.class)
+/*
+ * View zum Anlegen von neuem Studierenden
+ */
+@Route(value = "ui/studs/add", layout = MainLayout.class)	//Abgeleitet von Root-Layout MainLayout
 public class AddStud extends VerticalLayout {
 
 	@Autowired	//BestPractice: Konstruktor-Injection im Vergleich zu Attribut/Methoden-Injection
@@ -35,7 +33,7 @@ public class AddStud extends VerticalLayout {
 		Notification notificationSavesuccess;
 		Label labelSavesuccess;
 
-		Binder<Studierender> binder;
+		Binder<Studierender> binder;	//verknuepft Input aus Textfeldern mit Objektattributen
 
 		// Listener??
 
@@ -52,27 +50,27 @@ public class AddStud extends VerticalLayout {
 		labelSavesuccess = new Label("Student erfolgreich hinzugefuegt! ");
 		notificationSavesuccess.add(labelSavesuccess);
 
-		binder = new Binder<>(Studierender.class);
-		binder.forField(textfieldVorname).asRequired("Vorname darf nicht leer sein...").bind("vorname");
-		binder.forField(textfieldNachname).asRequired("Nachname darf nicht leer sein...").bind("nachname");
+		binder = new Binder<>(Studierender.class);	//Klasse fuer Binder festlegen (kennt somit Objektattribute)
+		binder.forField(textfieldVorname).asRequired("Vorname darf nicht leer sein...").bind("vorname");	//textfieldVorname wird mit Objektattribut "vorname" verknuept
+		binder.forField(textfieldNachname).asRequired("Nachname darf nicht leer sein...").bind("nachname");	//zusaetzlich wird leere Angabe beanstandet
 		binder.forField(textfieldHauptfach).asRequired("Hauptfach darf nicht leer sein...").bind("hauptfach");
 
 		Studierender einStudierender = new Studierender();
 		buttonHinzufuegen.addClickListener(event -> {
 			try {
-				binder.writeBean(einStudierender);
-				iAddStudierenderService.speicherStudierenden(einStudierender);
-				notificationSavesuccess.open();
+				binder.writeBean(einStudierender);	//Objekt werden Attributwerte aus Textfeldern (via Binder) zugewiesen
+				iAddStudierenderService.speicherStudierenden(einStudierender);	//Uebergabe an Service zur Speicherung in DB
+				notificationSavesuccess.open();	//Erfolgreich-Meldung anzeigen
 			} catch (ValidationException e) {
 				e.printStackTrace();
 			}
 			
 		});
 
-		HorizontalLayout h1=new HorizontalLayout();
+		HorizontalLayout h1=new HorizontalLayout();	//Textfelder sollen nebeneinander angeordnet werden
 		h1.add(textfieldVorname);
 		h1.add(textfieldNachname);
 		h1.add(textfieldHauptfach);
-		add(h1,buttonHinzufuegen);
+		add(h1,buttonHinzufuegen);	//darunter wird Button angeordnet
 	}
 }

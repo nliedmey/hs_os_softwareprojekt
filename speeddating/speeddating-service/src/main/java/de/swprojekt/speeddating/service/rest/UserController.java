@@ -21,8 +21,11 @@ import de.swprojekt.speeddating.model.Role;
 import de.swprojekt.speeddating.model.User;
 import de.swprojekt.speeddating.repository.IRoleRepository;
 import de.swprojekt.speeddating.repository.IUserRepository;
-import de.swprojekt.speeddating.service.security.IRegisterUserService;
 
+/*
+ * REST ist Architekturstil und bietet einheitliche Schnittstellen als Webservice an
+ * Somit koennen ueber HTTP-Methoden wie GET/POST Entities abgerufen/geaendert/erstellt werden 
+ */
 @RestController
 public class UserController {
 	@Autowired

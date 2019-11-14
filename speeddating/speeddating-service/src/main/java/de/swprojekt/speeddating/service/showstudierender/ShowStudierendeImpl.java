@@ -7,16 +7,20 @@ import org.springframework.stereotype.Service;
 
 import de.swprojekt.speeddating.model.Studierender;
 import de.swprojekt.speeddating.repository.IStudierenderRepository;
-
+/*
+ * Implementierung des IShowStudierendeService-Interfaces
+ * Eingebunden in Views wird hingegen nur das Interface! 
+ * (hierfuer muss die Implementierung als Service deklariert sein!)
+ */
 @Service
 public class ShowStudierendeImpl implements IShowStudierendeService {
 
-	@Autowired
-	IStudierenderRepository iStudierenderRepository;
+	@Autowired	//Repository wird autowired
+	IStudierenderRepository iStudierenderRepository;	//Zugriff auf Studierende-Entities in DB
 	
 	@Override
 	public List<Studierender> showStudierende() {
-		return iStudierenderRepository.findAll();
+		return iStudierenderRepository.findAll();	//gibt Liste aller Studierender zurueck
 	}
 
 }

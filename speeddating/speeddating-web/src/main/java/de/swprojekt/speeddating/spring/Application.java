@@ -6,28 +6,27 @@ import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 
 /**
- * The entry point of the Spring Boot application.
+ * Startpunkt der Webapplikation (Start via Rechtsklick auf diese Datei -> Run on Server ... -> Wildfly)
  */
-@Configuration
-@EnableAutoConfiguration
-@EnableWebSecurity
-@ComponentScan({"de.swprojekt"})	//hier wird auf andere Pakete verwiesen, welches nach @Component durchsucht wird
-@EnableJpaRepositories({"de.swprojekt"}) //wichtig fuer jpa
+//@Configuration	
+@EnableAutoConfiguration	//automatische Konfiguration des BeanContext (z.B. Einbindung wahrscheinlich verwendeter Abhaengigkeiten)
+@EnableWebSecurity	//SpringSecurity wird in Webanwendung verwendet
+@ComponentScan({"de.swprojekt"})	//hier wird auf andere Pakete verwiesen, welche inkl. Unterpaketen nach @Component durchsucht wird
+@EnableJpaRepositories({"de.swprojekt"}) //Suche nach Repositories
 @EntityScan({"de.swprojekt"})	//alle Packages unter de.marius werden durchsucht nach Entity-Annotations
 //@SpringBootApplication
 public class Application extends SpringBootServletInitializer {
 
 	@Override
-    protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
+    protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {	//Quelldaten der Anwendung hinzufuegen
         return application.sources(Application.class);
     }
 	
     public static void main(String[] args) {
-        SpringApplication.run(Application.class, args);
+        SpringApplication.run(Application.class, args);	//Starten der Anwendung
     }
 }

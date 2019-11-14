@@ -15,7 +15,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import de.swprojekt.speeddating.model.Role;
 import de.swprojekt.speeddating.repository.IRoleRepository;
-
+/*
+ * REST ist Architekturstil und bietet einheitliche Schnittstellen als Webservice an
+ * Somit koennen ueber HTTP-Methoden wie GET/POST Entities abgerufen/geaendert/erstellt werden 
+ */
 @RestController
 public class RoleController {
 	@Autowired

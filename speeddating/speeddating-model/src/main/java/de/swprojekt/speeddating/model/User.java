@@ -12,8 +12,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
-import javax.persistence.OneToMany;
-
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -30,7 +28,7 @@ public class User implements UserDetails {
 	private String password;
 
 	//CascadeType nicht all inkl. Persist, da dann bei Setten von Rolle diese automatisch auch erneut gespeichert wuerde (ist aber bereits vorhanden)
-	@ManyToMany(cascade = {CascadeType.REFRESH,CascadeType.MERGE}, fetch = FetchType.EAGER) // ein user kann mehrere Rollen haben
+	@ManyToMany(cascade = {CascadeType.REFRESH,CascadeType.MERGE}, fetch = FetchType.EAGER) // ein user kann mehrere Rollen haben, einer Rolle koennen mehrere User zugeordnet sein
 	@JoinTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))	//mappingtabelle user_role erstellen
 	private Set<Role> roles;
 	
@@ -50,7 +48,7 @@ public class User implements UserDetails {
 		{
 			System.out.println("Role: "+r.getRole());
 		}
-		return this.roles.stream().map(role -> new SimpleGrantedAuthority("ROLE_" + role.getRole())).collect(Collectors.toList());
+		return this.roles.stream().map(role -> new SimpleGrantedAuthority("ROLE_" + role.getRole())).collect(Collectors.toList());	//Roles des Users werden als List zurueckgegeben
 	}
 
 	@Override
@@ -71,26 +69,6 @@ public class User implements UserDetails {
 		this.roles = roles;
 	}
 
-	@Override
-	public boolean isAccountNonExpired() {
-		return true;
-	}
-
-	@Override
-	public boolean isAccountNonLocked() {
-		return true;
-	}
-
-	@Override
-	public boolean isCredentialsNonExpired() {
-		return true;
-	}
-
-	@Override
-	public boolean isEnabled() {
-		return true;
-	}
-
 	public void setUsername(String username) {
 		this.username = username;
 	}
@@ -98,5 +76,26 @@ public class User implements UserDetails {
 	public void setPassword(String password) {
 		this.password = password;
 	}
+
+	@Override
+	public boolean isAccountNonExpired() {	//derzeit nicht genutzt (immer true)
+		return true;
+	}
+
+	@Override
+	public boolean isAccountNonLocked() {	//derzeit nicht genutzt (immer true)
+		return true;
+	}
+
+	@Override
+	public boolean isCredentialsNonExpired() {	//derzeit nicht genutzt (immer true)
+		return true;
+	}
+
+	@Override
+	public boolean isEnabled() {	//derzeit nicht genutzt (immer true)
+		return true;
+	}
+
 
 }

@@ -1,6 +1,5 @@
 package de.swprojekt.speeddating.ui;
 
-import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.Grid;
 
@@ -15,36 +14,39 @@ import com.vaadin.flow.router.Route;
 
 import de.swprojekt.speeddating.model.Studierender;
 import de.swprojekt.speeddating.service.showstudierender.IShowStudierendeService;
+/*
+ * View fuer die Anzeige vorhandener Studierender
+ */
 
-@Route("ui/studs")
+@Route("ui/studs")	//Erreichbar ueber Adresse: http://localhost:8080/speeddating-web-7.0-SNAPSHOT/ui/studs
 @Secured("ROLE_ADMIN")	//nur User mit Rolle ADMIN koennen auf Seite zugreifen, @Secured prueft auch bei RouterLink-Weiterleitungen
 //@Secured kann auch an einzelnen Methoden angewendet werden
-public class StudView extends VerticalLayout {
+public class StudView extends VerticalLayout {	//VerticalLayout fuehrt zu Anordnung von Elementen untereinander statt nebeneinander (HorizontalLayout)
 
-	@Autowired
+	@Autowired	//Konstruktor-basierte Injection, Parameter wird autowired (hier: Interface)
 	public StudView(IShowStudierendeService iShowStudierendeService) {
 	
-		Grid<Studierender> studierenderGrid;
+		Grid<Studierender> studierenderGrid;	//Tabelle mit Studierenden
 		Button logoutButton=new Button("Logout");
 		
-		studierenderGrid = new Grid<>(Studierender.class);
+		studierenderGrid = new Grid<>(Studierender.class);	//Tabelle initialisieren
 		ListDataProvider<Studierender> ldpStudent = DataProvider
-				.ofCollection(iShowStudierendeService.showStudierende());
-		studierenderGrid.setDataProvider(ldpStudent);
+				.ofCollection(iShowStudierendeService.showStudierende());	//Dataprovider erstellen und Quelle fuer Studierende (via Service aus DB) festlegen 
+		studierenderGrid.setDataProvider(ldpStudent);	//erstellten Dataprovider als Datenquelle fuer Tabelle festlegen
 
-		studierenderGrid.removeColumnByKey("studId");
-		studierenderGrid.setColumns("vorname", "nachname", "hauptfach");
-		logoutButton.addClickListener(event -> {
+		studierenderGrid.removeColumnByKey("studId");	//studId nicht in Tabelle mit anzeigen
+		studierenderGrid.setColumns("vorname", "nachname", "hauptfach");	//Spaltenordnung festlegen
+		logoutButton.addClickListener(event -> {	//Bei Buttonklick werden folgende Aktionen ausgefuehrt
 			SecurityContextHolder.clearContext();	//Spring-Security-Session leeren
 			getUI().get().getSession().close();		//Vaadin Session leeren
 			logoutButton.getUI().ifPresent(ui->ui.navigate("maincontent"));	//zurueck auf andere Seite 
 		});
 
 
-		add(studierenderGrid);
+		add(studierenderGrid);	//Hinzufuegen der Elemente zum VerticalLayout
 		add(logoutButton);
 	}
-	//@PostConstruct
+	//@PostConstruct	//Ausfuehrung nach Konstruktoraufruf
 	//public void init()
 	//{
 	//	

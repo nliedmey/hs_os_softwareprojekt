@@ -4,12 +4,14 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-
-@Entity
+/*
+ * Klasse wird als Entity definiert
+ */
+@Entity	//Entity wird in DB gespeichert (Tabellenname Standard: Klassenname)
 public class Studierender {
-	@Id
-	@GeneratedValue(strategy=GenerationType.AUTO)
-	private int stud_id;
+	@Id	//PrimaryKey
+	@GeneratedValue(strategy=GenerationType.AUTO)	//automatische Generierung und hochzaehlen
+	private int stud_id;	
 	private String vorname;
 	private String nachname;
 	private String hauptfach;

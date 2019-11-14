@@ -14,12 +14,14 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.PasswordField;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.Route;
-
+/*
+ * View fuer Benutzerlogin
+ */
 @Route("login")
 public class Login extends VerticalLayout {
 
 	@Autowired
-	private DaoAuthenticationProvider daoAuthenticationProvider;
+	private DaoAuthenticationProvider daoAuthenticationProvider;	//Bean aus SecurityConfig gibt Provider zurueck
 
 	private TextField username;
 	private PasswordField passwordField;
@@ -39,20 +41,19 @@ public class Login extends VerticalLayout {
 			try {
 				Authentication auth = new UsernamePasswordAuthenticationToken(username.getValue(),
 						passwordField.getValue());
-				Authentication authenticated = daoAuthenticationProvider.authenticate(auth);
+				Authentication authenticated = daoAuthenticationProvider.authenticate(auth);	//Authentifizierung ueber Username und Passwort durchfuehren
 				SecurityContextHolder.getContext().setAuthentication(authenticated); // nach erfolgreicher Authentifizierung, User nun authenticated
 				System.out.println("Erfolgreich authentifiziert als: "+auth.getName()+", Authorities: "+auth.getAuthorities());
-				loginButton.getUI().ifPresent(ui->ui.navigate("ui/studs"));	//anschliessend auf Loginpage weiterleiten
-				//Logout: SecurityContextHolder.clearContext();
+				loginButton.getUI().ifPresent(ui->ui.navigate("ui/studs"));	//anschliessend auf andere Seite weiterleiten
 			} catch (AuthenticationException e) {
 				e.printStackTrace();
-				Notification.show("Login failed");
+				Notification.show("Login failed");	//Fehlermeldung anzeigen bei fehlgeschlagenem Login (z.B. falsches Passwort)
 			}
 			;
 		});
 
 		signupButton.addClickListener(event -> {
-			signupButton.getUI().ifPresent(ui->ui.navigate("signup"));
+			signupButton.getUI().ifPresent(ui->ui.navigate("signup"));	//Weiterleitung an Registrierungsview
 		});
 
 		add(username,passwordField, loginButton, signupButton);

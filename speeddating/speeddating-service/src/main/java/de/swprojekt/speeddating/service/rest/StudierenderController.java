@@ -16,7 +16,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import de.swprojekt.speeddating.model.Studierender;
 import de.swprojekt.speeddating.repository.IStudierenderRepository;
-
+/*
+ * REST ist Architekturstil und bietet einheitliche Schnittstellen als Webservice an
+ * Somit koennen ueber HTTP-Methoden wie GET/POST Entities abgerufen/geaendert/erstellt werden 
+ */
 @RestController
 public class StudierenderController {
 	@Autowired

@@ -12,7 +12,9 @@ import de.swprojekt.speeddating.model.Role;
 import de.swprojekt.speeddating.model.User;
 import de.swprojekt.speeddating.repository.IRoleRepository;
 import de.swprojekt.speeddating.repository.IUserRepository;
-
+/*
+ * Implementierung fuer IRegisterUserService
+ */
 @Service
 public class RegisterUserServiceImpl implements IRegisterUserService {
 
@@ -26,13 +28,13 @@ public class RegisterUserServiceImpl implements IRegisterUserService {
 	private BCryptPasswordEncoder passwordEncoder;
 	
 	@Override
-	public void save(String username, String password) {
-		Set<Role> roles=new HashSet<Role>(Arrays.asList(iRoleRepository.findByRolename("NORMAL"))); //standardmaessig wird ein "normaler" User erstellt
+	public void save(String username, String password) {	//wird bei Registrierung ausgefuehrt
+		Set<Role> roles=new HashSet<Role>(Arrays.asList(iRoleRepository.findByRolename("NORMAL"))); //standardmaessig wird ein User mit "Normal"-Rolle erstellt
 		User user=new User(roles);
 		user.setUsername(username);
-		user.setPassword(passwordEncoder.encode(password)); 	
+		user.setPassword(passwordEncoder.encode(password)); //eingegebenes PW verschluesseln	
 		System.out.println("Jetzt wird User gespeichert "+user+", getAuth: "+user.getAuthorities()+", Roles: "+user.getRoles());
-		iUserRepository.save(user);										//derzeit muss die Aenderung auf Admin noch manuell getaetigt werden
-	}																	//spaeter eventuell ueber Adminkonsole
+		iUserRepository.save(user);										//derzeit muss die Aenderung auf Admin noch manuell getaetigt werden, spaeter eventuell ueber Adminkonsole
+	}																	
 	
 }
