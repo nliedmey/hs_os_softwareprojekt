@@ -26,7 +26,5 @@ public class UserServiceImpl implements UserDetailsService {
 		} else {	//wenn kein User zu Username existent
 			throw new UsernameNotFoundException("User: " + username + " existiert nicht!");	
 		}
-
 	}
-
 }

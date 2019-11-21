@@ -9,7 +9,7 @@ import com.vaadin.flow.server.ServiceInitEvent;
 import com.vaadin.flow.server.VaadinServiceInitListener;
 /*
  * Listener legt Verhalten bei nicht-vorhandenen Rechten fuer Viewzugriff fest,
- * dies ist vor allem fuer die Pruefung bei Aufruf von RouterLinks wichtig
+ * Dies ist vor allem fuer die Pruefung bei Aufruf von RouterLinks wichtig
  * Ergaenzt das Standardverhalten von SpringSecurity, welches die Rechte bei Vaadin-RouterLinks nicht erneut prueft
  * Quelle: https://vaadin.com/tutorials/securing-your-app-with-spring-security/fine-grained-access-control
  */
@@ -25,12 +25,6 @@ public class ConfigureUIServiceInitListener implements VaadinServiceInitListener
         });
     }
 
-    /**
-     * Reroutes the user if (s)he is not authorized to access the view.
-     *
-     * @param event
-     *            before navigation event with event details
-     */
     private void beforeEnter(BeforeEnterEvent event) {
         if(!SecurityUtils.isAccessGranted(event.getNavigationTarget())) { //wenn Zugriffsrechte fuer Ziel nicht gewaehrt
             if(SecurityUtils.isUserLoggedIn()) { //wenn keine Rechte, aber eingeloggt 

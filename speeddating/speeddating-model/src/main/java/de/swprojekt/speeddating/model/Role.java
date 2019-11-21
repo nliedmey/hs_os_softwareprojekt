@@ -3,7 +3,9 @@ package de.swprojekt.speeddating.model;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-
+/*
+ * Rollen werden den Usern zugewiesen (z.B. ADMIN)
+ */
 @Entity
 public class Role {
 	@Id

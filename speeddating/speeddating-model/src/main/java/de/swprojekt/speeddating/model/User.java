@@ -15,7 +15,11 @@ import javax.persistence.ManyToMany;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-
+/*
+ * Entity fuer Nutzer der Webanwendung
+ * Implementiert UserDetails-Interface von SpringSecurity
+ * Ermoeglicht die spaetere Umwandlung von User-Objekt in UserDetails-Objekt, welches von SpringSecurity u.a. zur Autorisierung verwendet wird
+ */
 @Entity
 public class User implements UserDetails {
 
@@ -25,7 +29,7 @@ public class User implements UserDetails {
 
 	private String username;
 
-	private String password;
+	private String password;	//passwort wird im RegisterUserServiceImpl verschluesselt (sichere BCrypt-Hashing-Funktion)
 
 	//CascadeType nicht all inkl. Persist, da dann bei Setten von Rolle diese automatisch auch erneut gespeichert wuerde (ist aber bereits vorhanden)
 	@ManyToMany(cascade = {CascadeType.REFRESH,CascadeType.MERGE}, fetch = FetchType.EAGER) // ein user kann mehrere Rollen haben, einer Rolle koennen mehrere User zugeordnet sein

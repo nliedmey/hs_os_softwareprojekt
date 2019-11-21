@@ -8,7 +8,7 @@ import de.swprojekt.speeddating.repository.IStudierenderRepository;
 /*
  * Implementierung von IAddStudierenderService 
  */
-@Service
+@Service	//Service ist erweitertes @Component
 public class AddStudierenderImpl implements IAddStudierenderService {
 
 	@Autowired

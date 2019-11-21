@@ -35,8 +35,6 @@ public class AddStud extends VerticalLayout {
 
 		Binder<Studierender> binder;	//verknuepft Input aus Textfeldern mit Objektattributen
 
-		// Listener??
-
 		textfieldVorname = new TextField("Vorname: ");
 		textfieldNachname = new TextField("Nachname: ");
 		textfieldHauptfach = new TextField("Hauptfach: ");
@@ -64,7 +62,6 @@ public class AddStud extends VerticalLayout {
 			} catch (ValidationException e) {
 				e.printStackTrace();
 			}
-			
 		});
 
 		HorizontalLayout h1=new HorizontalLayout();	//Textfelder sollen nebeneinander angeordnet werden

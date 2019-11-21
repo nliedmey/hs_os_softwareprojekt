@@ -6,7 +6,9 @@ import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouterLayout;
-
+/*
+ * View, welche ParentLayout definiert und Element (hier: childWrapper) fuer die Einbindung von Elementen der Kindviews bereitstellt
+ */
 @Route("start")
 public class MainLayout extends VerticalLayout implements RouterLayout {	//stellt ParentLayout dar (implementiert RouterLayout)
 	
@@ -35,3 +37,4 @@ public class MainLayout extends VerticalLayout implements RouterLayout {	//stell
 		childWrapper.getElement().appendChild(content.getElement());	//In ChildWrapper wird was eingefuegt, header und footer bleiben unveraendert
 	}
 }
+

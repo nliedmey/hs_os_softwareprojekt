@@ -11,14 +11,12 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 
 /**
  * Startpunkt der Webapplikation (Start via Rechtsklick auf diese Datei -> Run on Server ... -> Wildfly)
- */
-//@Configuration	
+ */	
 @EnableAutoConfiguration	//automatische Konfiguration des BeanContext (z.B. Einbindung wahrscheinlich verwendeter Abhaengigkeiten)
 @EnableWebSecurity	//SpringSecurity wird in Webanwendung verwendet
 @ComponentScan({"de.swprojekt"})	//hier wird auf andere Pakete verwiesen, welche inkl. Unterpaketen nach @Component durchsucht wird
 @EnableJpaRepositories({"de.swprojekt"}) //Suche nach Repositories
-@EntityScan({"de.swprojekt"})	//alle Packages unter de.marius werden durchsucht nach Entity-Annotations
-//@SpringBootApplication
+@EntityScan({"de.swprojekt"})	//alle Packages unter de.swprojekt werden durchsucht nach Entity-Annotations
 public class Application extends SpringBootServletInitializer {
 
 	@Override
@@ -30,3 +28,4 @@ public class Application extends SpringBootServletInitializer {
         SpringApplication.run(Application.class, args);	//Starten der Anwendung
     }
 }
+
