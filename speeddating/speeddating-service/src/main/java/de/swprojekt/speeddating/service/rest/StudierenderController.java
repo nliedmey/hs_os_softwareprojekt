@@ -55,7 +55,13 @@ public class StudierenderController {
 			gefundenerStudierender = iStudierenderRepository.findById(id);
 			gefundenerStudierender.get().setVorname(einStudierender.getVorname());
 			gefundenerStudierender.get().setNachname(einStudierender.getNachname());
-			gefundenerStudierender.get().setHauptfach(einStudierender.getHauptfach());
+			gefundenerStudierender.get().setStrasse(einStudierender.getStrasse());
+			gefundenerStudierender.get().setHausnummer(einStudierender.getHausnummer());
+			gefundenerStudierender.get().setPlz(einStudierender.getPlz());
+			gefundenerStudierender.get().setOrt(einStudierender.getOrt());
+			gefundenerStudierender.get().setTelefonnr(einStudierender.getTelefonnr());
+			gefundenerStudierender.get().setEmail(einStudierender.getEmail());			
+			
 			return iStudierenderRepository.save(gefundenerStudierender.get());
 		} catch (NoSuchElementException e) {
 			System.out.println("Kein Studierender zu ID vorhanden!");

@@ -17,9 +17,15 @@ public class AddStudierenderImpl implements IAddStudierenderService {
 	@Override
 	public void speicherStudierenden(Studierender einStudierenderDAO) {
 		Studierender einStudierender=new Studierender();	//neues Studierender-Objekt anlegen
+		einStudierender.setMatrikelnummer(einStudierenderDAO.getMatrikelnummer());
 		einStudierender.setVorname(einStudierenderDAO.getVorname());	//Attribute aus DAO-Objekt uebernehmen 
 		einStudierender.setNachname(einStudierenderDAO.getNachname());
-		einStudierender.setHauptfach(einStudierenderDAO.getHauptfach());
+		einStudierender.setStrasse(einStudierenderDAO.getStrasse());
+		einStudierender.setHausnummer(einStudierenderDAO.getHausnummer());
+		einStudierender.setPlz(einStudierenderDAO.getPlz());
+		einStudierender.setOrt(einStudierenderDAO.getOrt());
+		einStudierender.setTelefonnr(einStudierenderDAO.getTelefonnr());
+		einStudierender.setEmail(einStudierenderDAO.getEmail());		
 		iStudierenderRepository.save(einStudierender);	//Speicherung in DB
 	}
 
