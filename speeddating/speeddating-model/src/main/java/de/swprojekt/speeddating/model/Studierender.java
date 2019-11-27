@@ -13,6 +13,7 @@ public class Studierender {
 
 	@Id // PrimaryKey
 	@GeneratedValue(strategy = GenerationType.AUTO) // automatische Generierung und hochzaehlen
+	private int student_id;
 	private int matrikelnummer;
 	private String vorname;
 	private String nachname;
@@ -28,9 +29,10 @@ public class Studierender {
 		// TODO Auto-generated constructor stub
 	}
 
-	public Studierender(int matrikelnummer, String vorname, String nachname, String strasse, int hausnummer, String plz,
-			String ort, String telefonnr, String email) {
+	public Studierender(int student_id, int matrikelnummer, String vorname, String nachname, String strasse,
+			int hausnummer, String plz, String ort, String telefonnr, String email) {
 		super();
+		this.student_id = student_id;
 		this.matrikelnummer = matrikelnummer;
 		this.vorname = vorname;
 		this.nachname = nachname;
@@ -41,7 +43,6 @@ public class Studierender {
 		this.telefonnr = telefonnr;
 		this.email = email;
 	}
-
 
 	public String getVorname() {
 		return vorname;
@@ -117,6 +118,14 @@ public class Studierender {
 
 	public void setMatrikelnummer(int matrikelnummer) {
 		this.matrikelnummer = matrikelnummer;
+	}
+
+	public int getStudent_id() {
+		return student_id;
+	}
+
+	public void setStudent_id(int student_id) {
+		this.student_id = student_id;
 	}
 
 }
