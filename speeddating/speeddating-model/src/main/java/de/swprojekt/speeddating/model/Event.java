@@ -3,10 +3,15 @@ package de.swprojekt.speeddating.model;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
+import javax.persistence.JoinColumn;
 import javax.persistence.Id;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 
 /*
  * Klasse wird als Entity definiert
@@ -21,9 +26,13 @@ public class Event {
 	private Date startzeitpunkt;
 	private Date endzeitpunkt;
 	private boolean abgeschlossen;
+	
+	@ManyToMany(cascade = {CascadeType.REFRESH,CascadeType.MERGE}, fetch = FetchType.EAGER) // ein event kann mehrere Studenten haben, einem Studenten koennen mehrere Events zugeordnet sein
+	@JoinTable(name = "event_studierender", joinColumns = @JoinColumn(name = "event_id"), inverseJoinColumns = @JoinColumn(name = "student_id"))	//mappingtabelle event_studierender erstellen
 	private List<Studierender> teilnehmendeStudierende;
 	// private List<Unternehmen> teilnehmendeUnternehmen;
 	// private EventOrganisator zustaendigerOrganisator;
+	//TODO: hinzuefuegen von Unternehmen und Beziehungen zu diesen
 
 	public Event() {
 		// TODO Auto-generated constructor stub
