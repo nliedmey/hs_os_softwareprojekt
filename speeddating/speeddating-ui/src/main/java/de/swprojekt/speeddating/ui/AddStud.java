@@ -22,7 +22,7 @@ import com.vaadin.flow.data.converter.StringToIntegerConverter;
 import com.vaadin.flow.router.Route;
 
 import de.swprojekt.speeddating.model.Studierender;
-import de.swprojekt.speeddating.service.addstudierender.IAddStudierenderService;
+import de.swprojekt.speeddating.service.addstudierender.IStudierenderService;
 import de.swprojekt.speeddating.service.showstudierender.IShowStudierendeService;
 
 /*
@@ -35,7 +35,7 @@ public class AddStud extends VerticalLayout {
 				// Attribut/Methoden-Injection
 				// Parameter (hier: IAddStudierenderService) wird also automatisch autowired
 	@Autowired
-	public AddStud(IAddStudierenderService iAddStudierenderService, IShowStudierendeService iShowStudierendeService) {
+	public AddStud(IStudierenderService iAddStudierenderService, IShowStudierendeService iShowStudierendeService) {
 
 		// Deklaration
 		Binder<Studierender> binder; // verknuepft Input aus Textfeldern mit Objektattributen

@@ -2,7 +2,7 @@ package de.swprojekt.speeddating.service.addstudierender;
 
 import de.swprojekt.speeddating.model.Studierender;
 
-public interface IAddStudierenderService {
+public interface IStudierenderService {
 	public void speicherStudierenden(Studierender einStudierender);
 
 }
