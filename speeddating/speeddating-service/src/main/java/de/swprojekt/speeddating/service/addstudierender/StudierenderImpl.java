@@ -28,6 +28,11 @@ public class StudierenderImpl implements IStudierenderService {
 		einStudierender.setEmail(einStudierenderDAO.getEmail());		
 		iStudierenderRepository.save(einStudierender);	//Speicherung in DB
 	}
+	
+	public void deleteStudierenden(Studierender einStudierenderDAO) {
+
+		iStudierenderRepository.deleteById(einStudierenderDAO.getStudent_id());
+	}
 
 
 	
