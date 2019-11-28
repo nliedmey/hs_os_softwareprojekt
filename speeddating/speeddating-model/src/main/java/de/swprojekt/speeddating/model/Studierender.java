@@ -115,7 +115,6 @@ public class Studierender {
 	}
 
 
-
 	public void setMatrikelnummer(int matrikelnummer) {
 		this.matrikelnummer = matrikelnummer;
 	}
@@ -126,6 +125,10 @@ public class Studierender {
 
 	public void setStudent_id(int student_id) {
 		this.student_id = student_id;
+	}
+	
+	public String getStringFullNameOfStudent () {
+		return this.vorname + " " + this.nachname;
 	}
 
 }

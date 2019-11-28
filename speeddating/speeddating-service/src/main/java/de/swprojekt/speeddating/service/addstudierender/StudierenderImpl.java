@@ -9,7 +9,7 @@ import de.swprojekt.speeddating.repository.IStudierenderRepository;
  * Implementierung von IAddStudierenderService 
  */
 @Service	//Service ist erweitertes @Component
-public class AddStudierenderImpl implements IAddStudierenderService {
+public class StudierenderImpl implements IAddStudierenderService {
 
 	@Autowired
 	IStudierenderRepository iStudierenderRepository;	//Interface zur Verwaltung von Studierenden aus DB einbinden
@@ -28,5 +28,9 @@ public class AddStudierenderImpl implements IAddStudierenderService {
 		einStudierender.setEmail(einStudierenderDAO.getEmail());		
 		iStudierenderRepository.save(einStudierender);	//Speicherung in DB
 	}
+
+
+	
+
 
 }

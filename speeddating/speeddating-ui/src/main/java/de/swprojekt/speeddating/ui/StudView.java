@@ -34,8 +34,8 @@ public class StudView extends VerticalLayout {	//VerticalLayout fuehrt zu Anordn
 				.ofCollection(iShowStudierendeService.showStudierende());	//Dataprovider erstellen und Quelle fuer Studierende (via Service aus DB) festlegen 
 		studierenderGrid.setDataProvider(ldpStudent);	//erstellten Dataprovider als Datenquelle fuer Tabelle festlegen
 
-		studierenderGrid.removeColumnByKey("studId");	//studId nicht in Tabelle mit anzeigen
-		studierenderGrid.setColumns("vorname", "nachname", "hauptfach");	//Spaltenordnung festlegen
+		//studierenderGrid.removeColumnByKey("studId");	//studId nicht in Tabelle mit anzeigen
+		studierenderGrid.setColumns("vorname", "nachname");	//Spaltenordnung festlegen
 		logoutButton.addClickListener(event -> {	//Bei Buttonklick werden folgende Aktionen ausgefuehrt
 			SecurityContextHolder.clearContext();	//Spring-Security-Session leeren
 			getUI().get().getSession().close();		//Vaadin Session leeren

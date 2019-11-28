@@ -1,5 +1,7 @@
 package de.swprojekt.speeddating.ui;
 
+import org.springframework.security.core.context.SecurityContextHolder;
+
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.router.Route;
@@ -11,6 +13,8 @@ import com.vaadin.flow.router.RouterLink;
 public class MainLayoutWithContent extends Div {
 	
 	public MainLayoutWithContent() {
+		
+				
 		add(new Label("Hier steht dann der Inhalt..."));
 		add(new RouterLink("Zeig die Studenten",StudView.class));
 	}
