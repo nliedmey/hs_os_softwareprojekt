@@ -52,17 +52,7 @@ public class AddStud extends VerticalLayout {
 		TextField textfieldEMail = new TextField("E-Mail Adresse: ");
 		
 		
-		ComboBox<Studierender> comboBox = new ComboBox<>();
-		comboBox.setLabel("Studenten auswaehlen");
-		comboBox.setItemLabelGenerator(Studierender:: getNachname);
 
-		List<Studierender> listOfStudenten = iShowStudierendeService.showStudierende();
-		comboBox.setItems(listOfStudenten);
-		comboBox.addValueChangeListener(event -> {
-		    Studierender student = comboBox.getValue();
-
-		});
-		
 		
 
 		// Button hinzufuegen
@@ -81,21 +71,14 @@ public class AddStud extends VerticalLayout {
 		h1.add(textfieldMatrikelnr);
 		h1.add(textfieldVorname);
 		h1.add(textfieldNachname);		
-		
 		h1.add(textfieldStrasse);
 		h1.add(textfieldHausnummer);
 		h1.add(textfieldPLZ);
 		h1.add(textfieldOrt);
-		
 		h1.add(textfieldTelefonnr);
-		h1.add(textfieldEMail);
-		
-		h1.add(comboBox);
-				
+		h1.add(textfieldEMail);				
 		add(h1, buttonHinzufuegen, buttonAbbrechen); // darunter wird Button angeordnet
 		
-		
-
 		binder = new Binder<>(Studierender.class); // Klasse fuer Binder festlegen (kennt somit Objektattribute)
 
 		// Musseingaben definieren textfieldXXX wird mit Objektattribut "xxx" verknuepft

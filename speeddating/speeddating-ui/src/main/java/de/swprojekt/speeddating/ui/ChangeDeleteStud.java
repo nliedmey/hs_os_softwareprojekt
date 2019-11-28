@@ -34,6 +34,7 @@ import de.swprojekt.speeddating.service.showstudierender.IShowStudierendeService
 @Route(value = "ui/studs/changeDeleteStud", layout = MainLayout.class) // Abgeleitet von Root-Layout MainLayout
 public class ChangeDeleteStud extends VerticalLayout {
 
+	int lv_id = 0;
 	// BestPractice: Konstruktor-Injection im Vergleich zu
 	// Attribut/Methoden-Injection
 	// Parameter (hier: IAddStudierenderService) wird also automatisch autowired
@@ -53,6 +54,7 @@ public class ChangeDeleteStud extends VerticalLayout {
 		TextField textfieldTelefonnr = new TextField("Telefonnr.: ");
 		TextField textfieldEMail = new TextField("E-Mail Adresse: ");
 
+
 		// Erzeugen der Combo Box
 		ComboBox<Studierender> comboBox = new ComboBox<>();
 		comboBox.setLabel("Studenten auswaehlen");
@@ -63,7 +65,7 @@ public class ChangeDeleteStud extends VerticalLayout {
 		comboBox.addValueChangeListener(event -> {
 			Studierender aStudent = comboBox.getValue();
 			if (aStudent != null) {
-
+				lv_id = aStudent.getStudent_id();
 				textfieldMatrikelnr.setValue(Integer.toString(aStudent.getMatrikelnummer()));
 				textfieldVorname.setValue(aStudent.getVorname());
 				textfieldNachname.setValue(aStudent.getNachname());
@@ -144,7 +146,8 @@ public class ChangeDeleteStud extends VerticalLayout {
 			try {
 				binder.writeBean(einStudierender); // dem Objekt werden Attributwerte aus den Textfeldern (via Binder)
 													// zugewiesen
-
+				einStudierender.setStudent_id(lv_id);
+				iStudierenderService.speicherStudierenden(einStudierender);
 				notificationAendernsuccess.open();
 //				SecurityContextHolder.clearContext();	//Spring-Security-Session leeren
 //				getUI().get().getSession().close();		//Vaadin Session leeren
@@ -155,20 +158,12 @@ public class ChangeDeleteStud extends VerticalLayout {
 			}
 		});
 
-		buttonAbbrechen.addClickListener(event -> {
-			// Erfolgreich-Meldung anzeigen
-			notificationAbbruch.open();
-
-//			SecurityContextHolder.clearContext();	//Spring-Security-Session leeren
-//			getUI().get().getSession().close();		//Vaadin Session leeren
-			buttonAbbrechen.getUI().ifPresent(ui -> ui.navigate("maincontent")); // zurueck auf andere Seite
-		});
-
 		buttonStudLoeschen.addClickListener(event -> {
 
 			try {
 
 				binder.writeBean(einStudierender);
+				einStudierender.setStudent_id(lv_id);
 				iStudierenderService.deleteStudierenden(einStudierender);
 
 				notificationLoeschensuccess.open();
@@ -179,6 +174,14 @@ public class ChangeDeleteStud extends VerticalLayout {
 			} catch (ValidationException e) {
 				e.printStackTrace();
 			}
+		});
+		
+		buttonAbbrechen.addClickListener(event -> {
+			// Erfolgreich-Meldung anzeigen
+			notificationAbbruch.open();
+//			SecurityContextHolder.clearContext();	//Spring-Security-Session leeren
+//			getUI().get().getSession().close();		//Vaadin Session leeren
+			buttonAbbrechen.getUI().ifPresent(ui -> ui.navigate("maincontent")); // zurueck auf andere Seite
 		});
 
 	}

@@ -30,12 +30,20 @@ public class StudierenderImpl implements IStudierenderService {
 	}
 	
 	public void deleteStudierenden(Studierender einStudierenderDAO) {
-
-		iStudierenderRepository.deleteById(einStudierenderDAO.getStudent_id());
+		
+		Studierender einStudierender=new Studierender();
+		einStudierender.setStudent_id(einStudierenderDAO.getStudent_id());
+		iStudierenderRepository.deleteById(einStudierender.getStudent_id());
 	}
 
+	@Override
+	public void changeStudierenden(Studierender einStudierenderDAO) {
+		Studierender einStudierender=new Studierender();
+		einStudierender.setStudent_id(einStudierenderDAO.getStudent_id());
 
-	
+		
+	}
+
 
 
 }
