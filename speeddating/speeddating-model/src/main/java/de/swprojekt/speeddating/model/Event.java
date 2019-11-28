@@ -22,8 +22,8 @@ public class Event {
 	private Date endzeitpunkt;
 	private boolean abgeschlossen;
 	private List<Studierender> teilnehmendeStudierende;
-	//private List<Unternehmen> teilnehmendeUnternehmen;
-	//private EventOrganisator zustaendigerOrganisator;
+	// private List<Unternehmen> teilnehmendeUnternehmen;
+	// private EventOrganisator zustaendigerOrganisator;
 
 	public Event() {
 		// TODO Auto-generated constructor stub
@@ -75,6 +75,14 @@ public class Event {
 
 	public void setAbgeschlossen(boolean abgeschlossen) {
 		this.abgeschlossen = abgeschlossen;
+	}
+
+	public List<Studierender> getTeilnehmendeStudierende() {
+		return teilnehmendeStudierende;
+	}
+
+	public void setTeilnehmendeStudierende(List<Studierender> teilnehmendeStudierende) {
+		this.teilnehmendeStudierende = teilnehmendeStudierende;
 	}
 
 }
