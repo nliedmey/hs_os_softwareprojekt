@@ -1,9 +1,13 @@
 package de.swprojekt.speeddating.model;
 
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
 import javax.persistence.CascadeType;
+import javax.persistence.CollectionTable;
+import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -26,13 +30,20 @@ public class Event {
 	private Date startzeitpunkt;
 	private Date endzeitpunkt;
 	private boolean abgeschlossen;
-	
-	@ManyToMany(cascade = {CascadeType.REFRESH,CascadeType.MERGE}, fetch = FetchType.EAGER) // ein event kann mehrere Studenten haben, einem Studenten koennen mehrere Events zugeordnet sein
-	@JoinTable(name = "event_studierender", joinColumns = @JoinColumn(name = "event_id"), inverseJoinColumns = @JoinColumn(name = "student_id"))	//mappingtabelle event_studierender erstellen
-	private List<Studierender> teilnehmendeStudierende;
-	// private List<Unternehmen> teilnehmendeUnternehmen;
-	// private EventOrganisator zustaendigerOrganisator;
+	// private List<Integer> teilnehmendeUnternehmen;
+	// private int zustaendigerOrganisator;
 	//TODO: hinzuefuegen von Unternehmen und Beziehungen zu diesen
+	
+	@ElementCollection
+	@CollectionTable(name="event_studierender",
+		joinColumns=@JoinColumn(name="event_id"))
+	@Column(name="student_id")
+	private Collection<Integer> teilnehmendeStudierende;	//CollectionTable weil Integers und keine Entities
+	//keine Entities von anderen Klassen in dieser Klasse!
+	//@ManyToMany(cascade = {CascadeType.REFRESH,CascadeType.MERGE}, fetch = FetchType.EAGER) // ein event kann mehrere Studenten haben, einem Studenten koennen mehrere Events zugeordnet sein
+	//@JoinTable(name = "event_studierender", joinColumns = @JoinColumn(name = "event_id"), inverseJoinColumns = @JoinColumn(name = "student_id"))	//mappingtabelle event_studierender erstellen
+	//private List<Integer> teilnehmendeStudierende;
+	
 
 	public Event() {
 		// TODO Auto-generated constructor stub
@@ -86,11 +97,11 @@ public class Event {
 		this.abgeschlossen = abgeschlossen;
 	}
 
-	public List<Studierender> getTeilnehmendeStudierende() {
+	public Collection<Integer> getTeilnehmendeStudierende() {
 		return teilnehmendeStudierende;
 	}
 
-	public void setTeilnehmendeStudierende(List<Studierender> teilnehmendeStudierende) {
+	public void setTeilnehmendeStudierende(Collection<Integer> teilnehmendeStudierende) {
 		this.teilnehmendeStudierende = teilnehmendeStudierende;
 	}
 
