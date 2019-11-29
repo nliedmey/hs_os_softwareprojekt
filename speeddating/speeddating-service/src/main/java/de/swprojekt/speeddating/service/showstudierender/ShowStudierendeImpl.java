@@ -24,6 +24,11 @@ public class ShowStudierendeImpl implements IShowStudierendeService {
 		return iStudierenderRepository.findAll();	//gibt Liste aller Studierender zurueck
 	}
 
+
+
+
+	
+	
 	
 
 	
