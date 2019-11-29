@@ -147,12 +147,18 @@ public class ChangeDeleteStud extends VerticalLayout {
 				binder.writeBean(einStudierender); // dem Objekt werden Attributwerte aus den Textfeldern (via Binder)
 													// zugewiesen
 				einStudierender.setStudent_id(lv_id);
-				iStudierenderService.speicherStudierenden(einStudierender);
-				notificationAendernsuccess.open();
-//				SecurityContextHolder.clearContext();	//Spring-Security-Session leeren
-//				getUI().get().getSession().close();		//Vaadin Session leeren
-				buttonStudAendern.getUI().ifPresent(ui -> ui.navigate("maincontent")); // zurueck auf andere Seite
-
+				
+				List<Studierender> listOfStud = iShowStudierendeService.showStudierende();
+				for ( Studierender aStudent : listOfStud) {
+					
+					if (aStudent.getStudent_id() == einStudierender.getStudent_id()) {
+						iStudierenderService.speicherStudierenden(aStudent);
+						notificationAendernsuccess.open();
+//						SecurityContextHolder.clearContext();	//Spring-Security-Session leeren
+//						getUI().get().getSession().close();		//Vaadin Session leeren
+						buttonStudAendern.getUI().ifPresent(ui -> ui.navigate("maincontent")); // zurueck auf andere Seite
+					}					
+				}		
 			} catch (ValidationException e) {
 				e.printStackTrace();
 			}
