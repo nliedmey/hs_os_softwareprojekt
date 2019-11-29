@@ -3,6 +3,9 @@ package de.swprojekt.speeddating.ui;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.datepicker.DatePicker;
+import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.grid.Grid.SelectionMode;
+import com.vaadin.flow.component.grid.GridMultiSelectionModel;
 import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.notification.NotificationVariant;
@@ -12,6 +15,8 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZoneId;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,10 +27,14 @@ import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.component.timepicker.TimePicker;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.binder.ValidationException;
+import com.vaadin.flow.data.provider.DataProvider;
+import com.vaadin.flow.data.provider.ListDataProvider;
 import com.vaadin.flow.router.Route;
 
 import de.swprojekt.speeddating.model.Event;
+import de.swprojekt.speeddating.model.Studierender;
 import de.swprojekt.speeddating.service.addevent.IAddEventService;
+import de.swprojekt.speeddating.service.showstudierender.IShowStudierendeService;
 
 /*
  * View zum Hinzufuegen von Event
@@ -36,10 +45,12 @@ public class AddEvent extends VerticalLayout {
 	@Autowired // BestPractice: Konstruktor-Injection im Vergleich zu
 				// Attribut/Methoden-Injection
 				// Parameter (hier: IAddStudierenderService) wird also automatisch autowired
-	public AddEvent(IAddEventService iAddEventService) {
+	public AddEvent(IAddEventService iAddEventService, IShowStudierendeService iShowStudierendeService) {
 
 		// Deklaration
 		Binder<Event> binder; // verknuepft Input aus Textfeldern mit Objektattributen
+		Grid<Studierender> studierenderGrid;	//Tabelle mit Studierenden, welche Event zugeordnet werden sollen
+		GridMultiSelectionModel<Studierender> selectionModel; //es sollen mehrere Studierende aus Tabelle ausgewaehlt werden koennen
 
 		// Erzeugen der Input Felder
 		TextField textfieldBezeichnung = new TextField("Bezeichnung:");
@@ -47,7 +58,16 @@ public class AddEvent extends VerticalLayout {
 		TimePicker timepickerStartzeitpunktUhrzeit=new TimePicker("Startzeit:");
 		DatePicker datepickerEndzeitpunktDatum=new DatePicker("Enddatum:");
 		TimePicker timepickerEndzeitpunktUhrzeit=new TimePicker("Endzeit:");
-
+		
+		studierenderGrid = new Grid<>(Studierender.class);	//Tabelle initialisieren
+		ListDataProvider<Studierender> ldpStudent = DataProvider
+				.ofCollection(iShowStudierendeService.showStudierende());	//Dataprovider erstellen und Quelle fuer Studierende (via Service aus DB) festlegen 
+		studierenderGrid.setDataProvider(ldpStudent);	//erstellten Dataprovider als Datenquelle fuer Tabelle festlegen
+		studierenderGrid.removeColumnByKey("student_id");	//studId nicht in Tabelle mit anzeigen
+		studierenderGrid.setColumns("vorname", "nachname");	//Spaltenordnung festlegen
+		studierenderGrid.setSelectionMode(SelectionMode.MULTI); //multiselection bedeutet Auswahl mehrerer Studierender in Tabelle moeglich
+		selectionModel = (GridMultiSelectionModel<Studierender>) studierenderGrid.getSelectionModel();
+		
 		// Button hinzufuegen
 		Button buttonHinzufuegen = new Button("Event anlegen");
 		buttonHinzufuegen.addThemeVariants(ButtonVariant.LUMO_SUCCESS);
@@ -62,33 +82,30 @@ public class AddEvent extends VerticalLayout {
 		v1.add(textfieldBezeichnung);
 		v1.add(new HorizontalLayout(datepickerStartzeitpunktDatum,timepickerStartzeitpunktUhrzeit));
 		v1.add(new HorizontalLayout(datepickerEndzeitpunktDatum,timepickerEndzeitpunktUhrzeit));
+		v1.add(studierenderGrid);
 				
 		add(v1, buttonHinzufuegen); // darunter wird Button angeordnet
 		
-		
-
 		binder = new Binder<>(Event.class); // Klasse fuer Binder festlegen (kennt somit Objektattribute)
 
 		// Musseingaben definieren textfieldXXX wird mit Objektattribut "xxx" verknuepft
 		binder.forField(textfieldBezeichnung).asRequired("Bezeichnung darf nicht leer sein...").bind("bezeichnung");
 		//binder.forField(textfieldHausnummer).withConverter(new StringToIntegerConverter("Eingabe muss numerisch sein")).bind("hausnummer");
 		
-		
 		Event einEvent = new Event();
 		buttonHinzufuegen.addClickListener(event -> {
 			try {
-				binder.writeBean(einEvent); // dem Objekt werden Attributwerte aus den Textfeldern (via Binder)
-													// zugewiesen
+				binder.writeBean(einEvent); // dem Objekt werden Attributwerte aus den Textfeldern (via Binder) zugewiesen
 				
 				//Verarbeitung der Datums- und Uhrzeiteingabe ueber Date- und Timepicker
-				LocalDate startzeitpunktDatum=datepickerStartzeitpunktDatum.getValue();
-				LocalTime startzeitpunktUhrzeit=timepickerStartzeitpunktUhrzeit.getValue();
+				LocalDate startzeitpunktDatum=datepickerStartzeitpunktDatum.getValue(); //Datumswert aus Datepicker ziehen
+				LocalTime startzeitpunktUhrzeit=timepickerStartzeitpunktUhrzeit.getValue();	//Zeitwert aus Timepicker ziehen
 				
 				LocalDate endzeitpunktDatum=datepickerEndzeitpunktDatum.getValue();
 				LocalTime endzeitpunktUhrzeit=timepickerEndzeitpunktUhrzeit.getValue();
 				
-				LocalDateTime startzeitpunktldt=LocalDateTime.of(startzeitpunktDatum, startzeitpunktUhrzeit);
-				Date startzeitpunkt=Date.from(startzeitpunktldt.atZone(ZoneId.systemDefault()).toInstant());
+				LocalDateTime startzeitpunktldt=LocalDateTime.of(startzeitpunktDatum, startzeitpunktUhrzeit); //zusammenfuegen von Date und Time zu DateTime
+				Date startzeitpunkt=Date.from(startzeitpunktldt.atZone(ZoneId.systemDefault()).toInstant()); //Umwandlung DateTime in Date, weil Objektattribut in Studierender-Klasse von diesem Typ
 				
 				LocalDateTime endzeitpunktldt=LocalDateTime.of(endzeitpunktDatum, endzeitpunktUhrzeit);
 				Date endzeitpunkt=Date.from(endzeitpunktldt.atZone(ZoneId.systemDefault()).toInstant());
@@ -98,8 +115,14 @@ public class AddEvent extends VerticalLayout {
 				
 				einEvent.setAbgeschlossen(false); //beim erstellen ist das Event nicht abgeschlossen
 				
-				iAddEventService.speicherEvent(einEvent); // Uebergabe an Service zur Speicherung
-																				// in DB
+				Collection<Integer> teilnehmendeStudierende=new ArrayList<>();
+				for(Studierender einStudierender:selectionModel.getSelectedItems()) {	//IDs der teilnehmenden Studierenden aus Tabelle einsammeln
+					teilnehmendeStudierende.add(einStudierender.getStudent_id());	
+				}
+				
+				einEvent.setTeilnehmendeStudierende(teilnehmendeStudierende);
+				
+				iAddEventService.speicherEvent(einEvent); // Uebergabe an Service zur Speicherung in DB
 				notificationSavesuccess.open(); // Erfolgreich-Meldung anzeigen
 			} catch (ValidationException e) {
 				e.printStackTrace();
