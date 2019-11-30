@@ -1,5 +1,7 @@
 package de.swprojekt.speeddating.service.addstudierender;
 
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,7 +17,7 @@ public class StudierenderImpl implements IStudierenderService {
 	IStudierenderRepository iStudierenderRepository;	//Interface zur Verwaltung von Studierenden aus DB einbinden
 	
 	@Override
-	public void speicherStudierenden(Studierender einStudierenderDAO) {
+	public void saveStudierenden(Studierender einStudierenderDAO) {
 		Studierender einStudierender=new Studierender();	//neues Studierender-Objekt anlegen
 		einStudierender.setMatrikelnummer(einStudierenderDAO.getMatrikelnummer());
 		einStudierender.setVorname(einStudierenderDAO.getVorname());	//Attribute aus DAO-Objekt uebernehmen 
@@ -38,11 +40,13 @@ public class StudierenderImpl implements IStudierenderService {
 
 	@Override
 	public void changeStudierenden(Studierender einStudierenderDAO) {
-		Studierender einStudierender=new Studierender();
-		einStudierender.setStudent_id(einStudierenderDAO.getStudent_id());
-
+		iStudierenderRepository.save(einStudierenderDAO);	//Speicherung in DB
 		
 	}
+
+
+
+
 
 
 

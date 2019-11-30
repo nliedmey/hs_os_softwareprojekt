@@ -100,7 +100,7 @@ public class AddStud extends VerticalLayout {
 			try {
 				binder.writeBean(einStudierender); // dem Objekt werden Attributwerte aus den Textfeldern (via Binder)
 													// zugewiesen
-				iAddStudierenderService.speicherStudierenden(einStudierender); // Uebergabe an Service zur Speicherung
+				iAddStudierenderService.saveStudierenden(einStudierender); // Uebergabe an Service zur Speicherung
 																				// in DB
 				notificationSavesuccess.open(); // Erfolgreich-Meldung anzeigen
 				
