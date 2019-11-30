@@ -58,7 +58,7 @@ public class AddUntern extends VerticalLayout {
 		binder = new Binder<>(Unternehmen.class);
 		
 		binder.forField(textfieldUnternehmensname).asRequired("Unternehmensname darf nicht leer sein").bind("unternehmensname");
-		binder.forField(textfieldAnsprechpartner).asRequired("Ansprechpartner darf nicht leer sein").bind("Ansprechpartner");
+		binder.forField(textfieldAnsprechpartner).asRequired("Ansprechpartner darf nicht leer sein").bind("ansprechpartner");
 		binder.forField(textfieldKontaktmail).asRequired("Kontaktmail darf nicht leer sein").bind("kontaktmail");
 		
 		Unternehmen einUnternehmen = new Unternehmen();

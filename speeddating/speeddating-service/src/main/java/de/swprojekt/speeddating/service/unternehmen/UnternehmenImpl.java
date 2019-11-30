@@ -17,7 +17,7 @@ public class UnternehmenImpl implements IUnternehmenService {
 	public void speicherUnternehmen(Unternehmen einUnternehmenDAO) {
 		Unternehmen einUnternehmen = new Unternehmen();
 		einUnternehmen.setUnternehmensname(einUnternehmenDAO.getUnternehmensname());
-		einUnternehmen.setAnsprechpartner(einUnternehmenDAO.getUnternehmensname());
+		einUnternehmen.setAnsprechpartner(einUnternehmenDAO.getAnsprechpartner());
 		einUnternehmen.setKontaktmail(einUnternehmenDAO.getKontaktmail());
 		iUnternehmenRepository.save(einUnternehmen);
 		
@@ -33,8 +33,7 @@ public class UnternehmenImpl implements IUnternehmenService {
 
 	@Override
 	public void changeUnternehmen(Unternehmen einUnternehmenDAO) {
-		Unternehmen einUnternehmen = new Unternehmen();
-		einUnternehmen.setUnternehmen_id(einUnternehmenDAO.getUnternehmen_id());
+		iUnternehmenRepository.save(einUnternehmenDAO);
 		
 	}
 

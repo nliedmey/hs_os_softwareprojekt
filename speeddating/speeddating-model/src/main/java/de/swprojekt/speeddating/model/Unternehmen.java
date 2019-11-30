@@ -14,14 +14,12 @@ public class Unternehmen {
 	private String unternehmensname;
 	private String ansprechpartner;
 	private String kontaktmail;
-	
-	//Konstruktor
+
+	// Konstruktor
 	public Unternehmen() {
-		
+
 	}
-	
-	
-	
+
 	public Unternehmen(int unternehmen_id, String unternehmensname, String ansprechpartner, String kontaktmail) {
 		super();
 		this.unternehmen_id = unternehmen_id;
@@ -30,37 +28,36 @@ public class Unternehmen {
 		this.kontaktmail = kontaktmail;
 	}
 
-
-
 	public int getUnternehmen_id() {
 		return unternehmen_id;
 	}
-
-
 
 	public void setUnternehmen_id(int unternehmen_id) {
 		this.unternehmen_id = unternehmen_id;
 	}
 
-
-
 	public String getUnternehmensname() {
 		return unternehmensname;
 	}
+
 	public void setUnternehmensname(String unternehmensname) {
 		this.unternehmensname = unternehmensname;
 	}
+
 	public String getAnsprechpartner() {
 		return ansprechpartner;
 	}
+
 	public void setAnsprechpartner(String ansprechpartner) {
 		this.ansprechpartner = ansprechpartner;
 	}
+
 	public String getKontaktmail() {
 		return kontaktmail;
 	}
+
 	public void setKontaktmail(String kontaktmail) {
 		this.kontaktmail = kontaktmail;
 	}
-	
+
 }

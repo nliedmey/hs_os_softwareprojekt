@@ -122,7 +122,7 @@ public class ChangeDeleteUntern extends VerticalLayout {
 				binder.writeBean(einUnternehmen); // dem Objekt werden Attributwerte aus den Textfeldern (via Binder)
 													// zugewiesen
 				einUnternehmen.setUnternehmen_id(lv_id);
-				iUnternehmenService.speicherUnternehmen(einUnternehmen);
+				iUnternehmenService.changeUnternehmen(einUnternehmen);
 				notificationAendernsuccess.open();
 //				SecurityContextHolder.clearContext();	//Spring-Security-Session leeren
 //				getUI().get().getSession().close();		//Vaadin Session leeren
@@ -140,7 +140,6 @@ public class ChangeDeleteUntern extends VerticalLayout {
 				binder.writeBean(einUnternehmen);
 				einUnternehmen.setUnternehmen_id(lv_id);
 				iUnternehmenService.deleteUnternehmen(einUnternehmen);
-
 				notificationLoeschensuccess.open();
 //			SecurityContextHolder.clearContext();	//Spring-Security-Session leeren
 //			getUI().get().getSession().close();		//Vaadin Session leeren
