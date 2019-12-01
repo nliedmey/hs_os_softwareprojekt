@@ -34,7 +34,7 @@ public class Event {
 	// private int zustaendigerOrganisator;
 	//TODO: hinzuefuegen von Unternehmen und Beziehungen zu diesen
 	
-	@ElementCollection
+	@ElementCollection(fetch = FetchType.EAGER)
 	@CollectionTable(name="event_studierender",
 		joinColumns=@JoinColumn(name="event_id"))
 	@Column(name="student_id")

@@ -8,6 +8,6 @@ import de.swprojekt.speeddating.model.Event;
  * In Views wird nur Interface eingebunden!
  */
 public interface IShowEventService {
-	public List<Event> showEvents();
-	public Event showEvent(int event_id); //ein Stud
+	public List<Event> showEvents();	//alle Events
+	public Event showEvent(int event_id); //ein Event
 }
