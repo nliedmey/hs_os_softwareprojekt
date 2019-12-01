@@ -2,11 +2,15 @@ package de.swprojekt.speeddating.ui;
 
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
+import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.notification.NotificationVariant;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -18,7 +22,8 @@ import com.vaadin.flow.data.converter.StringToIntegerConverter;
 import com.vaadin.flow.router.Route;
 
 import de.swprojekt.speeddating.model.Studierender;
-import de.swprojekt.speeddating.service.addstudierender.IAddStudierenderService;
+import de.swprojekt.speeddating.service.addstudierender.IStudierenderService;
+import de.swprojekt.speeddating.service.showstudierender.IShowStudierendeService;
 
 /*
  * View zum Anlegen von neuem Studierenden
@@ -26,10 +31,11 @@ import de.swprojekt.speeddating.service.addstudierender.IAddStudierenderService;
 @Route(value = "ui/studs/add", layout = MainLayout.class) // Abgeleitet von Root-Layout MainLayout
 public class AddStud extends VerticalLayout {
 
-	@Autowired // BestPractice: Konstruktor-Injection im Vergleich zu
+	 // BestPractice: Konstruktor-Injection im Vergleich zu
 				// Attribut/Methoden-Injection
 				// Parameter (hier: IAddStudierenderService) wird also automatisch autowired
-	public AddStud(IAddStudierenderService iAddStudierenderService) {
+	@Autowired
+	public AddStud(IStudierenderService iAddStudierenderService, IShowStudierendeService iShowStudierendeService) {
 
 		// Deklaration
 		Binder<Studierender> binder; // verknuepft Input aus Textfeldern mit Objektattributen
@@ -44,10 +50,16 @@ public class AddStud extends VerticalLayout {
 		TextField textfieldOrt = new TextField("Ort: ");
 		TextField textfieldTelefonnr = new TextField("Telefonnr.: ");
 		TextField textfieldEMail = new TextField("E-Mail Adresse: ");
+		
+		
+
+		
 
 		// Button hinzufuegen
 		Button buttonHinzufuegen = new Button("Student anlegen");
 		buttonHinzufuegen.addThemeVariants(ButtonVariant.LUMO_SUCCESS);
+		Button buttonAbbrechen = new Button("Abbrechen");
+		buttonAbbrechen.addThemeVariants(ButtonVariant.LUMO_ERROR);
 
 		// Notification Meldungen mit Button verknuepfen
 		Notification notificationSavesuccess = new Notification();
@@ -59,19 +71,14 @@ public class AddStud extends VerticalLayout {
 		h1.add(textfieldMatrikelnr);
 		h1.add(textfieldVorname);
 		h1.add(textfieldNachname);		
-		
 		h1.add(textfieldStrasse);
 		h1.add(textfieldHausnummer);
 		h1.add(textfieldPLZ);
 		h1.add(textfieldOrt);
-		
 		h1.add(textfieldTelefonnr);
-		h1.add(textfieldEMail);
-				
-		add(h1, buttonHinzufuegen); // darunter wird Button angeordnet
+		h1.add(textfieldEMail);				
+		add(h1, buttonHinzufuegen, buttonAbbrechen); // darunter wird Button angeordnet
 		
-		
-
 		binder = new Binder<>(Studierender.class); // Klasse fuer Binder festlegen (kennt somit Objektattribute)
 
 		// Musseingaben definieren textfieldXXX wird mit Objektattribut "xxx" verknuepft
@@ -88,17 +95,35 @@ public class AddStud extends VerticalLayout {
 		binder.forField(textfieldEMail).asRequired("E-Mail Adresse darf nicht leer sein...").bind("email"); 
 		
 		Studierender einStudierender = new Studierender();
+		
 		buttonHinzufuegen.addClickListener(event -> {
 			try {
 				binder.writeBean(einStudierender); // dem Objekt werden Attributwerte aus den Textfeldern (via Binder)
 													// zugewiesen
-				iAddStudierenderService.speicherStudierenden(einStudierender); // Uebergabe an Service zur Speicherung
+				iAddStudierenderService.saveStudierenden(einStudierender); // Uebergabe an Service zur Speicherung
 																				// in DB
 				notificationSavesuccess.open(); // Erfolgreich-Meldung anzeigen
+				
+		        
+				
+//				SecurityContextHolder.clearContext();	//Spring-Security-Session leeren
+//				getUI().get().getSession().close();		//Vaadin Session leeren
+			    buttonHinzufuegen.getUI().ifPresent(ui->ui.navigate("maincontent"));	//zurueck auf andere Seite 
+				
+				
 			} catch (ValidationException e) {
 				e.printStackTrace();
 			}
 		});
+		
+		buttonAbbrechen.addClickListener(event -> {
+			SecurityContextHolder.clearContext();	//Spring-Security-Session leeren
+			getUI().get().getSession().close();		//Vaadin Session leeren
+			buttonHinzufuegen.getUI().ifPresent(ui->ui.navigate("maincontent"));	//zurueck auf andere Seite 
+		});
+		
+		
 
 	}
+
 }
