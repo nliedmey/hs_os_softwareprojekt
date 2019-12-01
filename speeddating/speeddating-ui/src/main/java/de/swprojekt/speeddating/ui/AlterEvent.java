@@ -3,7 +3,9 @@ package de.swprojekt.speeddating.ui;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +16,7 @@ import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.Grid.SelectionMode;
 import com.vaadin.flow.component.grid.GridMultiSelectionModel;
+import com.vaadin.flow.component.grid.GridSingleSelectionModel;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
@@ -34,7 +37,7 @@ public class AlterEvent extends VerticalLayout {
 	public AlterEvent(IShowEventService iShowEventService, IShowStudierendeService iShowStudierendeService, IAlterEventService iAlterEventService) {
 
 		Grid<Event> eventGrid; // Tabelle mit Events
-		GridMultiSelectionModel<Event> selectionModelEvent;
+		GridSingleSelectionModel<Event> selectionModelEvent;
 		
 		Grid<Studierender> studierenderGrid; // Tabelle mit beteiligten Studierenden
 		GridMultiSelectionModel<Studierender> selectionModelStud;
@@ -59,22 +62,9 @@ public class AlterEvent extends VerticalLayout {
 		eventGrid.removeColumnByKey("event_id");	//event_id nicht in Tabelle mit anzeigen
 		eventGrid.setColumns("bezeichnung", "startzeitpunkt", "endzeitpunkt", "abgeschlossen", "teilnehmendeStudierende");	//Spaltenordnung festlegen
 		
-		eventGrid.setSelectionMode(SelectionMode.MULTI);
-		selectionModelEvent = (GridMultiSelectionModel<Event>) eventGrid.getSelectionModel();
+		eventGrid.setSelectionMode(SelectionMode.SINGLE);	//es kann immer nur ein Event gleichzeitig bearbeitet werden
+		selectionModelEvent = (GridSingleSelectionModel<Event>) eventGrid.getSelectionModel();
 
-		eventGrid.addSelectionListener(event->{
-			Optional<Event> selectedEvent=selectionModelEvent.getFirstSelectedItem();
-			Event zuAendernderndesEvent=iShowEventService.showEvent(selectedEvent.get().getEvent_id());
-			textfieldBezeichnung.setValue(zuAendernderndesEvent.getBezeichnung());
-			//Uhrzeit und Datum aus Date herausfiltern und in date/timepicker einsetzen
-			datepickerStartzeitpunktDatum.setValue(zuAendernderndesEvent.getStartzeitpunkt().toInstant().atZone(ZoneId.systemDefault()).toLocalDate()); 
-			timepickerStartzeitpunktUhrzeit.setValue(zuAendernderndesEvent.getStartzeitpunkt().toInstant().atZone(ZoneId.systemDefault()).toLocalTime());
-			datepickerEndzeitpunktDatum.setValue(zuAendernderndesEvent.getEndzeitpunkt().toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
-			timepickerEndzeitpunktUhrzeit.setValue(zuAendernderndesEvent.getEndzeitpunkt().toInstant().atZone(ZoneId.systemDefault()).toLocalTime());
-			checkboxAbgeschlossen.setValue(zuAendernderndesEvent.isAbgeschlossen());
-			
-		});
-		
 		studierenderGrid = new Grid<>(Studierender.class); // Tabelle initialisieren
 		ListDataProvider<Studierender> ldpStudent = DataProvider
 				.ofCollection(iShowStudierendeService.showStudierende()); // Dataprovider erstellen und Quelle fuer
@@ -82,11 +72,37 @@ public class AlterEvent extends VerticalLayout {
 																			// festlegen
 		studierenderGrid.setDataProvider(ldpStudent); // erstellten Dataprovider als Datenquelle fuer Tabelle festlegen
 
-		studierenderGrid.removeColumnByKey("studId"); // studId nicht in Tabelle mit anzeigen
-		studierenderGrid.setColumns("vorname", "nachname", "hauptfach"); // Spaltenordnung festlegen
+		studierenderGrid.removeColumnByKey("student_id");	//studId nicht in Tabelle mit anzeigen
+		studierenderGrid.setColumns("vorname", "nachname");	//Spaltenordnung festlegen
 		
-		studierenderGrid.setSelectionMode(SelectionMode.MULTI);
+		studierenderGrid.setSelectionMode(SelectionMode.MULTI);	//es koennen mehrere Studenten ausgewaehlt sein
 		selectionModelStud = (GridMultiSelectionModel<Studierender>) studierenderGrid.getSelectionModel();
+		eventGrid.addSelectionListener(event->{
+			if(!selectionModelEvent.getFirstSelectedItem().isEmpty())
+			{
+				Optional<Event> selectedEvent=selectionModelEvent.getFirstSelectedItem();
+				Event zuAendernderndesEvent=iShowEventService.showEvent(selectedEvent.get().getEvent_id());
+				textfieldBezeichnung.setValue(zuAendernderndesEvent.getBezeichnung());
+				//Uhrzeit und Datum aus Date herausfiltern und in date/timepicker einsetzen
+				datepickerStartzeitpunktDatum.setValue(zuAendernderndesEvent.getStartzeitpunkt().toInstant().atZone(ZoneId.systemDefault()).toLocalDate()); 
+				timepickerStartzeitpunktUhrzeit.setValue(zuAendernderndesEvent.getStartzeitpunkt().toInstant().atZone(ZoneId.systemDefault()).toLocalTime());
+				datepickerEndzeitpunktDatum.setValue(zuAendernderndesEvent.getEndzeitpunkt().toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
+				timepickerEndzeitpunktUhrzeit.setValue(zuAendernderndesEvent.getEndzeitpunkt().toInstant().atZone(ZoneId.systemDefault()).toLocalTime());
+				checkboxAbgeschlossen.setValue(zuAendernderndesEvent.isAbgeschlossen());
+				Collection<Integer> listStudentenInUnveraendertemEvent=new ArrayList<>(iShowEventService.showEvent(zuAendernderndesEvent.getEvent_id()).getTeilnehmendeStudierende());
+			
+				studierenderGrid.deselectAll(); //zunaechst alle ausgewaehlten von vorheriger Eventmarkierung entfernen
+				for(Studierender s:ldpStudent.getItems())
+				{
+					System.out.println("check ob "+s.getStudent_id()+" in Liste: "+listStudentenInUnveraendertemEvent);
+					if(listStudentenInUnveraendertemEvent.contains(s.getStudent_id())) //wenn Studierender in Event inkludiert
+					{
+						//selectionModelStud.select(s); //Studierende im Event in Tabelle markieren
+						studierenderGrid.select(s);
+					}	
+				}
+			}
+		});
 		
 		aendernButton.addClickListener(event->{
 			Optional<Event> selectedEvent=selectionModelEvent.getFirstSelectedItem();
@@ -131,6 +147,7 @@ public class AlterEvent extends VerticalLayout {
 		v1.add(new HorizontalLayout(datepickerEndzeitpunktDatum,timepickerEndzeitpunktUhrzeit));
 		v1.add(studierenderGrid);
 		v1.add(aendernButton);
+		add(v1);
 		
 	}
 }
