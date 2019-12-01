@@ -33,7 +33,7 @@ public class ShowEventImpl implements IShowEventService {
 			gefundenesEvent = iEventRepository.findById(event_id);
 			return gefundenesEvent.get();
 		} catch (NoSuchElementException e) {
-			System.out.println("Kein Studierender zu ID vorhanden!");
+			System.out.println("Kein Event zu ID vorhanden!");
 			return null;
 		}
 	}
