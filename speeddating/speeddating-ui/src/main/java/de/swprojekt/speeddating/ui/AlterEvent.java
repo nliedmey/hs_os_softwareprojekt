@@ -5,8 +5,10 @@ import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -27,20 +29,25 @@ import com.vaadin.flow.router.Route;
 
 import de.swprojekt.speeddating.model.Event;
 import de.swprojekt.speeddating.model.Studierender;
+import de.swprojekt.speeddating.model.Unternehmen;
 import de.swprojekt.speeddating.service.alterevent.IAlterEventService;
 import de.swprojekt.speeddating.service.showevent.IShowEventService;
 import de.swprojekt.speeddating.service.showstudierender.IShowStudierendeService;
+import de.swprojekt.speeddating.service.showunternehmen.IShowUnternehmenService;
 
 @Route(value = "ui/events/alter", layout = MainLayout.class) // Abgeleitet von Root-Layout MainLayout
 public class AlterEvent extends VerticalLayout {
 	@Autowired // Konstruktor-basierte Injection, Parameter wird autowired (hier: Interface)
-	public AlterEvent(IShowEventService iShowEventService, IShowStudierendeService iShowStudierendeService, IAlterEventService iAlterEventService) {
+	public AlterEvent(IShowEventService iShowEventService, IShowStudierendeService iShowStudierendeService, IShowUnternehmenService iShowUnternehmenService, IAlterEventService iAlterEventService) {
 
 		Grid<Event> eventGrid; // Tabelle mit Events
 		GridSingleSelectionModel<Event> selectionModelEvent;
 		
 		Grid<Studierender> studierenderGrid; // Tabelle mit beteiligten Studierenden
 		GridMultiSelectionModel<Studierender> selectionModelStud;
+		
+		Grid<Unternehmen> unternehmenGrid; // Tabelle mit beteiligten Studierenden
+		GridMultiSelectionModel<Unternehmen> selectionModelUnternehmen;
 		
 		Button aendernButton=new Button("Aendern");
 		
@@ -75,8 +82,22 @@ public class AlterEvent extends VerticalLayout {
 		studierenderGrid.removeColumnByKey("student_id");	//studId nicht in Tabelle mit anzeigen
 		studierenderGrid.setColumns("vorname", "nachname");	//Spaltenordnung festlegen
 		
-		studierenderGrid.setSelectionMode(SelectionMode.MULTI);	//es koennen mehrere Studenten ausgewaehlt sein
+		studierenderGrid.setSelectionMode(SelectionMode.MULTI);	//es koennen mehrere Studierende ausgewaehlt sein
 		selectionModelStud = (GridMultiSelectionModel<Studierender>) studierenderGrid.getSelectionModel();
+		
+		
+		unternehmenGrid = new Grid<>(Unternehmen.class); // Tabelle initialisieren
+		ListDataProvider<Unternehmen> ldpUnternehmen = DataProvider
+				.ofCollection(iShowUnternehmenService.showUnternehmen()); // Dataprovider erstellen und Quelle fuer
+																			// Studierende (via Service aus DB)
+																			// festlegen
+		unternehmenGrid.setDataProvider(ldpUnternehmen); // erstellten Dataprovider als Datenquelle fuer Tabelle festlegen
+
+		unternehmenGrid.removeColumnByKey("unternehmen_id");	//studId nicht in Tabelle mit anzeigen
+		unternehmenGrid.setColumns("unternehmensname", "ansprechpartner","kontaktmail");	//Spaltenordnung festlegen
+		
+		unternehmenGrid.setSelectionMode(SelectionMode.MULTI);	//es koennen mehrere Unternehmen ausgewaehlt sein
+		
 		eventGrid.addSelectionListener(event->{
 			if(!selectionModelEvent.getFirstSelectedItem().isEmpty())
 			{
@@ -90,15 +111,23 @@ public class AlterEvent extends VerticalLayout {
 				timepickerEndzeitpunktUhrzeit.setValue(zuAendernderndesEvent.getEndzeitpunkt().toInstant().atZone(ZoneId.systemDefault()).toLocalTime());
 				checkboxAbgeschlossen.setValue(zuAendernderndesEvent.isAbgeschlossen());
 				Collection<Integer> listStudentenInUnveraendertemEvent=new ArrayList<>(iShowEventService.showEvent(zuAendernderndesEvent.getEvent_id()).getTeilnehmendeStudierende());
+				Collection<Integer> listUnternehmenInUnveraendertemEvent=new ArrayList<>(iShowEventService.showEvent(zuAendernderndesEvent.getEvent_id()).getTeilnehmendeUnternehmen());
 			
 				studierenderGrid.deselectAll(); //zunaechst alle ausgewaehlten von vorheriger Eventmarkierung entfernen
 				for(Studierender s:ldpStudent.getItems())
 				{
-					System.out.println("check ob "+s.getStudent_id()+" in Liste: "+listStudentenInUnveraendertemEvent);
 					if(listStudentenInUnveraendertemEvent.contains(s.getStudent_id())) //wenn Studierender in Event inkludiert
+					{ 
+						studierenderGrid.select(s); //Studierende im Event in Tabelle markieren
+					}	
+				}
+				
+				unternehmenGrid.deselectAll(); //zunaechst alle ausgewaehlten von vorheriger Eventmarkierung entfernen
+				for(Unternehmen u:ldpUnternehmen.getItems())
+				{
+					if(listUnternehmenInUnveraendertemEvent.contains(u.getUnternehmen_id())) //wenn Unternehmen in Event inkludiert
 					{
-						//selectionModelStud.select(s); //Studierende im Event in Tabelle markieren
-						studierenderGrid.select(s);
+						unternehmenGrid.select(u);
 					}	
 				}
 			}
@@ -126,8 +155,8 @@ public class AlterEvent extends VerticalLayout {
 				veraendertesEventDAO.setAbgeschlossen(checkboxAbgeschlossen.getValue());
 			}
 			//Testen, ob gleiche Studierende und Unternehmen zu Event zugeordnet
-			ArrayList<Integer> studentenInUnveraendertemEvent=new ArrayList<>(veraendertesEventDAO.getTeilnehmendeStudierende());
-			ArrayList<Integer> studentenInVeraendertemEvent=new ArrayList<>();
+			Set<Integer> studentenInUnveraendertemEvent=new HashSet<>(veraendertesEventDAO.getTeilnehmendeStudierende());
+			Set<Integer> studentenInVeraendertemEvent=new HashSet<>();
 			for(Studierender einAusgewaehlterStudierender:selectionModelStud.getSelectedItems())
 			{
 				studentenInVeraendertemEvent.add(einAusgewaehlterStudierender.getStudent_id());
@@ -146,6 +175,7 @@ public class AlterEvent extends VerticalLayout {
 		v1.add(new HorizontalLayout(datepickerStartzeitpunktDatum,timepickerStartzeitpunktUhrzeit));
 		v1.add(new HorizontalLayout(datepickerEndzeitpunktDatum,timepickerEndzeitpunktUhrzeit));
 		v1.add(studierenderGrid);
+		v1.add(unternehmenGrid);
 		v1.add(aendernButton);
 		add(v1);
 		

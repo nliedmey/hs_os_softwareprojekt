@@ -99,7 +99,9 @@ public class AddEvent extends VerticalLayout {
 		v1.add(new HorizontalLayout(datepickerEndzeitpunktDatum,timepickerEndzeitpunktUhrzeit));
 		HorizontalLayout h1=new HorizontalLayout();
 		h1.add(unternehmenGrid,studierenderGrid);
-		v1.add(h1);
+		v1.add(unternehmenGrid);
+		v1.add(studierenderGrid);
+//		v1.add(h1);
 				
 		add(v1, buttonHinzufuegen); // darunter wird Button angeordnet
 		
