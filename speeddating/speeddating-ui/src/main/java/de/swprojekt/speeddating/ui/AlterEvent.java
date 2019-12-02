@@ -157,6 +157,10 @@ public class AlterEvent extends VerticalLayout {
 			//Testen, ob gleiche Studierende und Unternehmen zu Event zugeordnet
 			Set<Integer> studentenInUnveraendertemEvent=new HashSet<>(veraendertesEventDAO.getTeilnehmendeStudierende());
 			Set<Integer> studentenInVeraendertemEvent=new HashSet<>();
+			
+			Set<Integer> unternehmenInUnveraendertemEvent=new HashSet<>(veraendertesEventDAO.getTeilnehmendeUnternehmen());
+			Set<Integer> unternehmenInVeraendertemEvent=new HashSet<>();
+			
 			for(Studierender einAusgewaehlterStudierender:selectionModelStud.getSelectedItems())
 			{
 				studentenInVeraendertemEvent.add(einAusgewaehlterStudierender.getStudent_id());
@@ -165,6 +169,11 @@ public class AlterEvent extends VerticalLayout {
 			{
 				System.out.println("Teilnehmende Studenten veraendert!");
 				veraendertesEventDAO.setTeilnehmendeStudierende(studentenInVeraendertemEvent);
+			}
+			if(!unternehmenInUnveraendertemEvent.equals(unternehmenInVeraendertemEvent))
+			{
+				System.out.println("Teilnehmende Studenten veraendert!");
+				veraendertesEventDAO.setTeilnehmendeUnternehmen(unternehmenInVeraendertemEvent);
 			}
 			iAlterEventService.aenderEvent(veraendertesEventDAO);
 		});
