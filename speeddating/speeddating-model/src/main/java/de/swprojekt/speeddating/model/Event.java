@@ -33,6 +33,11 @@ public class Event {
 	// private List<Integer> teilnehmendeUnternehmen;
 	// private int zustaendigerOrganisator;
 	//TODO: hinzuefuegen von Unternehmen und Beziehungen zu diesen
+	@ElementCollection(fetch = FetchType.EAGER)
+	@CollectionTable(name="event_unternehmen",
+		joinColumns=@JoinColumn(name="event_id"))
+	@Column(name="unternehmen_id")
+	private Collection<Integer> teilnehmendeUnternehmen;	//CollectionTable weil Integers und keine Entities
 	
 	@ElementCollection(fetch = FetchType.EAGER)
 	@CollectionTable(name="event_studierender",
@@ -104,5 +109,15 @@ public class Event {
 	public void setTeilnehmendeStudierende(Collection<Integer> teilnehmendeStudierende) {
 		this.teilnehmendeStudierende = teilnehmendeStudierende;
 	}
+
+	public Collection<Integer> getTeilnehmendeUnternehmen() {
+		return teilnehmendeUnternehmen;
+	}
+
+	public void setTeilnehmendeUnternehmen(Collection<Integer> teilnehmendeUnternehmen) {
+		this.teilnehmendeUnternehmen = teilnehmendeUnternehmen;
+	}
+	
+	
 
 }
