@@ -3,6 +3,7 @@ package de.swprojekt.speeddating.model;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.CollectionTable;
@@ -33,12 +34,17 @@ public class Event {
 	// private List<Integer> teilnehmendeUnternehmen;
 	// private int zustaendigerOrganisator;
 	//TODO: hinzuefuegen von Unternehmen und Beziehungen zu diesen
+	@ElementCollection(fetch = FetchType.EAGER)
+	@CollectionTable(name="event_unternehmen",
+		joinColumns=@JoinColumn(name="event_id"))
+	@Column(name="unternehmen_id")
+	private Set<Integer> teilnehmendeUnternehmen;	//CollectionTable weil Integers und keine Entities
 	
 	@ElementCollection(fetch = FetchType.EAGER)
 	@CollectionTable(name="event_studierender",
 		joinColumns=@JoinColumn(name="event_id"))
 	@Column(name="student_id")
-	private Collection<Integer> teilnehmendeStudierende;	//CollectionTable weil Integers und keine Entities
+	private Set<Integer> teilnehmendeStudierende;	//CollectionTable weil Integers und keine Entities
 	//keine Entities von anderen Klassen in dieser Klasse!
 	//@ManyToMany(cascade = {CascadeType.REFRESH,CascadeType.MERGE}, fetch = FetchType.EAGER) // ein event kann mehrere Studenten haben, einem Studenten koennen mehrere Events zugeordnet sein
 	//@JoinTable(name = "event_studierender", joinColumns = @JoinColumn(name = "event_id"), inverseJoinColumns = @JoinColumn(name = "student_id"))	//mappingtabelle event_studierender erstellen
@@ -97,12 +103,22 @@ public class Event {
 		this.abgeschlossen = abgeschlossen;
 	}
 
-	public Collection<Integer> getTeilnehmendeStudierende() {
+	public Set<Integer> getTeilnehmendeStudierende() {
 		return teilnehmendeStudierende;
 	}
 
-	public void setTeilnehmendeStudierende(Collection<Integer> teilnehmendeStudierende) {
+	public void setTeilnehmendeStudierende(Set<Integer> teilnehmendeStudierende) {
 		this.teilnehmendeStudierende = teilnehmendeStudierende;
 	}
+
+	public Set<Integer> getTeilnehmendeUnternehmen() {
+		return teilnehmendeUnternehmen;
+	}
+
+	public void setTeilnehmendeUnternehmen(Set<Integer> teilnehmendeUnternehmen) {
+		this.teilnehmendeUnternehmen = teilnehmendeUnternehmen;
+	}
+	
+	
 
 }

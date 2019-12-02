@@ -18,6 +18,8 @@ import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -33,8 +35,10 @@ import com.vaadin.flow.router.Route;
 
 import de.swprojekt.speeddating.model.Event;
 import de.swprojekt.speeddating.model.Studierender;
+import de.swprojekt.speeddating.model.Unternehmen;
 import de.swprojekt.speeddating.service.addevent.IAddEventService;
 import de.swprojekt.speeddating.service.showstudierender.IShowStudierendeService;
+import de.swprojekt.speeddating.service.showunternehmen.IShowUnternehmenService;
 
 /*
  * View zum Hinzufuegen von Event
@@ -45,12 +49,14 @@ public class AddEvent extends VerticalLayout {
 	@Autowired // BestPractice: Konstruktor-Injection im Vergleich zu
 				// Attribut/Methoden-Injection
 				// Parameter (hier: IAddStudierenderService) wird also automatisch autowired
-	public AddEvent(IAddEventService iAddEventService, IShowStudierendeService iShowStudierendeService) {
+	public AddEvent(IAddEventService iAddEventService, IShowStudierendeService iShowStudierendeService, IShowUnternehmenService iShowUnternehmenService) {
 
 		// Deklaration
 		Binder<Event> binder; // verknuepft Input aus Textfeldern mit Objektattributen
 		Grid<Studierender> studierenderGrid;	//Tabelle mit Studierenden, welche Event zugeordnet werden sollen
-		GridMultiSelectionModel<Studierender> selectionModel; //es sollen mehrere Studierende aus Tabelle ausgewaehlt werden koennen
+		GridMultiSelectionModel<Studierender> selectionModelStud; //es sollen mehrere Studierende aus Tabelle ausgewaehlt werden koennen
+		Grid<Unternehmen> unternehmenGrid;	//Tabelle mit Unternehmen, welche Event zugeordnet werden sollen
+		GridMultiSelectionModel<Unternehmen> selectionModelUnternehmen; //es sollen mehrere Studierende aus Tabelle ausgewaehlt werden koennen
 
 		// Erzeugen der Input Felder
 		TextField textfieldBezeichnung = new TextField("Bezeichnung:");
@@ -66,7 +72,16 @@ public class AddEvent extends VerticalLayout {
 		studierenderGrid.removeColumnByKey("student_id");	//studId nicht in Tabelle mit anzeigen
 		studierenderGrid.setColumns("vorname", "nachname");	//Spaltenordnung festlegen
 		studierenderGrid.setSelectionMode(SelectionMode.MULTI); //multiselection bedeutet Auswahl mehrerer Studierender in Tabelle moeglich
-		selectionModel = (GridMultiSelectionModel<Studierender>) studierenderGrid.getSelectionModel();
+		selectionModelStud = (GridMultiSelectionModel<Studierender>) studierenderGrid.getSelectionModel();
+		
+		unternehmenGrid = new Grid<>(Unternehmen.class);	//Tabelle initialisieren
+		ListDataProvider<Unternehmen> ldpUnternehmen = DataProvider
+				.ofCollection(iShowUnternehmenService.showUnternehmen());	//Dataprovider erstellen und Quelle fuer Unternehmen (via Service aus DB) festlegen 
+		unternehmenGrid.setDataProvider(ldpUnternehmen);	//erstellten Dataprovider als Datenquelle fuer Tabelle festlegen
+		unternehmenGrid.removeColumnByKey("unternehmen_id");	//studId nicht in Tabelle mit anzeigen
+		unternehmenGrid.setColumns("unternehmensname", "ansprechpartner","kontaktmail");	//Spaltenordnung festlegen
+		unternehmenGrid.setSelectionMode(SelectionMode.MULTI); //multiselection bedeutet Auswahl mehrerer Unternehmen in Tabelle moeglich
+		selectionModelUnternehmen = (GridMultiSelectionModel<Unternehmen>) unternehmenGrid.getSelectionModel();
 		
 		// Button hinzufuegen
 		Button buttonHinzufuegen = new Button("Event anlegen");
@@ -82,7 +97,11 @@ public class AddEvent extends VerticalLayout {
 		v1.add(textfieldBezeichnung);
 		v1.add(new HorizontalLayout(datepickerStartzeitpunktDatum,timepickerStartzeitpunktUhrzeit));
 		v1.add(new HorizontalLayout(datepickerEndzeitpunktDatum,timepickerEndzeitpunktUhrzeit));
+		HorizontalLayout h1=new HorizontalLayout();
+		h1.add(unternehmenGrid,studierenderGrid);
+		v1.add(unternehmenGrid);
 		v1.add(studierenderGrid);
+//		v1.add(h1);
 				
 		add(v1, buttonHinzufuegen); // darunter wird Button angeordnet
 		
@@ -115,12 +134,17 @@ public class AddEvent extends VerticalLayout {
 				
 				einEvent.setAbgeschlossen(false); //beim erstellen ist das Event nicht abgeschlossen
 				
-				Collection<Integer> teilnehmendeStudierende=new ArrayList<>();
-				for(Studierender einStudierender:selectionModel.getSelectedItems()) {	//IDs der teilnehmenden Studierenden aus Tabelle einsammeln
+				Set<Integer> teilnehmendeStudierende=new HashSet<>();
+				for(Studierender einStudierender:selectionModelStud.getSelectedItems()) {	//IDs der teilnehmenden Studierenden aus Tabelle einsammeln
 					teilnehmendeStudierende.add(einStudierender.getStudent_id());	
 				}
-				
 				einEvent.setTeilnehmendeStudierende(teilnehmendeStudierende);
+				
+				Set<Integer> teilnehmendeUnternehmen=new HashSet<>();
+				for(Unternehmen einUnternehmen:selectionModelUnternehmen.getSelectedItems()) {	//IDs der teilnehmenden Studierenden aus Tabelle einsammeln
+					teilnehmendeUnternehmen.add(einUnternehmen.getUnternehmen_id());	
+				}
+				einEvent.setTeilnehmendeUnternehmen(teilnehmendeUnternehmen);
 				
 				iAddEventService.speicherEvent(einEvent); // Uebergabe an Service zur Speicherung in DB
 				notificationSavesuccess.open(); // Erfolgreich-Meldung anzeigen
