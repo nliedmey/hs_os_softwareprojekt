@@ -21,7 +21,7 @@ import de.swprojekt.speeddating.service.showstudierender.IShowStudierendeService
 import de.swprojekt.speeddating.service.showunternehmen.IShowUnternehmenService;
 
 @Route("ui/untern")	//Erreichbar ueber Adresse: http://localhost:8080/speeddating-web-7.0-SNAPSHOT/ui/studs
-@Secured("ROLE_ADMIN")	//nur User mit Rolle ADMIN koennen auf Seite zugreifen, @Secured prueft auch bei RouterLink-Weiterleitungen
+//@Secured("ROLE_ADMIN")	//nur User mit Rolle ADMIN koennen auf Seite zugreifen, @Secured prueft auch bei RouterLink-Weiterleitungen
 //@Secured kann auch an einzelnen Methoden angewendet werden
 public class UnternView extends VerticalLayout {	//VerticalLayout fuehrt zu Anordnung von Elementen untereinander statt nebeneinander (HorizontalLayout)
 
