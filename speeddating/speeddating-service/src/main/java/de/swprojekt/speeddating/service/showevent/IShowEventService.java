@@ -3,6 +3,7 @@ package de.swprojekt.speeddating.service.showevent;
 import java.util.List;
 
 import de.swprojekt.speeddating.model.Event;
+import de.swprojekt.speeddating.model.Unternehmen;
 /*
  * Interface gibt zu implementierende Methoden fuer ShowEventImpl vor
  * In Views wird nur Interface eingebunden!

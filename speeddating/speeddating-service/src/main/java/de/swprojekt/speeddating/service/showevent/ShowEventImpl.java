@@ -8,7 +8,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import de.swprojekt.speeddating.model.Event;
+import de.swprojekt.speeddating.model.Unternehmen;
 import de.swprojekt.speeddating.repository.IEventRepository;
+import de.swprojekt.speeddating.repository.IUnternehmenRepository;
 
 /*
  * Implementierung des IShowEventService-Interfaces
@@ -23,7 +25,7 @@ public class ShowEventImpl implements IShowEventService {
 
 	@Override
 	public List<Event> showEvents() {
-		return iEventRepository.findAll(); // gibt Liste aller Studierender zurueck
+		return iEventRepository.findAll(); // gibt Liste 
 	}
 
 	@Override
@@ -37,4 +39,6 @@ public class ShowEventImpl implements IShowEventService {
 			return null;
 		}
 	}
+
+
 }
