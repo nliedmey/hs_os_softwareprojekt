@@ -18,6 +18,8 @@ import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -130,12 +132,17 @@ public class AddEvent extends VerticalLayout {
 				
 				einEvent.setAbgeschlossen(false); //beim erstellen ist das Event nicht abgeschlossen
 				
-				Collection<Integer> teilnehmendeStudierende=new ArrayList<>();
+				Set<Integer> teilnehmendeStudierende=new HashSet<>();
 				for(Studierender einStudierender:selectionModelStud.getSelectedItems()) {	//IDs der teilnehmenden Studierenden aus Tabelle einsammeln
 					teilnehmendeStudierende.add(einStudierender.getStudent_id());	
 				}
-				
 				einEvent.setTeilnehmendeStudierende(teilnehmendeStudierende);
+				
+				Set<Integer> teilnehmendeUnternehmen=new HashSet<>();
+				for(Unternehmen einUnternehmen:selectionModelUnternehmen.getSelectedItems()) {	//IDs der teilnehmenden Studierenden aus Tabelle einsammeln
+					teilnehmendeUnternehmen.add(einUnternehmen.getUnternehmen_id());	
+				}
+				einEvent.setTeilnehmendeUnternehmen(teilnehmendeUnternehmen);
 				
 				iAddEventService.speicherEvent(einEvent); // Uebergabe an Service zur Speicherung in DB
 				notificationSavesuccess.open(); // Erfolgreich-Meldung anzeigen
