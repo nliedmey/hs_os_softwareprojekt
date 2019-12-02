@@ -172,7 +172,7 @@ public class AlterEvent extends VerticalLayout {
 			}
 			if(!unternehmenInUnveraendertemEvent.equals(unternehmenInVeraendertemEvent))
 			{
-				System.out.println("Teilnehmende Studenten veraendert!");
+				System.out.println("Teilnehmende Unternehmen veraendert!");
 				veraendertesEventDAO.setTeilnehmendeUnternehmen(unternehmenInVeraendertemEvent);
 			}
 			iAlterEventService.aenderEvent(veraendertesEventDAO);
