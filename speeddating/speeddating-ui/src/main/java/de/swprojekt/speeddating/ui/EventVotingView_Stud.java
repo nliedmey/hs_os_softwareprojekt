@@ -19,7 +19,7 @@ import de.swprojekt.speeddating.service.deleteevent.IDeleteEventService;
 import de.swprojekt.speeddating.service.showevent.IShowEventService;
 /*
  * View fuer die Anzeige vorhandener Events
- */
+ */  
 
 @Route("ui/events")	//Erreichbar ueber Adresse: http://localhost:8080/speeddating-web-7.0-SNAPSHOT/ui/events
 //@Secured("ROLE_ADMIN")	//nur User mit Rolle ADMIN koennen auf Seite zugreifen, @Secured prueft auch bei RouterLink-Weiterleitungen
