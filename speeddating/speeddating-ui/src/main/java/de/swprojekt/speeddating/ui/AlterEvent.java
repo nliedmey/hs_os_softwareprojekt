@@ -97,6 +97,7 @@ public class AlterEvent extends VerticalLayout {
 		unternehmenGrid.setColumns("unternehmensname", "ansprechpartner","kontaktmail");	//Spaltenordnung festlegen
 		
 		unternehmenGrid.setSelectionMode(SelectionMode.MULTI);	//es koennen mehrere Unternehmen ausgewaehlt sein
+		selectionModelUnternehmen = (GridMultiSelectionModel<Unternehmen>) unternehmenGrid.getSelectionModel();
 		
 		eventGrid.addSelectionListener(event->{
 			if(!selectionModelEvent.getFirstSelectedItem().isEmpty())
@@ -164,6 +165,10 @@ public class AlterEvent extends VerticalLayout {
 			for(Studierender einAusgewaehlterStudierender:selectionModelStud.getSelectedItems())
 			{
 				studentenInVeraendertemEvent.add(einAusgewaehlterStudierender.getStudent_id());
+			}
+			for(Unternehmen einAusgewaehltesUnternehmen:selectionModelUnternehmen.getSelectedItems())
+			{
+				unternehmenInVeraendertemEvent.add(einAusgewaehltesUnternehmen.getUnternehmen_id());
 			}
 			if(!studentenInUnveraendertemEvent.equals(studentenInVeraendertemEvent))
 			{
