@@ -29,6 +29,7 @@ public class AlterEventImpl implements IAlterEventService {
 			gefundenesEvent.setEndzeitpunkt(veraendertesEventDAO.getEndzeitpunkt());
 			gefundenesEvent.setAbgeschlossen(veraendertesEventDAO.isAbgeschlossen());
 			gefundenesEvent.setTeilnehmendeStudierende(veraendertesEventDAO.getTeilnehmendeStudierende());
+			gefundenesEvent.setTeilnehmendeUnternehmen(veraendertesEventDAO.getTeilnehmendeUnternehmen());
 			return iEventRepository.save(gefundenesEvent);
 		} catch (NoSuchElementException e) {	//wenn findById() kein Ergebnis liefert
 			System.out.println("Kein Event zu ID vorhanden!");
