@@ -14,9 +14,11 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinColumns;
 import javax.persistence.Id;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 
 /*
  * Klasse wird als Entity definiert
@@ -33,23 +35,26 @@ public class Event {
 	private boolean abgeschlossen;
 	// private List<Integer> teilnehmendeUnternehmen;
 	// private int zustaendigerOrganisator;
-	//TODO: hinzuefuegen von Unternehmen und Beziehungen zu diesen
+	// TODO: hinzuefuegen von Unternehmen und Beziehungen zu diesen
 	@ElementCollection(fetch = FetchType.EAGER)
-	@CollectionTable(name="event_unternehmen",
-		joinColumns=@JoinColumn(name="event_id"))
-	@Column(name="unternehmen_id")
-	private Set<Integer> teilnehmendeUnternehmen;	//CollectionTable weil Integers und keine Entities
-	
+	@CollectionTable(name = "event_unternehmen", joinColumns = @JoinColumn(name = "event_id"))
+	@Column(name = "unternehmen_id")
+	private Set<Integer> teilnehmendeUnternehmen; // CollectionTable weil Integers und keine Entities
+
 	@ElementCollection(fetch = FetchType.EAGER)
-	@CollectionTable(name="event_studierender",
-		joinColumns=@JoinColumn(name="event_id"))
-	@Column(name="student_id")
-	private Set<Integer> teilnehmendeStudierende;	//CollectionTable weil Integers und keine Entities
-	//keine Entities von anderen Klassen in dieser Klasse!
-	//@ManyToMany(cascade = {CascadeType.REFRESH,CascadeType.MERGE}, fetch = FetchType.EAGER) // ein event kann mehrere Studenten haben, einem Studenten koennen mehrere Events zugeordnet sein
-	//@JoinTable(name = "event_studierender", joinColumns = @JoinColumn(name = "event_id"), inverseJoinColumns = @JoinColumn(name = "student_id"))	//mappingtabelle event_studierender erstellen
-	//private List<Integer> teilnehmendeStudierende;
-	
+	@CollectionTable(name = "event_studierender", joinColumns = @JoinColumn(name = "event_id"))
+	@Column(name = "student_id")
+	private Set<Integer> teilnehmendeStudierende; // CollectionTable weil Integers und keine Entities
+
+
+	// keine Entities von anderen Klassen in dieser Klasse!
+	// @ManyToMany(cascade = {CascadeType.REFRESH,CascadeType.MERGE}, fetch =
+	// FetchType.EAGER) // ein event kann mehrere Studenten haben, einem Studenten
+	// koennen mehrere Events zugeordnet sein
+	// @JoinTable(name = "event_studierender", joinColumns = @JoinColumn(name =
+	// "event_id"), inverseJoinColumns = @JoinColumn(name = "student_id"))
+	// //mappingtabelle event_studierender erstellen
+	// private List<Integer> teilnehmendeStudierende;
 
 	public Event() {
 		// TODO Auto-generated constructor stub
@@ -118,7 +123,5 @@ public class Event {
 	public void setTeilnehmendeUnternehmen(Set<Integer> teilnehmendeUnternehmen) {
 		this.teilnehmendeUnternehmen = teilnehmendeUnternehmen;
 	}
-	
-	
 
 }

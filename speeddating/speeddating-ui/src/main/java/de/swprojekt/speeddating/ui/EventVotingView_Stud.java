@@ -8,7 +8,9 @@ import com.vaadin.flow.component.grid.GridMultiSelectionModel;
 import com.vaadin.flow.component.grid.Grid.SelectionMode;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
@@ -37,14 +39,13 @@ import de.swprojekt.speeddating.service.unternehmen.IUnternehmenService;
 public class EventVotingView_Stud extends VerticalLayout {	//VerticalLayout fuehrt zu Anordnung von Elementen untereinander statt nebeneinander (HorizontalLayout)
 
 	@Autowired	//Konstruktor-basierte Injection, Parameter wird autowired (hier: Interface)
-	public EventVotingView_Stud(IShowEventService iShowEventService, IShowUnternehmenService iShowUnternehmenService) {
-	
+	public EventVotingView_Stud(IShowEventService iShowEventService, IShowUnternehmenService iShowUnternehmenService, IUnternehmenService iUnternehmenService) {
+
 		Grid<Unternehmen> unternehmenGrid;	//Tabelle mit Events
 		unternehmenGrid = new Grid<>(Unternehmen.class);	//Tabelle initialisieren
 		GridMultiSelectionModel<Unternehmen> selectionModelUnternehmen;
 		Button votingSendenButton=new Button("Kontaktwuensche absenden");		
-		Button logoutButton=new Button("Logout");
-		
+		Button logoutButton=new Button("Logout");		
 		
 		// Erzeugen der Combo Box
 		ComboBox<Event> comboBox = new ComboBox<>();
@@ -60,11 +61,8 @@ public class EventVotingView_Stud extends VerticalLayout {	//VerticalLayout fueh
 		        Event selectedEvent = iShowEventService.showEvent(aEvent.getEvent_id());
 				List<Unternehmen> listofUnternehmen = iShowUnternehmenService.showUnternehmen(); //alle Unternehmen holen					
 				
-				for( Integer unternehmenDesEvents : selectedEvent.getTeilnehmendeUnternehmen()) { 
-					
-					System.out.println("ich bin eine teilneehmenes event nr:"+ unternehmenDesEvents);
-					
-					
+				//jetzt iterieren wir durch die Teilnehmer des Events und adden diese in unser Grid
+				for( Integer unternehmenDesEvents : selectedEvent.getTeilnehmendeUnternehmen()) { 			
 					for( Unternehmen aUnternehmen: listofUnternehmen) {						
 						if (aUnternehmen.getUnternehmen_id() == unternehmenDesEvents) {							
 							listOfUnternehmenForDisplay.add(aUnternehmen);
@@ -72,26 +70,32 @@ public class EventVotingView_Stud extends VerticalLayout {	//VerticalLayout fueh
 					}					
 				}
 				
+				// die Teilnehmenden Unternehmen des Events fuegen wir jetzt unserem Grid hinzu
 				ListDataProvider<Unternehmen> ldpEvent = DataProvider
 						.ofCollection(listOfUnternehmenForDisplay);			
-				unternehmenGrid.setDataProvider(ldpEvent);	//erstellten Dataprovider als Datenquelle fuer Tabelle festlegen
+				unternehmenGrid.setDataProvider(ldpEvent);
 			} else {
 				// message.setText("No song is selected");
 			}
 
 		});
 					
-		unternehmenGrid.removeColumnByKey("unternehmen_id");	//event_id nicht in Tabelle mit anzeigen
+		unternehmenGrid.removeColumnByKey("unternehmen_id");	//Feld nicht in Tabelle mit anzeigen
 		unternehmenGrid.setColumns("unternehmensname", "ansprechpartner", "kontaktmail");	//Spaltenordnung festlegen
 		unternehmenGrid.setSelectionMode(SelectionMode.MULTI);	//es koennen mehrere Events ausgewaehlt sein
 		selectionModelUnternehmen = (GridMultiSelectionModel<Unternehmen>) unternehmenGrid.getSelectionModel();
 		
-//		VotingSendenButton.addClickListener(event -> {	//Bei Buttonklick werden folgende Aktionen ausgefuehrt
-//			for(Event e:selectionModelEvent.getSelectedItems())	//markierte Events durchgehen
-//			{
-//				iDeleteEventService.loescheEvent(e);
-//			}
-//		});
+		
+
+		
+		votingSendenButton.addClickListener(event -> {	//Bei Buttonklick werden folgende Aktionen ausgefuehrt
+			for(Unternehmen e:selectionModelUnternehmen.getSelectedItems())	//markierte Events durchgehen
+			{
+				
+				
+				//iUnternehmenService.speicherUnternehmen(einUnternehmen);
+			}
+		});
 		
 		logoutButton.addClickListener(event -> {	//Bei Buttonklick werden folgende Aktionen ausgefuehrt
 			SecurityContextHolder.clearContext();	//Spring-Security-Session leeren
