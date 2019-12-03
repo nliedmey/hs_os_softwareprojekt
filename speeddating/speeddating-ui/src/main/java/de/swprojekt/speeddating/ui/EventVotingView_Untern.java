@@ -25,78 +25,79 @@ import de.swprojekt.speeddating.model.Event;
 import de.swprojekt.speeddating.model.Studierender;
 import de.swprojekt.speeddating.model.Unternehmen;
 import de.swprojekt.speeddating.repository.IEventRepository;
+import de.swprojekt.speeddating.service.addstudierender.IStudierenderService;
 import de.swprojekt.speeddating.service.deleteevent.IDeleteEventService;
 import de.swprojekt.speeddating.service.showevent.IShowEventService;
+import de.swprojekt.speeddating.service.showstudierender.IShowStudierendeService;
 import de.swprojekt.speeddating.service.showunternehmen.IShowUnternehmenService;
 import de.swprojekt.speeddating.service.unternehmen.IUnternehmenService;
 /*
  * View fuer die Anzeige vorhandener Events
  */  
 
-@Route("ui/eventVotingView_Stud")	//Erreichbar ueber Adresse: http://localhost:8080/speeddating-web-7.0-SNAPSHOT/ui/events
+@Route("ui/eventVotingView_Untern")	//Erreichbar ueber Adresse: http://localhost:8080/speeddating-web-7.0-SNAPSHOT/ui/events
 //@Secured("ROLE_ADMIN")	//nur User mit Rolle ADMIN koennen auf Seite zugreifen, @Secured prueft auch bei RouterLink-Weiterleitungen
 //@Secured kann auch an einzelnen Methoden angewendet werden
-public class EventVotingView_Stud extends VerticalLayout {	//VerticalLayout fuehrt zu Anordnung von Elementen untereinander statt nebeneinander (HorizontalLayout)
+public class EventVotingView_Untern extends VerticalLayout {	//VerticalLayout fuehrt zu Anordnung von Elementen untereinander statt nebeneinander (HorizontalLayout)
 
 	@Autowired	//Konstruktor-basierte Injection, Parameter wird autowired (hier: Interface)
-	public EventVotingView_Stud(IShowEventService iShowEventService, IShowUnternehmenService iShowUnternehmenService, IUnternehmenService iUnternehmenService) {
+	public EventVotingView_Untern(IShowEventService iShowEventService, IShowUnternehmenService iShowUnternehmenService,
+			IUnternehmenService iUnternehmenService, IShowStudierendeService iShowStudierenderService) {
 
-		Grid<Unternehmen> unternehmenGrid;	//Tabelle mit Events
-		unternehmenGrid = new Grid<>(Unternehmen.class);	//Tabelle initialisieren
-		GridMultiSelectionModel<Unternehmen> selectionModelUnternehmen;
+		Grid<Studierender> studierenderGrid;	//Tabelle mit Events
+		studierenderGrid = new Grid<>(Studierender.class);	//Tabelle initialisieren
+		GridMultiSelectionModel<Studierender> selectionModelStudierender;
 		Button votingSendenButton=new Button("Kontaktwuensche absenden");		
 		Button logoutButton=new Button("Logout");		
 		
 		// Erzeugen der Combo Box
 		ComboBox<Event> comboBox = new ComboBox<>();
 		comboBox.setLabel("Event auswaehlen");
-		comboBox.setItemLabelGenerator(Event::getBezeichnung);
+		comboBox.setItemLabelGenerator(Event:: getBezeichnung);
 		List<Event> listOfEvents = iShowEventService.showEvents();
-		List<Unternehmen> listOfUnternehmenForDisplay = new ArrayList<Unternehmen>();
-
+		List<Studierender> listOfStudierendeForDisplay = new ArrayList<Studierender>();
 
 		comboBox.setItems(listOfEvents);
 		comboBox.addValueChangeListener(event -> {
 			Event aEvent = comboBox.getValue();		
 			
 			//Datagrid initialisieren
-			listOfUnternehmenForDisplay.clear();			
-			ListDataProvider<Unternehmen> ldpEvent = DataProvider
-					.ofCollection(listOfUnternehmenForDisplay);			
-			unternehmenGrid.setDataProvider(ldpEvent);			
+			listOfStudierendeForDisplay.clear();
+			ListDataProvider<Studierender> ldpEvent = DataProvider
+					.ofCollection(listOfStudierendeForDisplay);			
+			studierenderGrid.setDataProvider(ldpEvent);
 			
 			if (aEvent != null) {	
 		        Event selectedEvent = iShowEventService.showEvent(aEvent.getEvent_id());
-				List<Unternehmen> listofUnternehmen = iShowUnternehmenService.showUnternehmen(); //alle Unternehmen holen					
+		        				
+				List<Studierender> listofStudierende = iShowStudierenderService.showStudierende(); //alle Studierenden holen					
 				
 				//jetzt iterieren wir durch die Teilnehmer des Events und adden diese in unser Grid
-				for( Integer unternehmenDesEvents : selectedEvent.getTeilnehmendeUnternehmen()) { 			
-					for( Unternehmen aUnternehmen: listofUnternehmen) {						
-						if (aUnternehmen.getUnternehmen_id() == unternehmenDesEvents) {							
-							listOfUnternehmenForDisplay.add(aUnternehmen);
+				for( Integer studierendeDesEvents : selectedEvent.getTeilnehmendeStudierende()) { 			
+					for( Studierender aStudierender: listofStudierende) {						
+						if (aStudierender.getStudent_id() == studierendeDesEvents) {							
+							listOfStudierendeForDisplay.add(aStudierender);
 						}						
 					}					
 				}
 				
 				// die Teilnehmenden Unternehmen des Events fuegen wir jetzt unserem Grid hinzu
-				ldpEvent = DataProvider.ofCollection(listOfUnternehmenForDisplay);			
-				unternehmenGrid.setDataProvider(ldpEvent);
+				 ldpEvent = DataProvider.ofCollection(listOfStudierendeForDisplay);			
+				studierenderGrid.setDataProvider(ldpEvent);
 			} else {
 				// message.setText("No song is selected");
 			}
 
 		});
 					
-		unternehmenGrid.removeColumnByKey("unternehmen_id");	//Feld nicht in Tabelle mit anzeigen
-		unternehmenGrid.setColumns("unternehmensname", "ansprechpartner", "kontaktmail");	//Spaltenordnung festlegen
-		unternehmenGrid.setSelectionMode(SelectionMode.MULTI);	//es koennen mehrere Events ausgewaehlt sein
-		selectionModelUnternehmen = (GridMultiSelectionModel<Unternehmen>) unternehmenGrid.getSelectionModel();
+		studierenderGrid.removeColumnByKey("student_id");	//Feld nicht in Tabelle mit anzeigen
+		studierenderGrid.setColumns("vorname", "nachname", "email", "ort", "plz", "strasse");	//Spaltenordnung festlegen
+		studierenderGrid.setSelectionMode(SelectionMode.MULTI);	//es koennen mehrere Events ausgewaehlt sein
+		selectionModelStudierender = (GridMultiSelectionModel<Studierender>) studierenderGrid.getSelectionModel();
 		
-		
-
-		
+			
 		votingSendenButton.addClickListener(event -> {	//Bei Buttonklick werden folgende Aktionen ausgefuehrt
-			for(Unternehmen e:selectionModelUnternehmen.getSelectedItems())	//markierte Events durchgehen
+			for(Studierender e:selectionModelStudierender.getSelectedItems())	//markierte Events durchgehen
 			{
 				
 				//hier gehts weiter...
@@ -112,7 +113,7 @@ public class EventVotingView_Stud extends VerticalLayout {	//VerticalLayout fueh
 		});
 
 		add(comboBox);
-		add(unternehmenGrid);	//Hinzufuegen der Elemente zum VerticalLayout
+		add(studierenderGrid);	//Hinzufuegen der Elemente zum VerticalLayout
 		add(votingSendenButton);
 		add(logoutButton);
 	}
