@@ -67,7 +67,7 @@ public class AlterEvent extends VerticalLayout {
 		eventGrid.setDataProvider(ldpEvent); // erstellten Dataprovider als Datenquelle fuer Tabelle festlegen
 
 		eventGrid.removeColumnByKey("event_id");	//event_id nicht in Tabelle mit anzeigen
-		eventGrid.setColumns("bezeichnung", "startzeitpunkt", "endzeitpunkt", "abgeschlossen", "teilnehmendeStudierende");	//Spaltenordnung festlegen
+		eventGrid.setColumns("bezeichnung", "startzeitpunkt", "endzeitpunkt", "abgeschlossen", "teilnehmendeStudierende","teilnehmendeUnternehmen");	//Spaltenordnung festlegen
 		
 		eventGrid.setSelectionMode(SelectionMode.SINGLE);	//es kann immer nur ein Event gleichzeitig bearbeitet werden
 		selectionModelEvent = (GridSingleSelectionModel<Event>) eventGrid.getSelectionModel();
