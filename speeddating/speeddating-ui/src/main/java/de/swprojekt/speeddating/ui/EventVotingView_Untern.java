@@ -6,6 +6,9 @@ import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.GridMultiSelectionModel;
 import com.vaadin.flow.component.grid.Grid.SelectionMode;
+import com.vaadin.flow.component.html.Label;
+import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.notification.NotificationVariant;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -40,6 +43,8 @@ import de.swprojekt.speeddating.service.unternehmen.IUnternehmenService;
 //@Secured kann auch an einzelnen Methoden angewendet werden
 public class EventVotingView_Untern extends VerticalLayout {	//VerticalLayout fuehrt zu Anordnung von Elementen untereinander statt nebeneinander (HorizontalLayout)
 
+	int lv_unternehmen_id = 0;
+	
 	@Autowired	//Konstruktor-basierte Injection, Parameter wird autowired (hier: Interface)
 	public EventVotingView_Untern(IShowEventService iShowEventService, IShowUnternehmenService iShowUnternehmenService,
 			IUnternehmenService iUnternehmenService, IShowStudierendeService iShowStudierenderService) {
@@ -47,6 +52,7 @@ public class EventVotingView_Untern extends VerticalLayout {	//VerticalLayout fu
 		Grid<Studierender> studierenderGrid;	//Tabelle mit Events
 		studierenderGrid = new Grid<>(Studierender.class);	//Tabelle initialisieren
 		GridMultiSelectionModel<Studierender> selectionModelStudierender;
+		List<Studierender> listOfStudierendeForDisplay = new ArrayList<Studierender>();
 		Button votingSendenButton=new Button("Kontaktwuensche absenden");		
 		Button logoutButton=new Button("Logout");		
 		
@@ -55,9 +61,28 @@ public class EventVotingView_Untern extends VerticalLayout {	//VerticalLayout fu
 		comboBox.setLabel("Event auswaehlen");
 		comboBox.setItemLabelGenerator(Event:: getBezeichnung);
 		List<Event> listOfEvents = iShowEventService.showEvents();
-		List<Studierender> listOfStudierendeForDisplay = new ArrayList<Studierender>();
-
 		comboBox.setItems(listOfEvents);
+		
+		
+		ComboBox<Unternehmen> comboBox2 = new ComboBox<>();
+		comboBox2.setLabel("Unternehmen auswaehlen");
+		comboBox2.setItemLabelGenerator(Unternehmen::getUnternehmensname);
+		List<Unternehmen> listOfUnternehmen = iShowUnternehmenService.showUnternehmen();
+		comboBox2.setItems(listOfUnternehmen);
+				
+		Notification notificationVotingSuccess = new Notification();
+		notificationVotingSuccess.addThemeVariants(NotificationVariant.LUMO_SUCCESS);
+		Label labelVotingsuccess = new Label("Voting erfolgreich abgegeben! ");
+		notificationVotingSuccess.add(labelVotingsuccess);
+		
+		comboBox2.addValueChangeListener(event -> {
+			Unternehmen aUnternehmen = comboBox2.getValue();
+			if (aUnternehmen != null) {
+				lv_unternehmen_id = aUnternehmen.getUnternehmen_id();
+			}
+		});
+		
+		
 		comboBox.addValueChangeListener(event -> {
 			Event aEvent = comboBox.getValue();		
 			
@@ -100,7 +125,25 @@ public class EventVotingView_Untern extends VerticalLayout {	//VerticalLayout fu
 			for(Studierender e:selectionModelStudierender.getSelectedItems())	//markierte Events durchgehen
 			{
 				
-				//hier gehts weiter...
+				// TODO: Eigentlich ist der Benutzer ein Unternehmen, also muessten wir die
+				// UnternehmenID irgendwie ueber den
+				// Benutzer bekommen, da wir das noch nicht realisiert haben, machen wir uns das
+				// hier erstmal einfach
+				// und setzen/waehlen das Unternehmen per ComboBox aus
+				Unternehmen einUnternehmen = iShowUnternehmenService.showEinUnternehmen(lv_unternehmen_id);
+
+				Set<Integer> unternehmenKontaktwuenscheList = new HashSet<>();
+				for (Studierender einStudierender : selectionModelStudierender.getSelectedItems()) {
+					unternehmenKontaktwuenscheList.add(einStudierender.getStudent_id());
+				}
+				einUnternehmen.setUnternehmenKontaktwuensche(unternehmenKontaktwuenscheList);
+				iUnternehmenService.changeUnternehmen(einUnternehmen);
+
+				notificationVotingSuccess.open();
+//				SecurityContextHolder.clearContext();	//Spring-Security-Session leeren
+//				getUI().get().getSession().close();		//Vaadin Session leeren
+				votingSendenButton.getUI().ifPresent(ui -> ui.navigate("maincontent")); // zurueck auf andere Seite
+
 				
 				
 			}
@@ -112,7 +155,7 @@ public class EventVotingView_Untern extends VerticalLayout {	//VerticalLayout fu
 			logoutButton.getUI().ifPresent(ui->ui.navigate("maincontent"));	//zurueck auf andere Seite 
 		});
 
-		add(comboBox);
+		add(comboBox2, comboBox);
 		add(studierenderGrid);	//Hinzufuegen der Elemente zum VerticalLayout
 		add(votingSendenButton);
 		add(logoutButton);

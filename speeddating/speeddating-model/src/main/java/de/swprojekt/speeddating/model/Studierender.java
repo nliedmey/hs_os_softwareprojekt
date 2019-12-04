@@ -1,9 +1,16 @@
 package de.swprojekt.speeddating.model;
 
+import java.util.Set;
+
+import javax.persistence.CollectionTable;
+import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 
 /*
  * Klasse wird als Entity definiert
@@ -23,6 +30,12 @@ public class Studierender {
 	private String ort;
 	private String telefonnr;
 	private String email;
+	
+	@ElementCollection(fetch = FetchType.EAGER)
+	@CollectionTable(name = "student_wants_Unternehmen", joinColumns = @JoinColumn(name = "student_id"))
+	@Column(name = "unternehmen_id")
+	private Set<Integer> studentKontaktwuensche; // CollectionTable weil Integers und keine Entities
+
 
 
 	public Studierender() {
@@ -129,6 +142,14 @@ public class Studierender {
 	
 	public String getStringFullNameOfStudent () {
 		return this.vorname + " " + this.nachname;
+	}
+
+	public Set<Integer> getStudentKontaktwuensche() {
+		return studentKontaktwuensche;
+	}
+
+	public void setStudentKontaktwuensche(Set<Integer> studentKontaktwuensche) {
+		this.studentKontaktwuensche = studentKontaktwuensche;
 	}
 
 }
