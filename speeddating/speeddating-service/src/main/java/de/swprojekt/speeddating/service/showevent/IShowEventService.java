@@ -11,4 +11,5 @@ import de.swprojekt.speeddating.model.Unternehmen;
 public interface IShowEventService {
 	public List<Event> showEvents();	//alle Events
 	public Event showEvent(int event_id); //ein Event
+	public List<Integer> showEventsOfUser(int user_id);
 }

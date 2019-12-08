@@ -40,5 +40,10 @@ public class ShowEventImpl implements IShowEventService {
 		}
 	}
 
+	@Override
+	public List<Integer> showEventsOfUser(int user_id) {
+		return iEventRepository.findByUserId(user_id);
+	}
+
 
 }

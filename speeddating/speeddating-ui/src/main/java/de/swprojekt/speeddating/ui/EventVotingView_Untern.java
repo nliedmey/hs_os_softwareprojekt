@@ -27,9 +27,7 @@ import com.vaadin.flow.router.Route;
 import de.swprojekt.speeddating.model.Event;
 import de.swprojekt.speeddating.model.Studierender;
 import de.swprojekt.speeddating.model.Unternehmen;
-import de.swprojekt.speeddating.repository.IEventRepository;
-import de.swprojekt.speeddating.service.addstudierender.IStudierenderService;
-import de.swprojekt.speeddating.service.deleteevent.IDeleteEventService;
+import de.swprojekt.speeddating.service.security.CustomUserDetails;
 import de.swprojekt.speeddating.service.showevent.IShowEventService;
 import de.swprojekt.speeddating.service.showstudierender.IShowStudierendeService;
 import de.swprojekt.speeddating.service.showunternehmen.IShowUnternehmenService;
@@ -39,11 +37,9 @@ import de.swprojekt.speeddating.service.unternehmen.IUnternehmenService;
  */  
 
 @Route("ui/eventVotingView_Untern")	//Erreichbar ueber Adresse: http://localhost:8080/speeddating-web-7.0-SNAPSHOT/ui/events
-//@Secured("ROLE_ADMIN")	//nur User mit Rolle ADMIN koennen auf Seite zugreifen, @Secured prueft auch bei RouterLink-Weiterleitungen
+@Secured("ROLE_UNTERNEHMEN")	//nur User mit Rolle UNTERNEHMEN koennen auf Seite zugreifen, @Secured prueft auch bei RouterLink-Weiterleitungen
 //@Secured kann auch an einzelnen Methoden angewendet werden
 public class EventVotingView_Untern extends VerticalLayout {	//VerticalLayout fuehrt zu Anordnung von Elementen untereinander statt nebeneinander (HorizontalLayout)
-
-	int lv_unternehmen_id = 0;
 	
 	@Autowired	//Konstruktor-basierte Injection, Parameter wird autowired (hier: Interface)
 	public EventVotingView_Untern(IShowEventService iShowEventService, IShowUnternehmenService iShowUnternehmenService,
@@ -60,43 +56,50 @@ public class EventVotingView_Untern extends VerticalLayout {	//VerticalLayout fu
 		ComboBox<Event> comboBox = new ComboBox<>();
 		comboBox.setLabel("Event auswaehlen");
 		comboBox.setItemLabelGenerator(Event:: getBezeichnung);
-		List<Event> listOfEvents = iShowEventService.showEvents();
+		List<Event> listOfEvents = new ArrayList<Event>();
 		comboBox.setItems(listOfEvents);
 		
+		CustomUserDetails userDetails=(CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();	//Id des eingeloggten Users aus SecurityKontext holen
 		
-		ComboBox<Unternehmen> comboBox2 = new ComboBox<>();
-		comboBox2.setLabel("Unternehmen auswaehlen");
-		comboBox2.setItemLabelGenerator(Unternehmen::getUnternehmensname);
-		List<Unternehmen> listOfUnternehmen = iShowUnternehmenService.showUnternehmen();
-		comboBox2.setItems(listOfUnternehmen);
+		for(int event_id:iShowEventService.showEventsOfUser(userDetails.getEntityRefId()))	//alle Events, an welchen der User beteiligt ist, laden
+		{
+			listOfEvents.add(iShowEventService.showEvent(event_id));
+		}
+		comboBox.setDataProvider(new ListDataProvider<>(listOfEvents));	//Liste dient als Datanquelle fuer ComboBox
+		comboBox.setValue(listOfEvents.get(0)); //ein Event ist standardmaessig ausgewaehlt (i.d.R. existiert auch nur eins je Student)
+
 				
 		Notification notificationVotingSuccess = new Notification();
 		notificationVotingSuccess.addThemeVariants(NotificationVariant.LUMO_SUCCESS);
 		Label labelVotingsuccess = new Label("Voting erfolgreich abgegeben! ");
 		notificationVotingSuccess.add(labelVotingsuccess);
 		
-		comboBox2.addValueChangeListener(event -> {
-			Unternehmen aUnternehmen = comboBox2.getValue();
-			if (aUnternehmen != null) {
-				lv_unternehmen_id = aUnternehmen.getUnternehmen_id();
-			}
-		});
+		ListDataProvider<Studierender> ldpEvent = DataProvider.ofCollection(listOfStudierendeForDisplay);
+		studierenderGrid.setDataProvider(ldpEvent);
 		
+		Event vorauswaehltesEvent = comboBox.getValue();
+		if (vorauswaehltesEvent != null) {	
+	        Event selectedEvent = iShowEventService.showEvent(vorauswaehltesEvent.getEvent_id());
+			List<Studierender> listofStudierende = iShowStudierenderService.showStudierende(); //alle Studierenden holen					
+			//jetzt iterieren wir durch die Teilnehmer des Events und adden diese in unser Grid
+			for( Integer studierendeDesEvents : selectedEvent.getTeilnehmendeStudierende()) { 			
+				for( Studierender aStudierender: listofStudierende) {						
+					if (aStudierender.getStudent_id() == studierendeDesEvents) {							
+						listOfStudierendeForDisplay.add(aStudierender);
+					}						
+				}					
+			}
+			
+		} else {
+			System.out.println("Kein Event vorhanden");
+		}
 		
 		comboBox.addValueChangeListener(event -> {
 			Event aEvent = comboBox.getValue();		
-			
-			//Datagrid initialisieren
 			listOfStudierendeForDisplay.clear();
-			ListDataProvider<Studierender> ldpEvent = DataProvider
-					.ofCollection(listOfStudierendeForDisplay);			
-			studierenderGrid.setDataProvider(ldpEvent);
-			
 			if (aEvent != null) {	
-		        Event selectedEvent = iShowEventService.showEvent(aEvent.getEvent_id());
-		        				
+		        Event selectedEvent = iShowEventService.showEvent(aEvent.getEvent_id());				
 				List<Studierender> listofStudierende = iShowStudierenderService.showStudierende(); //alle Studierenden holen					
-				
 				//jetzt iterieren wir durch die Teilnehmer des Events und adden diese in unser Grid
 				for( Integer studierendeDesEvents : selectedEvent.getTeilnehmendeStudierende()) { 			
 					for( Studierender aStudierender: listofStudierende) {						
@@ -106,11 +109,9 @@ public class EventVotingView_Untern extends VerticalLayout {	//VerticalLayout fu
 					}					
 				}
 				
-				// die Teilnehmenden Unternehmen des Events fuegen wir jetzt unserem Grid hinzu
-				 ldpEvent = DataProvider.ofCollection(listOfStudierendeForDisplay);			
-				studierenderGrid.setDataProvider(ldpEvent);
+				studierenderGrid.getDataProvider().refreshAll();	//nach dem Aendern des ComboBox-Wertes wird die Tabelle aktualisiert
 			} else {
-				// message.setText("No song is selected");
+				System.out.println("Kein Event vorhanden");
 			}
 
 		});
@@ -130,7 +131,7 @@ public class EventVotingView_Untern extends VerticalLayout {	//VerticalLayout fu
 				// Benutzer bekommen, da wir das noch nicht realisiert haben, machen wir uns das
 				// hier erstmal einfach
 				// und setzen/waehlen das Unternehmen per ComboBox aus
-				Unternehmen einUnternehmen = iShowUnternehmenService.showEinUnternehmen(lv_unternehmen_id);
+				Unternehmen einUnternehmen = iShowUnternehmenService.showEinUnternehmen(userDetails.getEntityRefId());
 
 				Set<Integer> unternehmenKontaktwuenscheList = new HashSet<>();
 				for (Studierender einStudierender : selectionModelStudierender.getSelectedItems()) {
@@ -140,8 +141,6 @@ public class EventVotingView_Untern extends VerticalLayout {	//VerticalLayout fu
 				iUnternehmenService.changeUnternehmen(einUnternehmen);
 
 				notificationVotingSuccess.open();
-//				SecurityContextHolder.clearContext();	//Spring-Security-Session leeren
-//				getUI().get().getSession().close();		//Vaadin Session leeren
 				votingSendenButton.getUI().ifPresent(ui -> ui.navigate("maincontent")); // zurueck auf andere Seite
 
 				
@@ -152,10 +151,10 @@ public class EventVotingView_Untern extends VerticalLayout {	//VerticalLayout fu
 		logoutButton.addClickListener(event -> {	//Bei Buttonklick werden folgende Aktionen ausgefuehrt
 			SecurityContextHolder.clearContext();	//Spring-Security-Session leeren
 			getUI().get().getSession().close();		//Vaadin Session leeren
-			logoutButton.getUI().ifPresent(ui->ui.navigate("maincontent"));	//zurueck auf andere Seite 
+			logoutButton.getUI().ifPresent(ui->ui.navigate("login"));	//zurueck auf andere Seite 
 		});
 
-		add(comboBox2, comboBox);
+		add(comboBox);
 		add(studierenderGrid);	//Hinzufuegen der Elemente zum VerticalLayout
 		add(votingSendenButton);
 		add(logoutButton);

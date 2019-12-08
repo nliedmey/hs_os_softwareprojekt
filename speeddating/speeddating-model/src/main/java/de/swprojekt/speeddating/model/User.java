@@ -21,7 +21,7 @@ import org.springframework.security.core.userdetails.UserDetails;
  * Ermoeglicht die spaetere Umwandlung von User-Objekt in UserDetails-Objekt, welches von SpringSecurity u.a. zur Autorisierung verwendet wird
  */
 @Entity
-public class User implements UserDetails {
+public class User implements UserDetails{
 
 	@Id
 	@GeneratedValue
@@ -36,8 +36,11 @@ public class User implements UserDetails {
 	@JoinTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))	//mappingtabelle user_role erstellen
 	private Set<Role> roles;
 	
+	private int entity_id_ref; //referenziert auf StudentenID bzw. UnternehmenID
+	
 	public User()
 	{
+		
 		//wird von JPA genutzt
 	}
 	
@@ -79,6 +82,22 @@ public class User implements UserDetails {
 
 	public void setPassword(String password) {
 		this.password = password;
+	}
+	
+	public int getUser_id() {
+		return user_id;
+	}
+
+	public void setUser_id(int user_id) {
+		this.user_id = user_id;
+	}
+
+	public int getEntity_id_ref() {
+		return entity_id_ref;
+	}
+
+	public void setEntity_id_ref(int entity_id_ref) {
+		this.entity_id_ref = entity_id_ref;
 	}
 
 	@Override

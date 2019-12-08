@@ -14,12 +14,12 @@ public class UnternehmenImpl implements IUnternehmenService {
 	IUnternehmenRepository iUnternehmenRepository;
 	
 	@Override
-	public void speicherUnternehmen(Unternehmen einUnternehmenDAO) {
+	public Unternehmen speicherUnternehmen(Unternehmen einUnternehmenDAO) {
 		Unternehmen einUnternehmen = new Unternehmen();
 		einUnternehmen.setUnternehmensname(einUnternehmenDAO.getUnternehmensname());
 		einUnternehmen.setAnsprechpartner(einUnternehmenDAO.getAnsprechpartner());
 		einUnternehmen.setKontaktmail(einUnternehmenDAO.getKontaktmail());
-		iUnternehmenRepository.save(einUnternehmen);
+		return iUnternehmenRepository.save(einUnternehmen);
 		
 	}
 

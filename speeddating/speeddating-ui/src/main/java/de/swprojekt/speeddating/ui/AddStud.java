@@ -2,19 +2,14 @@ package de.swprojekt.speeddating.ui;
 
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
-import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.notification.NotificationVariant;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 
-import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.component.textfield.NumberField;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.binder.ValidationException;
@@ -23,6 +18,7 @@ import com.vaadin.flow.router.Route;
 
 import de.swprojekt.speeddating.model.Studierender;
 import de.swprojekt.speeddating.service.addstudierender.IStudierenderService;
+import de.swprojekt.speeddating.service.security.IRegisterUserService;
 import de.swprojekt.speeddating.service.showstudierender.IShowStudierendeService;
 
 /*
@@ -35,7 +31,7 @@ public class AddStud extends VerticalLayout {
 				// Attribut/Methoden-Injection
 				// Parameter (hier: IAddStudierenderService) wird also automatisch autowired
 	@Autowired
-	public AddStud(IStudierenderService iAddStudierenderService, IShowStudierendeService iShowStudierendeService) {
+	public AddStud(IStudierenderService iAddStudierenderService, IShowStudierendeService iShowStudierendeService, IRegisterUserService iRegisterUserService) {
 
 		// Deklaration
 		Binder<Studierender> binder; // verknuepft Input aus Textfeldern mit Objektattributen
@@ -98,16 +94,14 @@ public class AddStud extends VerticalLayout {
 		
 		buttonHinzufuegen.addClickListener(event -> {
 			try {
-				binder.writeBean(einStudierender); // dem Objekt werden Attributwerte aus den Textfeldern (via Binder)
-													// zugewiesen
-				iAddStudierenderService.saveStudierenden(einStudierender); // Uebergabe an Service zur Speicherung
-																				// in DB
+				binder.writeBean(einStudierender); // dem Objekt werden Attributwerte aus den Textfeldern (via Binder) zugewiesen
+
+				Studierender neuerStud=iAddStudierenderService.saveStudierenden(einStudierender); // Uebergabe an Service zur Speicherung in DB
+				iRegisterUserService.save(neuerStud.getNachname()+"_"+neuerStud.getMatrikelnummer(), "standard", "STUDENT", neuerStud.getStudent_id()); //Einloggbenutzer anlegen fuer den Studenten
+				//Nutzername: Nachname_Matrikelnummer, Initialpasswort: standard
 				notificationSavesuccess.open(); // Erfolgreich-Meldung anzeigen
 				
 		        
-				
-//				SecurityContextHolder.clearContext();	//Spring-Security-Session leeren
-//				getUI().get().getSession().close();		//Vaadin Session leeren
 			    buttonHinzufuegen.getUI().ifPresent(ui->ui.navigate("maincontent"));	//zurueck auf andere Seite 
 				
 				

@@ -24,9 +24,10 @@ public class SecurityUtils {
 		
 		Secured secured = AnnotationUtils.findAnnotation(securedClass, Secured.class);	//"Secured"-Annotation kann nun zur Rollendeklaration an Views genutzt werden
 		if (secured == null) { 
+			System.out.println("Seite nicht geschuetzt");
 			return true; //Zugriff erlauben, wenn View nicht geschuetzt (keine Rolle benoetigt)
 		}
-
+		System.out.println("Seite geschuetzt");
 		// lookup needed role in user roles
 		List<String> allowedRoles = Arrays.asList(secured.value());	//erlaubte Rollen fuer Aktion abrufen
 		Authentication userAuthentication = SecurityContextHolder.getContext().getAuthentication();	//Rollen des genutzten Benutzers abrufen

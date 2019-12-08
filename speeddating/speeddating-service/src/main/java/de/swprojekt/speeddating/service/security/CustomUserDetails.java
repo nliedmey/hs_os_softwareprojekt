@@ -12,10 +12,23 @@ import org.springframework.security.core.userdetails.User;
  */
 public class CustomUserDetails extends User {
 
+	private int entityRefId;
+	
 	public CustomUserDetails(String username, String password, boolean enabled, boolean accountNonExpired,
 			boolean credentialsNonExpired, boolean accountNonLocked,
-			Collection<? extends GrantedAuthority> authorities) {
+			Collection<? extends GrantedAuthority> authorities, int entityRefId) {
 		super(username, password, enabled, accountNonExpired, credentialsNonExpired, accountNonLocked, authorities);	//Konstruktor von Spring-Userklasse aufrufen
+		this.entityRefId=entityRefId;
 	}
+
+	public int getEntityRefId() {
+		return entityRefId;
+	}
+
+	public void setEntityRefId(int entityRefId) {
+		this.entityRefId = entityRefId;
+	}
+	
+	
 
 }

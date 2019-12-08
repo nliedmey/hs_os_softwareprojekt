@@ -16,6 +16,7 @@ import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.router.Route;
 
 import de.swprojekt.speeddating.model.Unternehmen;
+import de.swprojekt.speeddating.service.security.IRegisterUserService;
 import de.swprojekt.speeddating.service.showunternehmen.IShowUnternehmenService;
 import de.swprojekt.speeddating.service.unternehmen.IUnternehmenService;
 
@@ -26,7 +27,7 @@ import de.swprojekt.speeddating.service.unternehmen.IUnternehmenService;
 public class AddUntern extends VerticalLayout {
 
 	@Autowired
-	public AddUntern(IUnternehmenService iUnternehmenService, IShowUnternehmenService iShowUnternehmenService) {
+	public AddUntern(IUnternehmenService iUnternehmenService, IShowUnternehmenService iShowUnternehmenService, IRegisterUserService iRegisterUserService) {
 		
 		//Deklaration
 		Binder<Unternehmen> binder;
@@ -66,7 +67,9 @@ public class AddUntern extends VerticalLayout {
 		buttonHinzufuegen.addClickListener(event -> {
 			try {
 				binder.writeBean(einUnternehmen);
-				iUnternehmenService.speicherUnternehmen(einUnternehmen);
+				Unternehmen neuesUnternehmen=iUnternehmenService.speicherUnternehmen(einUnternehmen);
+				iRegisterUserService.save(neuesUnternehmen.getUnternehmensname()+"_"+neuesUnternehmen.getUnternehmen_id(), "standard", "UNTERNEHMEN", neuesUnternehmen.getUnternehmen_id()); //Einloggbenutzer anlegen fuer das Unternehmen
+				//Nutzername: Unternehmensname_Unternehmenid, Initialpasswort: standard
 				notificationSavesuccess.open();
 				
 				buttonHinzufuegen.getUI().ifPresent(ui->ui.navigate("maincontent"));

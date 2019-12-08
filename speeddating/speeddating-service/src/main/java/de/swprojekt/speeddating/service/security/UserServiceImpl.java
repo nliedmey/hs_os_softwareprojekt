@@ -22,7 +22,7 @@ public class UserServiceImpl implements UserDetailsService {
 		User user = iUserRepository.findByUsername(username); //User aus DB laden
 		if (user != null) {
 			return new CustomUserDetails(user.getUsername(), user.getPassword(), true, true, true, true,
-					user.getAuthorities());	//derzeit sind enabled, accountNonExpired, credentialsNonExpired, accountNonLocked standardmaessig true
+					user.getAuthorities(),user.getEntity_id_ref());	//derzeit sind enabled, accountNonExpired, credentialsNonExpired, accountNonLocked standardmaessig true
 		} else {	//wenn kein User zu Username existent
 			throw new UsernameNotFoundException("User: " + username + " existiert nicht!");	
 		}

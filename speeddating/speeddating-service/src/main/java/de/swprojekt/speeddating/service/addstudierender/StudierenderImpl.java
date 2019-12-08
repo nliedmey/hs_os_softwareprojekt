@@ -17,7 +17,7 @@ public class StudierenderImpl implements IStudierenderService {
 	IStudierenderRepository iStudierenderRepository;	//Interface zur Verwaltung von Studierenden aus DB einbinden
 	
 	@Override
-	public void saveStudierenden(Studierender einStudierenderDAO) {
+	public Studierender saveStudierenden(Studierender einStudierenderDAO) {
 		Studierender einStudierender=new Studierender();	//neues Studierender-Objekt anlegen
 		einStudierender.setMatrikelnummer(einStudierenderDAO.getMatrikelnummer());
 		einStudierender.setVorname(einStudierenderDAO.getVorname());	//Attribute aus DAO-Objekt uebernehmen 
@@ -28,7 +28,7 @@ public class StudierenderImpl implements IStudierenderService {
 		einStudierender.setOrt(einStudierenderDAO.getOrt());
 		einStudierender.setTelefonnr(einStudierenderDAO.getTelefonnr());
 		einStudierender.setEmail(einStudierenderDAO.getEmail());		
-		iStudierenderRepository.save(einStudierender);	//Speicherung in DB
+		return iStudierenderRepository.save(einStudierender);	//Speicherung in DB
 	}
 	
 	public void deleteStudierenden(Studierender einStudierenderDAO) {

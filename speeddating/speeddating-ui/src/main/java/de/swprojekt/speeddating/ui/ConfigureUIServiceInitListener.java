@@ -1,10 +1,10 @@
 package de.swprojekt.speeddating.ui;
 
+
 import org.springframework.stereotype.Component;
 
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.router.BeforeEnterEvent;
-import com.vaadin.flow.router.NotFoundException;
 import com.vaadin.flow.server.ServiceInitEvent;
 import com.vaadin.flow.server.VaadinServiceInitListener;
 /*
@@ -26,9 +26,10 @@ public class ConfigureUIServiceInitListener implements VaadinServiceInitListener
     }
 
     private void beforeEnter(BeforeEnterEvent event) {
+    	System.out.println("beforeEnter betreten");
         if(!SecurityUtils.isAccessGranted(event.getNavigationTarget())) { //wenn Zugriffsrechte fuer Ziel nicht gewaehrt
             if(SecurityUtils.isUserLoggedIn()) { //wenn keine Rechte, aber eingeloggt 
-                event.rerouteToError(NotFoundException.class); //View verbergen durch Vorgeben von NotFound (Sicherheitsaspekt) 
+                event.rerouteTo(ZugangVerwehrt.class); //View verbergen durch Vorgeben von NotFound (Sicherheitsaspekt) 
             } else {
                 event.rerouteTo(Login.class); //wenn nicht eingeloggt und Recht aktuell nicht vorhanden, dann Rueckleitung zu Loginview
             }

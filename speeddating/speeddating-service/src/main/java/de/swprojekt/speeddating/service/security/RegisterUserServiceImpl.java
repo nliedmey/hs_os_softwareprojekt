@@ -28,11 +28,12 @@ public class RegisterUserServiceImpl implements IRegisterUserService {
 	private BCryptPasswordEncoder passwordEncoder;
 	
 	@Override
-	public void save(String username, String password) {	//wird bei Registrierung ausgefuehrt
-		Set<Role> roles=new HashSet<Role>(Arrays.asList(iRoleRepository.findByRolename("NORMAL"))); //standardmaessig wird ein User mit "Normal"-Rolle erstellt
+	public void save(String username, String password, String role, int refEntityId) {	//wird bei Registrierung ausgefuehrt
+		Set<Role> roles=new HashSet<Role>(Arrays.asList(iRoleRepository.findByRolename(role))); //standardmaessig wird ein User mit "Normal"-Rolle erstellt
 		User user=new User(roles);
 		user.setUsername(username);
 		user.setPassword(passwordEncoder.encode(password)); //eingegebenes PW verschluesseln	
+		user.setEntity_id_ref(refEntityId);	//Id des Unternehmens/Studentens setzen
 		System.out.println("Jetzt wird User gespeichert "+user+", getAuth: "+user.getAuthorities()+", Roles: "+user.getRoles());
 		iUserRepository.save(user);										//derzeit muss die Aenderung auf Admin noch manuell getaetigt werden, spaeter eventuell ueber Adminkonsole
 	}																	

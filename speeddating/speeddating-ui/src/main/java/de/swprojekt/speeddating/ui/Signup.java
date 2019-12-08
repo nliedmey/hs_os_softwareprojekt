@@ -32,7 +32,7 @@ public class Signup extends VerticalLayout {
 
 		saveButton.addClickListener(event -> {
 			if (passwordField.getValue().equals(passwordAgainField.getValue())) {	//wenn Passwoerter uebereinstimmen
-				iRegisterUserService.save(username.getValue(), passwordField.getValue());	//speichern von User via Service
+				//iRegisterUserService.save(username.getValue(), passwordField.getValue(),"NORMAL",);	//speichern von User via Service
 				saveButton.getUI().ifPresent(ui->ui.navigate("login"));	//anschliessend auf Loginpage weiterleiten
 			} else {	//Passwoerter stimmen nicht ueberein
 				Notification.show("Passwoerter stimmen nicht ueberein!");

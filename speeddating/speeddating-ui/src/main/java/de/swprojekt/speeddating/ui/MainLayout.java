@@ -1,5 +1,7 @@
 package de.swprojekt.speeddating.ui;
 
+import org.springframework.security.access.annotation.Secured;
+
 import com.vaadin.flow.component.HasElement;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.Div;
@@ -10,6 +12,7 @@ import com.vaadin.flow.router.RouterLayout;
  * View, welche ParentLayout definiert und Element (hier: childWrapper) fuer die Einbindung von Elementen der Kindviews bereitstellt
  */
 @Route("start")
+@Secured("ADMIN_ROLE")
 public class MainLayout extends VerticalLayout implements RouterLayout {	//stellt ParentLayout dar (implementiert RouterLayout)
 	
 	Div header=new Div();	
