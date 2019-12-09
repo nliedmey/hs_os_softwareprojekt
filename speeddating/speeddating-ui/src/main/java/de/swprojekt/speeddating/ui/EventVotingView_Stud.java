@@ -135,9 +135,10 @@ public class EventVotingView_Stud extends VerticalLayout { // VerticalLayout fue
 				iStudierenderService.changeStudierenden(einStudierender);
 
 				notificationVotingSuccess.open();
-				votingSendenButton.getUI().ifPresent(ui -> ui.navigate("maincontent")); // zurueck auf andere Seite
+//				
 
 			}
+			votingSendenButton.getUI().ifPresent(ui -> ui.navigate("maincontent")); // zurueck auf andere Seite
 		});
 
 		logoutButton.addClickListener(event -> { // Bei Buttonklick werden folgende Aktionen ausgefuehrt
