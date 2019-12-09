@@ -39,7 +39,6 @@ public class ChangeDeleteUntern extends VerticalLayout {
 		TextField textfieldAnsprechpartner = new TextField("Anprechpartner: ");
 		TextField textfieldKontaktmail = new TextField("Kontakt-EMail: ");
 
-
 		// Erzeugen der Combo Box
 		ComboBox<Unternehmen> comboBox = new ComboBox<>();
 		comboBox.setLabel("Unternehmen auswaehlen");
