@@ -24,7 +24,6 @@ public class AddEventImpl implements IAddEventService {
 		einEvent.setAbgeschlossen(einEventDAO.isAbgeschlossen());
 		einEvent.setTeilnehmendeStudierende(einEventDAO.getTeilnehmendeStudierende());
 		einEvent.setTeilnehmendeUnternehmen(einEventDAO.getTeilnehmendeUnternehmen());
-		einEvent.setVerwaltendeOrganisatoren(einEventDAO.getVerwaltendeOrganisatoren());
 		iEventRepository.save(einEvent);	//Speicherung in DB
 	}
 

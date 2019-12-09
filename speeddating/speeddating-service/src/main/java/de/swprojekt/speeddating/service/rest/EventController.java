@@ -61,7 +61,6 @@ public class EventController {
 			gefundenesEvent.get().setAbgeschlossen(einEvent.isAbgeschlossen());
 			gefundenesEvent.get().setTeilnehmendeStudierende(einEvent.getTeilnehmendeStudierende());
 			gefundenesEvent.get().setTeilnehmendeUnternehmen(einEvent.getTeilnehmendeUnternehmen());
-			gefundenesEvent.get().setVerwaltendeOrganisatoren(einEvent.getVerwaltendeOrganisatoren());
 			return iEventRepository.save(gefundenesEvent.get());
 		} catch (NoSuchElementException e) {
 			System.out.println("Kein Event zu ID vorhanden!");
