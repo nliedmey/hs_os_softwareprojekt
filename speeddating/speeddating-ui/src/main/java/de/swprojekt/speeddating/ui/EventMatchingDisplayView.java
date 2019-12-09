@@ -45,14 +45,11 @@ public class EventMatchingDisplayView extends HorizontalLayout {
 	// BestPractice: Konstruktor-Injection im Vergleich zu
 	// Attribut/Methoden-Injection
 	// Parameter (hier: IAddStudierenderService) wird also automatisch autowired
-
-	
 	
 	@Autowired
 	public EventMatchingDisplayView(IShowEventService iShowEventService, IShowStudierendeService iShowStudierendeService) {
 		
 		Binder<Event> binder; // verknuepft Input aus Textfeldern mit Objektattributen		
-		TextField textfieldBezeichnung = new TextField("Bezeichnung:");
 		DatePicker datepickerStartzeitpunktDatum=new DatePicker("Startdatum:");
 		TimePicker timepickerStartzeitpunktUhrzeit=new TimePicker("Startzeit:");
 		DatePicker datepickerEndzeitpunktDatum=new DatePicker("Enddatum:");
@@ -60,10 +57,23 @@ public class EventMatchingDisplayView extends HorizontalLayout {
 		TextField textfieldRundendauerInMinuten = new TextField("Rundendauer (min):");
 		Checkbox checkboxAbgeschlossen=new Checkbox("Abgeschlossen:");
 		
-		GridMultiSelectionModel<Studierender> selectionModelStud;
-		Grid<Studierender> studierenderGrid; // Tabelle mit beteiligten Studierenden
-		studierenderGrid = new Grid<>(Studierender.class); // Tabelle initialisieren
+		datepickerStartzeitpunktDatum.setReadOnly(true);
+		timepickerStartzeitpunktUhrzeit.setReadOnly(true);
+		datepickerEndzeitpunktDatum.setReadOnly(true);
+		timepickerEndzeitpunktUhrzeit.setReadOnly(true);
+		textfieldRundendauerInMinuten.setReadOnly(true);
+		checkboxAbgeschlossen.setReadOnly(true);
+		
+		
+		Grid<Unternehmen> unternehmenGrid; 
+		unternehmenGrid = new Grid<>(Unternehmen.class); 	
+		Grid<Unternehmen> unternehmenGrid2; 
+		unternehmenGrid2 = new Grid<>(Unternehmen.class); 
 			
+		Grid<Studierender> studierenderGrid;
+		studierenderGrid = new Grid<>(Studierender.class); 			
+		Grid<Studierender> studierenderGrid2; 
+		studierenderGrid2 = new Grid<>(Studierender.class); 
 		
 		// Erzeugen der Combo Box
 		ComboBox<Event> comboBox = new ComboBox<>();
@@ -76,7 +86,6 @@ public class EventMatchingDisplayView extends HorizontalLayout {
 			if (aEvent != null) {
 				lv_id = aEvent.getEvent_id();
 				Event selectedEvent = iShowEventService.showEvent(lv_id);				
-				textfieldBezeichnung.setValue(selectedEvent.getBezeichnung());
 				//Uhrzeit und Datum aus Date herausfiltern und in date/timepicker einsetzen
 				datepickerStartzeitpunktDatum.setValue(selectedEvent.getStartzeitpunkt().toInstant().atZone(ZoneId.systemDefault()).toLocalDate()); 
 				timepickerStartzeitpunktUhrzeit.setValue(selectedEvent.getStartzeitpunkt().toInstant().atZone(ZoneId.systemDefault()).toLocalTime());
@@ -90,10 +99,9 @@ public class EventMatchingDisplayView extends HorizontalLayout {
 					Studierender aStudent = iShowStudierendeService.showStudierenden(student_id);
 					listOfStudierenden.add(aStudent);
 				}				
-				
 				ListDataProvider<Studierender> ldpStudent = DataProvider
 						.ofCollection(listOfStudierenden); 
-				studierenderGrid.setDataProvider(ldpStudent); // erstellten Dataprovider als Datenquelle fuer Tabelle festlegen
+				studierenderGrid.setDataProvider(ldpStudent); 
 				
 							
 
@@ -102,11 +110,15 @@ public class EventMatchingDisplayView extends HorizontalLayout {
 			}
 		});
 				
-		studierenderGrid.setSelectionMode(SelectionMode.MULTI);	//es koennen mehrere Studierende ausgewaehlt sein
-		selectionModelStud = (GridMultiSelectionModel<Studierender>) studierenderGrid.getSelectionModel();
-		studierenderGrid.removeColumnByKey("student_id");	//studId nicht in Tabelle mit anzeigen
-		studierenderGrid.setColumns("vorname", "nachname");	//Spaltenordnung festlegen
-
+		unternehmenGrid.removeColumnByKey("unternehmen_id");	
+		unternehmenGrid.setColumns("unternehmensname", "ansprechpartner");	
+		unternehmenGrid2.removeColumnByKey("unternehmen_id");	
+		unternehmenGrid2.setColumns("unternehmensname", "ansprechpartner");	
+		studierenderGrid.removeColumnByKey("student_id");	
+		studierenderGrid.setColumns("vorname", "nachname");
+		studierenderGrid2.removeColumnByKey("student_id");	
+		studierenderGrid2.setColumns("vorname", "nachname");
+		
 		// Button #1 hinzufuegen
 		Button buttonMatchingDuerchfuehren = new Button("Matching durchfuehren");
 		buttonMatchingDuerchfuehren.addThemeVariants(ButtonVariant.LUMO_SUCCESS);
@@ -128,34 +140,54 @@ public class EventMatchingDisplayView extends HorizontalLayout {
 		buttonZurueck.addClickListener(event -> {
 			// Erfolgreich-Meldung anzeigen
 			notificationZurueck.open();
-//			SecurityContextHolder.clearContext();	//Spring-Security-Session leeren
-//			getUI().get().getSession().close();		//Vaadin Session leeren
+			//SecurityContextHolder.clearContext();	//Spring-Security-Session leeren
+			//getUI().get().getSession().close();		//Vaadin Session leeren
 			buttonZurueck.getUI().ifPresent(ui -> ui.navigate("maincontent")); // zurueck auf andere Seite
 		});
-
 		
-		
-		// *** Erz  eugen des Layouts START ***
-		
-  
+		// *** Erzeugen des Layouts START ***
+		Label label1 = new Label("Abgegebene Stimmen von Unternehmen");
+		Label label2 = new Label("Abgegebene Stimmen von Studenten");
+		Label label3 = new Label("Offene Stimmen von Unternehmen");
+		Label label4 = new Label("Offene Stimmen von Studenten");
+				  
 		VerticalLayout v1 = new VerticalLayout(); // Textfelder sollen nebeneinander angeordnet werden
-		v1.add(comboBox);
-		v1.add(textfieldBezeichnung);
+		v1.setWidth("500px");		
+		v1.add(new HorizontalLayout(comboBox));
 		v1.add(new HorizontalLayout(datepickerStartzeitpunktDatum,timepickerStartzeitpunktUhrzeit));
 		v1.add(new HorizontalLayout(datepickerEndzeitpunktDatum,timepickerEndzeitpunktUhrzeit));
-		v1.add(textfieldRundendauerInMinuten);
-		v1.add(buttonMatchingDuerchfuehren, buttonZurueck);
+		v1.add(new HorizontalLayout(textfieldRundendauerInMinuten, checkboxAbgeschlossen));
+		v1.add(new HorizontalLayout(buttonMatchingDuerchfuehren, buttonZurueck));
 		
-		VerticalLayout v2 = new VerticalLayout(); // Textfelder sollen nebeneinander angeordnet werden
-		studierenderGrid.setWidth("200px");
-		v2.setHeight("500px");
+		VerticalLayout v2 = new VerticalLayout();
+		v2.setHeight("800px");
+		v2.setWidth("400px");
+		unternehmenGrid.setWidth("400px");
+		unternehmenGrid.setHeight("850px");		
+		studierenderGrid.setWidth("400px");
+		studierenderGrid.setHeight("850px");		
+		v2.add(label1);		
+		v2.add(unternehmenGrid);
+		v2.add(label2);		
 		v2.add(studierenderGrid);
 		
+		VerticalLayout v3 = new VerticalLayout();
+		v3.setHeight("800px");
+		v3.setWidth("400px");
+		unternehmenGrid2.setWidth("400px");
+		unternehmenGrid2.setHeight("850px");		
+		studierenderGrid2.setWidth("400px");
+		studierenderGrid2.setHeight("850px");		
+		v3.add(label3);		
+		v3.add(unternehmenGrid2);
+		v3.add(label4);		
+		v3.add(studierenderGrid2);
+	
 		add(v1);
 		add(v2);
-		// *** Erzeugen des Layouts ENDE ***
-		
-		
+		add(v3);
+		// *** Erzeugen des Layouts ENDE ***	
 	}
+
 
 }
