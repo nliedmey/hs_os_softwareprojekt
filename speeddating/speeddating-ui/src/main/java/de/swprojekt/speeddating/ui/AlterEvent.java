@@ -22,6 +22,8 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.component.timepicker.TimePicker;
+import com.vaadin.flow.data.binder.Binder;
+import com.vaadin.flow.data.converter.StringToIntegerConverter;
 import com.vaadin.flow.data.provider.DataProvider;
 import com.vaadin.flow.data.provider.ListDataProvider;
 import com.vaadin.flow.router.Route;
@@ -39,6 +41,8 @@ public class AlterEvent extends VerticalLayout {
 	@Autowired // Konstruktor-basierte Injection, Parameter wird autowired (hier: Interface)
 	public AlterEvent(IShowEventService iShowEventService, IShowStudierendeService iShowStudierendeService, IShowUnternehmenService iShowUnternehmenService, IAlterEventService iAlterEventService) {
 
+		Binder<Event> binder; // verknuepft Input aus Textfeldern mit Objektattributen
+		
 		Grid<Event> eventGrid; // Tabelle mit Events
 		GridSingleSelectionModel<Event> selectionModelEvent;
 		
@@ -135,6 +139,13 @@ public class AlterEvent extends VerticalLayout {
 				}
 			}
 		});
+		
+		binder = new Binder<>(Event.class); // Klasse fuer Binder festlegen (kennt somit Objektattribute)
+
+		// Musseingaben definieren textfieldXXX wird mit Objektattribut "xxx" verknuepft
+		binder.forField(textfieldBezeichnung).asRequired("Bezeichnung darf nicht leer sein...").bind("bezeichnung");
+		binder.forField(textfieldRundendauerInMinuten).withConverter(new StringToIntegerConverter("Dauer muss numerisch sein")).asRequired("Dauer darf nicht leer sein...").bind("rundendauerInMinuten");
+		//binder.forField(textfieldHausnummer).withConverter(new StringToIntegerConverter("Eingabe muss numerisch sein")).bind("hausnummer");
 		
 		aendernButton.addClickListener(event->{
 			Optional<Event> selectedEvent=selectionModelEvent.getFirstSelectedItem();
