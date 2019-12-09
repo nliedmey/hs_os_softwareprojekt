@@ -36,7 +36,7 @@ public class User implements UserDetails{
 	@JoinTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))	//mappingtabelle user_role erstellen
 	private Set<Role> roles;
 	
-	private int entity_id_ref; //referenziert auf StudentenID bzw. UnternehmenID
+	private int entity_id_ref; //referenziert auf StudentenID bzw. UnternehmenID bzw. EventorganisatorID
 	
 	public User()
 	{

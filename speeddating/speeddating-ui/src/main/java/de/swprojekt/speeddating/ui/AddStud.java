@@ -7,6 +7,7 @@ import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.notification.NotificationVariant;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -25,6 +26,7 @@ import de.swprojekt.speeddating.service.showstudierender.IShowStudierendeService
  * View zum Anlegen von neuem Studierenden
  */
 @Route(value = "ui/studs/add", layout = MainLayout.class) // Abgeleitet von Root-Layout MainLayout
+@Secured("ROLE_EVENTORGANISATOR")
 public class AddStud extends VerticalLayout {
 
 	 // BestPractice: Konstruktor-Injection im Vergleich zu

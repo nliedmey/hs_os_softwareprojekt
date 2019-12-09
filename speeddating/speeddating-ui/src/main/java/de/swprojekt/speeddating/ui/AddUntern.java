@@ -3,6 +3,7 @@ package de.swprojekt.speeddating.ui;
 import javax.validation.ValidationException;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import com.vaadin.flow.component.button.Button;
@@ -24,6 +25,7 @@ import de.swprojekt.speeddating.service.unternehmen.IUnternehmenService;
  * View zum Anlegen von neuen Unternehmen
  */
 @Route(value = "ui/untern/add", layout = MainLayout.class)
+@Secured("ROLE_EVENTORGANISATOR")
 public class AddUntern extends VerticalLayout {
 
 	@Autowired

@@ -20,7 +20,7 @@ public interface IEventRepository extends JpaRepository<Event, Integer> {
 //	List<Event> findByUserId(@Param("userId") int userId);	//findet via OQL Rolle zu angegebenem Namen
 	
 	@Query(
-			  value = "select event_id from event_studierender WHERE student_id=?1 UNION select event_id from event_unternehmen WHERE unternehmen_id=?1", 
+			  value = "select event_id from event_studierender WHERE student_id=?1 UNION select event_id from event_unternehmen WHERE unternehmen_id=?1 UNION select event_id from eventorganisator_event WHERE eventorganisator_id=?1", 
 			  nativeQuery = true)
 	List<Integer> findByUserId(int userId);	//findet via OQL Rolle zu angegebenem Namen
 	

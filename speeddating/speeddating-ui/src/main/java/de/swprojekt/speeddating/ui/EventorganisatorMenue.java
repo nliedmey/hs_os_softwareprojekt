@@ -18,9 +18,9 @@ public class EventorganisatorMenue extends Div {
 		
 		VerticalLayout v1=new VerticalLayout();		
 		v1.add(new Label("Eventorganisator-Menue"));
-		v1.add(new RouterLink("Events anzeigen/loeschen",EventView.class));
+		v1.add(new RouterLink("Events anzeigen/loeschen",EventViewForEventorganisator.class));
 		v1.add(new RouterLink("Event hinzufuegen",AddEvent.class));
-		v1.add(new RouterLink("Events aendern",AlterEvent.class));
+		v1.add(new RouterLink("Events aendern",AlterEventForEventorganisator.class));
 		v1.add("-----------");
 		v1.add(new RouterLink("Studenten anzeigen",StudView.class));
 		v1.add(new RouterLink("Studenten hinzufuegen",AddStud.class));

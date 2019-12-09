@@ -38,7 +38,7 @@ import de.swprojekt.speeddating.service.showstudierender.IShowStudierendeService
 import de.swprojekt.speeddating.service.showunternehmen.IShowUnternehmenService;
 
 @Route(value = "ui/events/alter", layout = MainLayout.class) // Abgeleitet von Root-Layout MainLayout
-@Secured("ROLE_EVENTORGANISATOR")
+@Secured("ROLE_ADMIN")
 public class AlterEvent extends VerticalLayout {
 	@Autowired // Konstruktor-basierte Injection, Parameter wird autowired (hier: Interface)
 	public AlterEvent(IShowEventService iShowEventService, IShowStudierendeService iShowStudierendeService, IShowUnternehmenService iShowUnternehmenService, IAlterEventService iAlterEventService) {
