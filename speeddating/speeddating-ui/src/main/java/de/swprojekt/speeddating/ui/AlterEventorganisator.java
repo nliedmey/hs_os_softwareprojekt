@@ -1,45 +1,34 @@
 package de.swprojekt.speeddating.ui;
 
-import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.annotation.Secured;
 
 import com.vaadin.flow.component.button.Button;
-import com.vaadin.flow.component.checkbox.Checkbox;
-import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.Grid.SelectionMode;
 import com.vaadin.flow.component.grid.GridMultiSelectionModel;
 import com.vaadin.flow.component.grid.GridSingleSelectionModel;
-import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
-import com.vaadin.flow.component.timepicker.TimePicker;
 import com.vaadin.flow.data.binder.Binder;
-import com.vaadin.flow.data.converter.StringToIntegerConverter;
 import com.vaadin.flow.data.provider.DataProvider;
 import com.vaadin.flow.data.provider.ListDataProvider;
 import com.vaadin.flow.router.Route;
 
 import de.swprojekt.speeddating.model.Event;
 import de.swprojekt.speeddating.model.Eventorganisator;
-import de.swprojekt.speeddating.model.Studierender;
-import de.swprojekt.speeddating.model.Unternehmen;
-import de.swprojekt.speeddating.service.alterevent.IAlterEventService;
 import de.swprojekt.speeddating.service.altereventorganisator.IAlterEventorganisatorService;
 import de.swprojekt.speeddating.service.showevent.IShowEventService;
 import de.swprojekt.speeddating.service.showeventorganisator.IShowEventorganisatorService;
-import de.swprojekt.speeddating.service.showstudierender.IShowStudierendeService;
-import de.swprojekt.speeddating.service.showunternehmen.IShowUnternehmenService;
 
 @Route(value = "ui/eventorganisator/alter", layout = MainLayout.class) // Abgeleitet von Root-Layout MainLayout
+@Secured("ROLE_ADMIN")
 public class AlterEventorganisator extends VerticalLayout {
 	@Autowired // Konstruktor-basierte Injection, Parameter wird autowired (hier: Interface)
 	public AlterEventorganisator(IShowEventorganisatorService iShowEventorganisatorService, IAlterEventorganisatorService iAlterEventorganisatorService, IShowEventService iShowEventService) {
@@ -86,7 +75,7 @@ public class AlterEventorganisator extends VerticalLayout {
 		selectionModelEvent = (GridMultiSelectionModel<Event>) eventGrid.getSelectionModel();
 		
 		eventorganisatorGrid.addSelectionListener(event->{
-			if(!selectionModelEvent.getFirstSelectedItem().isEmpty())
+			if(!selectionModelEventorganisator.getFirstSelectedItem().isEmpty())
 			{
 				Optional<Eventorganisator> selectedEventorganisator=selectionModelEventorganisator.getFirstSelectedItem();
 				Eventorganisator zuAenderndernderEventorganisator=iShowEventorganisatorService.showEventorganisator(selectedEventorganisator.get().getEventorganisator_id());

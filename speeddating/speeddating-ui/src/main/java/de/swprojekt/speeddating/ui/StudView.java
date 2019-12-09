@@ -19,7 +19,7 @@ import de.swprojekt.speeddating.service.showstudierender.IShowStudierendeService
  */
 
 @Route("ui/studs")	//Erreichbar ueber Adresse: http://localhost:8080/speeddating-web-7.0-SNAPSHOT/ui/studs
-@Secured("ROLE_STUDENT")	//nur User mit Rolle ADMIN koennen auf Seite zugreifen, @Secured prueft auch bei RouterLink-Weiterleitungen
+@Secured("ROLE_EVENTORGANISATOR")	//nur User mit Rolle ADMIN koennen auf Seite zugreifen, @Secured prueft auch bei RouterLink-Weiterleitungen
 //@Secured kann auch an einzelnen Methoden angewendet werden
 public class StudView extends VerticalLayout {	//VerticalLayout fuehrt zu Anordnung von Elementen untereinander statt nebeneinander (HorizontalLayout)
 

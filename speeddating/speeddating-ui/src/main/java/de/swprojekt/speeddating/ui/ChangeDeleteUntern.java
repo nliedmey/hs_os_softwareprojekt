@@ -9,6 +9,8 @@ import com.vaadin.flow.component.notification.NotificationVariant;
 
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.annotation.Secured;
+
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
@@ -23,6 +25,7 @@ import de.swprojekt.speeddating.service.unternehmen.IUnternehmenService;
  * View zum Aendern und Loeschen von Studierenden
  */
 @Route(value = "ui/untern/changeDeleteUntern", layout = MainLayout.class) // Abgeleitet von Root-Layout MainLayout
+@Secured("ROLE_EVENTORGANISATOR")
 public class ChangeDeleteUntern extends VerticalLayout {
 
 	int lv_id = 0;

@@ -19,6 +19,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.annotation.Secured;
 
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -42,6 +43,7 @@ import de.swprojekt.speeddating.service.showunternehmen.IShowUnternehmenService;
  * View zum Hinzufuegen von Event
  */
 @Route(value = "ui/events/add", layout = MainLayout.class) // Abgeleitet von Root-Layout MainLayout
+@Secured("ROLE_EVENTORGANISATOR")
 public class AddEvent extends VerticalLayout {
 
 	@Autowired // BestPractice: Konstruktor-Injection im Vergleich zu

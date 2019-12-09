@@ -10,6 +10,7 @@ import java.util.Optional;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.annotation.Secured;
 
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.checkbox.Checkbox;
@@ -37,6 +38,7 @@ import de.swprojekt.speeddating.service.showstudierender.IShowStudierendeService
 import de.swprojekt.speeddating.service.showunternehmen.IShowUnternehmenService;
 
 @Route(value = "ui/events/alter", layout = MainLayout.class) // Abgeleitet von Root-Layout MainLayout
+@Secured("ROLE_EVENTORGANISATOR")
 public class AlterEvent extends VerticalLayout {
 	@Autowired // Konstruktor-basierte Injection, Parameter wird autowired (hier: Interface)
 	public AlterEvent(IShowEventService iShowEventService, IShowStudierendeService iShowStudierendeService, IShowUnternehmenService iShowUnternehmenService, IAlterEventService iAlterEventService) {

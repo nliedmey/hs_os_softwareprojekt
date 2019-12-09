@@ -7,6 +7,7 @@ import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.notification.NotificationVariant;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.annotation.Secured;
 
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
@@ -16,17 +17,19 @@ import com.vaadin.flow.router.Route;
 
 import de.swprojekt.speeddating.model.Eventorganisator;
 import de.swprojekt.speeddating.service.addeventorganisator.IAddEventorganisatorService;
+import de.swprojekt.speeddating.service.security.IRegisterUserService;
 
 /*
  * View zum Hinzufuegen von Eventorganisator
  */
 @Route(value = "ui/eventorganisator/add", layout = MainLayout.class) // Abgeleitet von Root-Layout MainLayout
+@Secured("ROLE_ADMIN")
 public class AddEventorganisator extends VerticalLayout {
 
 	@Autowired // BestPractice: Konstruktor-Injection im Vergleich zu
 				// Attribut/Methoden-Injection
 				// Parameter (hier: IAddEventorganisatorService) wird also automatisch autowired
-	public AddEventorganisator(IAddEventorganisatorService iAddEventorganisatorService) {
+	public AddEventorganisator(IAddEventorganisatorService iAddEventorganisatorService, IRegisterUserService iRegisterUserService) {
 
 		// Deklaration
 		Binder<Eventorganisator> binder; // verknuepft Input aus Textfeldern mit Objektattributen
@@ -71,8 +74,8 @@ public class AddEventorganisator extends VerticalLayout {
 		buttonHinzufuegen.addClickListener(event -> {
 			try {
 				binder.writeBean(einEventorganisator); // dem Objekt werden Attributwerte aus den Textfeldern (via Binder) zugewiesen
-				
-				iAddEventorganisatorService.speicherEventorganisator(einEventorganisator); // Uebergabe an Service zur Speicherung in DB
+				Eventorganisator neuerEventorga=iAddEventorganisatorService.speicherEventorganisator(einEventorganisator); // Uebergabe an Service zur Speicherung in DB
+				iRegisterUserService.save(neuerEventorga.getNachname()+"_"+neuerEventorga.getEventorganisator_id(), "standard", "EVENTORGANISATOR", neuerEventorga.getEventorganisator_id()); //Einloggbenutzer anlegen fuer den Eventorganisator
 				notificationSavesuccess.open(); // Erfolgreich-Meldung anzeigen
 			} catch (ValidationException e) {
 				e.printStackTrace();

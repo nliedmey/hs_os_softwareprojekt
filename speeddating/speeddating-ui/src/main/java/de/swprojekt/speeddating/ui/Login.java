@@ -63,10 +63,20 @@ public class Login extends VerticalLayout {
 						System.out.println("Referenzierte StudentenID: "+userDetails.getEntityRefId());
 						loginButton.getUI().ifPresent(ui->ui.navigate("ui/eventVotingView_Stud"));	//anschliessend auf Votingseite fuer Studs weiterleiten
 					}
-					if(gauth.getAuthority().equals("ROLE_UNTERNEHMEN"))
+					else if(gauth.getAuthority().equals("ROLE_UNTERNEHMEN"))
 					{
 						System.out.println("Referenzierte UnternehmenID: "+userDetails.getEntityRefId());
 						loginButton.getUI().ifPresent(ui->ui.navigate("ui/eventVotingView_Untern"));	//anschliessend auf Votingseite fuer Unternehmen weiterleiten
+					}
+					else if(gauth.getAuthority().equals("ROLE_EVENTORGANISATOR"))
+					{
+						System.out.println("Referenzierter EventorganisatorID: "+userDetails.getEntityRefId());
+						loginButton.getUI().ifPresent(ui->ui.navigate("ui/eventorganisator/menue"));	//anschliessend auf Votingseite fuer Unternehmen weiterleiten
+					}
+					else if(gauth.getAuthority().equals("ROLE_ADMIN"))
+					{
+						System.out.println("Hauptadmin angemeldet!");
+						loginButton.getUI().ifPresent(ui->ui.navigate("ui/admin/menue"));	//anschliessend auf Votingseite fuer Unternehmen weiterleiten
 					}
 				}
 //				System.out.println(authenticated.getAuthorities());

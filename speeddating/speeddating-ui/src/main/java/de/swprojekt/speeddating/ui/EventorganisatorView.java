@@ -3,10 +3,10 @@ package de.swprojekt.speeddating.ui;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.GridMultiSelectionModel;
-import com.vaadin.flow.component.grid.GridSingleSelectionModel;
 import com.vaadin.flow.component.grid.Grid.SelectionMode;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -14,18 +14,15 @@ import com.vaadin.flow.data.provider.DataProvider;
 import com.vaadin.flow.data.provider.ListDataProvider;
 import com.vaadin.flow.router.Route;
 
-import de.swprojekt.speeddating.model.Event;
 import de.swprojekt.speeddating.model.Eventorganisator;
-import de.swprojekt.speeddating.service.deleteevent.IDeleteEventService;
 import de.swprojekt.speeddating.service.deleteeventorganisator.IDeleteEventorganisatorService;
-import de.swprojekt.speeddating.service.showevent.IShowEventService;
 /*
  * View fuer die Anzeige vorhandener Eventorganisatoren
  */
 import de.swprojekt.speeddating.service.showeventorganisator.IShowEventorganisatorService;
 
 @Route("ui/eventorganisator")	//Erreichbar ueber Adresse: http://localhost:8080/speeddating-web-7.0-SNAPSHOT/ui/eventorganisator
-//@Secured("ROLE_ADMIN")	//nur User mit Rolle ADMIN koennen auf Seite zugreifen, @Secured prueft auch bei RouterLink-Weiterleitungen
+@Secured("ROLE_ADMIN")	//nur User mit Rolle ADMIN koennen auf Seite zugreifen, @Secured prueft auch bei RouterLink-Weiterleitungen
 //@Secured kann auch an einzelnen Methoden angewendet werden
 public class EventorganisatorView extends VerticalLayout {	//VerticalLayout fuehrt zu Anordnung von Elementen untereinander statt nebeneinander (HorizontalLayout)
 
