@@ -135,7 +135,7 @@ public class EventMatchingDisplayView extends HorizontalLayout {
 
 		
 		
-		// *** Erzeugen des Layouts START ***
+		// *** Erz  eugen des Layouts START ***
 		
   
 		VerticalLayout v1 = new VerticalLayout(); // Textfelder sollen nebeneinander angeordnet werden
