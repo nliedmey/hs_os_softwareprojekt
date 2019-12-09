@@ -27,6 +27,7 @@ public class AlterEventImpl implements IAlterEventService {
 			gefundenesEvent.setBezeichnung(veraendertesEventDAO.getBezeichnung());
 			gefundenesEvent.setStartzeitpunkt(veraendertesEventDAO.getStartzeitpunkt());
 			gefundenesEvent.setEndzeitpunkt(veraendertesEventDAO.getEndzeitpunkt());
+			gefundenesEvent.setRundendauerInMinuten(veraendertesEventDAO.getRundendauerInMinuten());
 			gefundenesEvent.setAbgeschlossen(veraendertesEventDAO.isAbgeschlossen());
 			gefundenesEvent.setTeilnehmendeStudierende(veraendertesEventDAO.getTeilnehmendeStudierende());
 			gefundenesEvent.setTeilnehmendeUnternehmen(veraendertesEventDAO.getTeilnehmendeUnternehmen());

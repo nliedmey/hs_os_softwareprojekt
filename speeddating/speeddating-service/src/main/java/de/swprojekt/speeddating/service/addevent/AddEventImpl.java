@@ -20,6 +20,7 @@ public class AddEventImpl implements IAddEventService {
 		einEvent.setBezeichnung(einEventDAO.getBezeichnung());
 		einEvent.setStartzeitpunkt(einEventDAO.getStartzeitpunkt());
 		einEvent.setEndzeitpunkt(einEventDAO.getEndzeitpunkt());
+		einEvent.setRundendauerInMinuten(einEventDAO.getRundendauerInMinuten());
 		einEvent.setAbgeschlossen(einEventDAO.isAbgeschlossen());
 		einEvent.setTeilnehmendeStudierende(einEventDAO.getTeilnehmendeStudierende());
 		einEvent.setTeilnehmendeUnternehmen(einEventDAO.getTeilnehmendeUnternehmen());

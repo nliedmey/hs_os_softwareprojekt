@@ -25,6 +25,7 @@ public class Event {
 	private String bezeichnung;
 	private Date startzeitpunkt;
 	private Date endzeitpunkt;
+	private int rundendauerInMinuten;
 	private boolean abgeschlossen;
 	// private List<Integer> teilnehmendeUnternehmen;
 	// private int zustaendigerOrganisator;
@@ -91,6 +92,14 @@ public class Event {
 
 	public void setEndzeitpunkt(Date endzeitpunkt) {
 		this.endzeitpunkt = endzeitpunkt;
+	}
+
+	public int getRundendauerInMinuten() {
+		return rundendauerInMinuten;
+	}
+
+	public void setRundendauerInMinuten(int rundendauerInMinuten) {
+		this.rundendauerInMinuten = rundendauerInMinuten;
 	}
 
 	public boolean isAbgeschlossen() {

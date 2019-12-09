@@ -57,8 +57,10 @@ public class EventController {
 			gefundenesEvent.get().setBezeichnung(einEvent.getBezeichnung());
 			gefundenesEvent.get().setStartzeitpunkt(einEvent.getStartzeitpunkt());
 			gefundenesEvent.get().setEndzeitpunkt(einEvent.getEndzeitpunkt());
+			gefundenesEvent.get().setRundendauerInMinuten(einEvent.getRundendauerInMinuten());
 			gefundenesEvent.get().setAbgeschlossen(einEvent.isAbgeschlossen());
 			gefundenesEvent.get().setTeilnehmendeStudierende(einEvent.getTeilnehmendeStudierende());
+			gefundenesEvent.get().setTeilnehmendeUnternehmen(einEvent.getTeilnehmendeUnternehmen());
 			return iEventRepository.save(gefundenesEvent.get());
 		} catch (NoSuchElementException e) {
 			System.out.println("Kein Event zu ID vorhanden!");

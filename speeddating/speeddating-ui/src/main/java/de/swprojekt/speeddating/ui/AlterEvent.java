@@ -55,6 +55,7 @@ public class AlterEvent extends VerticalLayout {
 		TimePicker timepickerStartzeitpunktUhrzeit=new TimePicker("Startzeit:");
 		DatePicker datepickerEndzeitpunktDatum=new DatePicker("Enddatum:");
 		TimePicker timepickerEndzeitpunktUhrzeit=new TimePicker("Endzeit:");
+		TextField textfieldRundendauerInMinuten = new TextField("Rundendauer (min):");
 		Checkbox checkboxAbgeschlossen=new Checkbox("Abgeschlossen:");
 		
 
@@ -109,6 +110,8 @@ public class AlterEvent extends VerticalLayout {
 				timepickerStartzeitpunktUhrzeit.setValue(zuAendernderndesEvent.getStartzeitpunkt().toInstant().atZone(ZoneId.systemDefault()).toLocalTime());
 				datepickerEndzeitpunktDatum.setValue(zuAendernderndesEvent.getEndzeitpunkt().toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
 				timepickerEndzeitpunktUhrzeit.setValue(zuAendernderndesEvent.getEndzeitpunkt().toInstant().atZone(ZoneId.systemDefault()).toLocalTime());
+				textfieldRundendauerInMinuten.setValue(String.valueOf(zuAendernderndesEvent.getRundendauerInMinuten()));
+				
 				checkboxAbgeschlossen.setValue(zuAendernderndesEvent.isAbgeschlossen());
 				Collection<Integer> listStudentenInUnveraendertemEvent=new ArrayList<>(iShowEventService.showEvent(zuAendernderndesEvent.getEvent_id()).getTeilnehmendeStudierende());
 				Collection<Integer> listUnternehmenInUnveraendertemEvent=new ArrayList<>(iShowEventService.showEvent(zuAendernderndesEvent.getEvent_id()).getTeilnehmendeUnternehmen());
@@ -139,6 +142,10 @@ public class AlterEvent extends VerticalLayout {
 			if(!textfieldBezeichnung.getValue().equals(veraendertesEventDAO.getBezeichnung()))
 			{
 				veraendertesEventDAO.setBezeichnung(textfieldBezeichnung.getValue());
+			}
+			if(!textfieldRundendauerInMinuten.getValue().equals(String.valueOf(veraendertesEventDAO.getRundendauerInMinuten())))
+			{
+				veraendertesEventDAO.setRundendauerInMinuten(Integer.valueOf(textfieldRundendauerInMinuten.getValue()));
 			}
 			//wenn Datepicker oder Timepicker fuer Anfangszeitpunkt veraendert
 			if((!datepickerStartzeitpunktDatum.getValue().equals(veraendertesEventDAO.getStartzeitpunkt().toInstant().atZone(ZoneId.systemDefault()).toLocalDate()))||(!timepickerStartzeitpunktUhrzeit.getValue().equals(veraendertesEventDAO.getStartzeitpunkt().toInstant().atZone(ZoneId.systemDefault()).toLocalTime())))
@@ -187,6 +194,7 @@ public class AlterEvent extends VerticalLayout {
 		v1.add(textfieldBezeichnung);
 		v1.add(new HorizontalLayout(datepickerStartzeitpunktDatum,timepickerStartzeitpunktUhrzeit));
 		v1.add(new HorizontalLayout(datepickerEndzeitpunktDatum,timepickerEndzeitpunktUhrzeit));
+		v1.add(textfieldRundendauerInMinuten);
 		v1.add(studierenderGrid);
 		v1.add(unternehmenGrid);
 		v1.add(aendernButton);

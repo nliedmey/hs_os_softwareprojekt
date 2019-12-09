@@ -26,6 +26,7 @@ import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.component.timepicker.TimePicker;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.binder.ValidationException;
+import com.vaadin.flow.data.converter.StringToIntegerConverter;
 import com.vaadin.flow.data.provider.DataProvider;
 import com.vaadin.flow.data.provider.ListDataProvider;
 import com.vaadin.flow.router.Route;
@@ -59,6 +60,7 @@ public class AddEvent extends VerticalLayout {
 		TextField textfieldBezeichnung = new TextField("Bezeichnung:");
 		DatePicker datepickerStartzeitpunktDatum=new DatePicker("Startdatum:");
 		TimePicker timepickerStartzeitpunktUhrzeit=new TimePicker("Startzeit:");
+		TextField textfieldRundendauerInMinuten = new TextField("Rundendauer (min):");
 		DatePicker datepickerEndzeitpunktDatum=new DatePicker("Enddatum:");
 		TimePicker timepickerEndzeitpunktUhrzeit=new TimePicker("Endzeit:");
 		
@@ -94,6 +96,7 @@ public class AddEvent extends VerticalLayout {
 		v1.add(textfieldBezeichnung);
 		v1.add(new HorizontalLayout(datepickerStartzeitpunktDatum,timepickerStartzeitpunktUhrzeit));
 		v1.add(new HorizontalLayout(datepickerEndzeitpunktDatum,timepickerEndzeitpunktUhrzeit));
+		v1.add(textfieldRundendauerInMinuten);
 		HorizontalLayout h1=new HorizontalLayout();
 		h1.add(unternehmenGrid,studierenderGrid);
 		v1.add(unternehmenGrid);
@@ -106,6 +109,7 @@ public class AddEvent extends VerticalLayout {
 
 		// Musseingaben definieren textfieldXXX wird mit Objektattribut "xxx" verknuepft
 		binder.forField(textfieldBezeichnung).asRequired("Bezeichnung darf nicht leer sein...").bind("bezeichnung");
+		binder.forField(textfieldRundendauerInMinuten).withConverter(new StringToIntegerConverter("Dauer muss numerisch sein")).asRequired("Dauer darf nicht leer sein...").bind("rundendauerInMinuten");
 		//binder.forField(textfieldHausnummer).withConverter(new StringToIntegerConverter("Eingabe muss numerisch sein")).bind("hausnummer");
 		
 		Event einEvent = new Event();
