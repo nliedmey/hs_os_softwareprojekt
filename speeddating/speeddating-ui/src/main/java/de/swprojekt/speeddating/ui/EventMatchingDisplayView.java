@@ -137,7 +137,7 @@ public class EventMatchingDisplayView extends HorizontalLayout {
 		
 		// *** Erzeugen des Layouts START ***
 		
-
+  
 		VerticalLayout v1 = new VerticalLayout(); // Textfelder sollen nebeneinander angeordnet werden
 		v1.add(comboBox);
 		v1.add(textfieldBezeichnung);
