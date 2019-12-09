@@ -40,6 +40,10 @@ public class Event {
 	@Column(name = "student_id")
 	private Set<Integer> teilnehmendeStudierende; // CollectionTable weil Integers und keine Entities
 
+	@ElementCollection(fetch = FetchType.EAGER)
+	@CollectionTable(name = "event_eventorganisator", joinColumns = @JoinColumn(name = "event_id"))
+	@Column(name = "eventorganisator_id")
+	private Set<Integer> verwaltendeOrganisatoren; // CollectionTable weil Integers und keine Entities
 
 	// keine Entities von anderen Klassen in dieser Klasse!
 	// @ManyToMany(cascade = {CascadeType.REFRESH,CascadeType.MERGE}, fetch =
@@ -124,6 +128,14 @@ public class Event {
 
 	public void setTeilnehmendeUnternehmen(Set<Integer> teilnehmendeUnternehmen) {
 		this.teilnehmendeUnternehmen = teilnehmendeUnternehmen;
+	}
+
+	public Set<Integer> getVerwaltendeOrganisatoren() {
+		return verwaltendeOrganisatoren;
+	}
+
+	public void setVerwaltendeOrganisatoren(Set<Integer> verwaltendeOrganisatoren) {
+		this.verwaltendeOrganisatoren = verwaltendeOrganisatoren;
 	}
 
 }
