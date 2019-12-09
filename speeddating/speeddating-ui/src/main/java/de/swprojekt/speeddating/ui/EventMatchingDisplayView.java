@@ -137,7 +137,7 @@ public class EventMatchingDisplayView extends HorizontalLayout {
 		
 		// *** Erzeugen des Layouts START ***
 		
-		studierenderGrid.setHeight("100px");
+
 		VerticalLayout v1 = new VerticalLayout(); // Textfelder sollen nebeneinander angeordnet werden
 		v1.add(comboBox);
 		v1.add(textfieldBezeichnung);
@@ -147,6 +147,8 @@ public class EventMatchingDisplayView extends HorizontalLayout {
 		v1.add(buttonMatchingDuerchfuehren, buttonZurueck);
 		
 		VerticalLayout v2 = new VerticalLayout(); // Textfelder sollen nebeneinander angeordnet werden
+		studierenderGrid.setWidth("200px");
+		v2.setHeight("500px");
 		v2.add(studierenderGrid);
 		
 		add(v1);
