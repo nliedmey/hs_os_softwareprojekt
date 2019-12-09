@@ -56,12 +56,21 @@ public class AlterEventorganisator extends VerticalLayout {
 		TextField textfieldFachbereich = new TextField("Fachbereich:");
 		TextField textfieldTelefonnr = new TextField("Telefonnr:");
 		TextField textfieldEmail = new TextField("Email:");
-		
-		Grid<Eventorganisator> eventorganisatorGrid; // Tabelle mit Eventorganisatoren
-		GridSingleSelectionModel<Eventorganisator> selectionModelEventorganisator;
 
 		Grid<Event> eventGrid; // Tabelle mit Events, welcher Eventorganisator verwaltet
 		GridMultiSelectionModel<Event> selectionModelEvent;
+
+		eventorganisatorGrid = new Grid<>(Eventorganisator.class); // Tabelle initialisieren
+		ListDataProvider<Eventorganisator> ldpEventorganisator = DataProvider
+				.ofCollection(iShowEventorganisatorService.showEventorganisatoren()); // Dataprovider erstellen und Quelle fuer
+																			// Eventorganisatoren (via Service aus DB)
+																			// festlegen
+		eventorganisatorGrid.setDataProvider(ldpEventorganisator); // erstellten Dataprovider als Datenquelle fuer Tabelle festlegen
+
+		eventorganisatorGrid.removeColumnByKey("eventorganisator_id");	//event_id nicht in Tabelle mit anzeigen
+		eventorganisatorGrid.setColumns("vorname", "nachname", "fachbereich", "telefonnr", "email","verwaltet_events");	//Spaltenordnung festlegen
+		eventorganisatorGrid.setSelectionMode(SelectionMode.SINGLE);	//es kann immer nur ein Event gleichzeitig bearbeitet werden
+		selectionModelEventorganisator = (GridSingleSelectionModel<Eventorganisator>) eventorganisatorGrid.getSelectionModel();
 
 		eventGrid = new Grid<>(Event.class); // Tabelle initialisieren
 		ListDataProvider<Event> ldpEvent = DataProvider
@@ -70,144 +79,91 @@ public class AlterEventorganisator extends VerticalLayout {
 																			// festlegen
 		eventGrid.setDataProvider(ldpEvent); // erstellten Dataprovider als Datenquelle fuer Tabelle festlegen
 
-		eventGrid.removeColumnByKey("event_id");	//event_id nicht in Tabelle mit anzeigen
+		eventGrid.removeColumnByKey("event_id");	//studId nicht in Tabelle mit anzeigen
 		eventGrid.setColumns("bezeichnung", "startzeitpunkt", "endzeitpunkt", "abgeschlossen", "teilnehmendeStudierende","teilnehmendeUnternehmen");	//Spaltenordnung festlegen
-		//TODO: EVENTverwaltet in Event-Entity einfuegen
-		eventGrid.setSelectionMode(SelectionMode.SINGLE);	//es kann immer nur ein Event gleichzeitig bearbeitet werden
-		selectionModelEvent = (GridSingleSelectionModel<Event>) eventGrid.getSelectionModel();
-
-		studierenderGrid = new Grid<>(Studierender.class); // Tabelle initialisieren
-		ListDataProvider<Studierender> ldpStudent = DataProvider
-				.ofCollection(iShowStudierendeService.showStudierende()); // Dataprovider erstellen und Quelle fuer
-																			// Studierende (via Service aus DB)
-																			// festlegen
-		studierenderGrid.setDataProvider(ldpStudent); // erstellten Dataprovider als Datenquelle fuer Tabelle festlegen
-
-		studierenderGrid.removeColumnByKey("student_id");	//studId nicht in Tabelle mit anzeigen
-		studierenderGrid.setColumns("vorname", "nachname");	//Spaltenordnung festlegen
 		
-		studierenderGrid.setSelectionMode(SelectionMode.MULTI);	//es koennen mehrere Studierende ausgewaehlt sein
-		selectionModelStud = (GridMultiSelectionModel<Studierender>) studierenderGrid.getSelectionModel();
+		eventGrid.setSelectionMode(SelectionMode.MULTI);	//es koennen mehrere Events ausgewaehlt sein
+		selectionModelEvent = (GridMultiSelectionModel<Event>) eventGrid.getSelectionModel();
 		
-		
-		unternehmenGrid = new Grid<>(Unternehmen.class); // Tabelle initialisieren
-		ListDataProvider<Unternehmen> ldpUnternehmen = DataProvider
-				.ofCollection(iShowUnternehmenService.showUnternehmen()); // Dataprovider erstellen und Quelle fuer
-																			// Studierende (via Service aus DB)
-																			// festlegen
-		unternehmenGrid.setDataProvider(ldpUnternehmen); // erstellten Dataprovider als Datenquelle fuer Tabelle festlegen
-
-		unternehmenGrid.removeColumnByKey("unternehmen_id");	//studId nicht in Tabelle mit anzeigen
-		unternehmenGrid.setColumns("unternehmensname", "ansprechpartner","kontaktmail");	//Spaltenordnung festlegen
-		
-		unternehmenGrid.setSelectionMode(SelectionMode.MULTI);	//es koennen mehrere Unternehmen ausgewaehlt sein
-		selectionModelUnternehmen = (GridMultiSelectionModel<Unternehmen>) unternehmenGrid.getSelectionModel();
-		
-		eventGrid.addSelectionListener(event->{
+		eventorganisatorGrid.addSelectionListener(event->{
 			if(!selectionModelEvent.getFirstSelectedItem().isEmpty())
 			{
-				Optional<Event> selectedEvent=selectionModelEvent.getFirstSelectedItem();
-				Event zuAendernderndesEvent=iShowEventService.showEvent(selectedEvent.get().getEvent_id());
-				textfieldBezeichnung.setValue(zuAendernderndesEvent.getBezeichnung());
-				//Uhrzeit und Datum aus Date herausfiltern und in date/timepicker einsetzen
-				datepickerStartzeitpunktDatum.setValue(zuAendernderndesEvent.getStartzeitpunkt().toInstant().atZone(ZoneId.systemDefault()).toLocalDate()); 
-				timepickerStartzeitpunktUhrzeit.setValue(zuAendernderndesEvent.getStartzeitpunkt().toInstant().atZone(ZoneId.systemDefault()).toLocalTime());
-				datepickerEndzeitpunktDatum.setValue(zuAendernderndesEvent.getEndzeitpunkt().toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
-				timepickerEndzeitpunktUhrzeit.setValue(zuAendernderndesEvent.getEndzeitpunkt().toInstant().atZone(ZoneId.systemDefault()).toLocalTime());
-				textfieldRundendauerInMinuten.setValue(String.valueOf(zuAendernderndesEvent.getRundendauerInMinuten()));
+				Optional<Eventorganisator> selectedEventorganisator=selectionModelEventorganisator.getFirstSelectedItem();
+				Eventorganisator zuAenderndernderEventorganisator=iShowEventorganisatorService.showEventorganisator(selectedEventorganisator.get().getEventorganisator_id());
+				textfieldVorname.setValue(zuAenderndernderEventorganisator.getVorname());
+				textfieldNachname.setValue(zuAenderndernderEventorganisator.getNachname());
+				textfieldFachbereich.setValue(zuAenderndernderEventorganisator.getFachbereich());
+				textfieldTelefonnr.setValue(zuAenderndernderEventorganisator.getTelefonnr());
+				textfieldEmail.setValue(zuAenderndernderEventorganisator.getEmail());
+				Collection<Integer> listEventsVonUnveraendertemEventorganisator=new ArrayList<>(iShowEventorganisatorService.showEventorganisator(zuAenderndernderEventorganisator.getEventorganisator_id()).getVerwaltet_events());
+
+				eventGrid.deselectAll();
 				
-				checkboxAbgeschlossen.setValue(zuAendernderndesEvent.isAbgeschlossen());
-				Collection<Integer> listStudentenInUnveraendertemEvent=new ArrayList<>(iShowEventService.showEvent(zuAendernderndesEvent.getEvent_id()).getTeilnehmendeStudierende());
-				Collection<Integer> listUnternehmenInUnveraendertemEvent=new ArrayList<>(iShowEventService.showEvent(zuAendernderndesEvent.getEvent_id()).getTeilnehmendeUnternehmen());
-			
-				studierenderGrid.deselectAll(); //zunaechst alle ausgewaehlten von vorheriger Eventmarkierung entfernen
-				for(Studierender s:ldpStudent.getItems())
+				for(Event e:ldpEvent.getItems())
 				{
-					if(listStudentenInUnveraendertemEvent.contains(s.getStudent_id())) //wenn Studierender in Event inkludiert
+					if(listEventsVonUnveraendertemEventorganisator.contains(e.getEvent_id())) //wenn Eventorganisator Event verwaltet
 					{ 
-						studierenderGrid.select(s); //Studierende im Event in Tabelle markieren
-					}	
-				}
-				
-				unternehmenGrid.deselectAll(); //zunaechst alle ausgewaehlten von vorheriger Eventmarkierung entfernen
-				for(Unternehmen u:ldpUnternehmen.getItems())
-				{
-					if(listUnternehmenInUnveraendertemEvent.contains(u.getUnternehmen_id())) //wenn Unternehmen in Event inkludiert
-					{
-						unternehmenGrid.select(u);
+						eventGrid.select(e); //verwaltete Events von Eventorganisator in Tabelle markieren
 					}	
 				}
 			}
 		});
 		
-		binder = new Binder<>(Event.class); // Klasse fuer Binder festlegen (kennt somit Objektattribute)
+		binder = new Binder<>(Eventorganisator.class); // Klasse fuer Binder festlegen (kennt somit Objektattribute)
 
 		// Musseingaben definieren textfieldXXX wird mit Objektattribut "xxx" verknuepft
-		binder.forField(textfieldBezeichnung).asRequired("Bezeichnung darf nicht leer sein...").bind("bezeichnung");
-		binder.forField(textfieldRundendauerInMinuten).withConverter(new StringToIntegerConverter("Dauer muss numerisch sein")).asRequired("Dauer darf nicht leer sein...").bind("rundendauerInMinuten");
+		binder.forField(textfieldVorname).asRequired("Vorname darf nicht leer sein...").bind("vorname");
+		binder.forField(textfieldNachname).asRequired("Nachname darf nicht leer sein...").bind("nachname");
+		binder.forField(textfieldFachbereich).asRequired("Fachbereich darf nicht leer sein...").bind("fachbereich");
+		binder.forField(textfieldTelefonnr).asRequired("Telefonnr darf nicht leer sein...").bind("telefonnr");
+		binder.forField(textfieldEmail).asRequired("Email darf nicht leer sein...").bind("email");
 		//binder.forField(textfieldHausnummer).withConverter(new StringToIntegerConverter("Eingabe muss numerisch sein")).bind("hausnummer");
 		
 		aendernButton.addClickListener(event->{
-			Optional<Event> selectedEvent=selectionModelEvent.getFirstSelectedItem();
-			Event veraendertesEventDAO=iShowEventService.showEvent(selectedEvent.get().getEvent_id());
-			if(!textfieldBezeichnung.getValue().equals(veraendertesEventDAO.getBezeichnung()))
+			Optional<Eventorganisator> selectedEventorganisator=selectionModelEventorganisator.getFirstSelectedItem();
+			Eventorganisator veraenderterEventorganisatorDAO=iShowEventorganisatorService.showEventorganisator(selectedEventorganisator.get().getEventorganisator_id());
+			if(!textfieldVorname.getValue().equals(veraenderterEventorganisatorDAO.getVorname()))
 			{
-				veraendertesEventDAO.setBezeichnung(textfieldBezeichnung.getValue());
+				veraenderterEventorganisatorDAO.setVorname(textfieldVorname.getValue());
 			}
-			if(!textfieldRundendauerInMinuten.getValue().equals(String.valueOf(veraendertesEventDAO.getRundendauerInMinuten())))
+			if(!textfieldNachname.getValue().equals(veraenderterEventorganisatorDAO.getNachname()))
 			{
-				veraendertesEventDAO.setRundendauerInMinuten(Integer.valueOf(textfieldRundendauerInMinuten.getValue()));
+				veraenderterEventorganisatorDAO.setNachname(textfieldNachname.getValue());
 			}
-			//wenn Datepicker oder Timepicker fuer Anfangszeitpunkt veraendert
-			if((!datepickerStartzeitpunktDatum.getValue().equals(veraendertesEventDAO.getStartzeitpunkt().toInstant().atZone(ZoneId.systemDefault()).toLocalDate()))||(!timepickerStartzeitpunktUhrzeit.getValue().equals(veraendertesEventDAO.getStartzeitpunkt().toInstant().atZone(ZoneId.systemDefault()).toLocalTime())))
+			if(!textfieldFachbereich.getValue().equals(veraenderterEventorganisatorDAO.getFachbereich()))
 			{
-				veraendertesEventDAO.setStartzeitpunkt(Date.from(LocalDateTime.of(datepickerStartzeitpunktDatum.getValue(), timepickerStartzeitpunktUhrzeit.getValue()).atZone(ZoneId.systemDefault()).toInstant()));
+				veraenderterEventorganisatorDAO.setFachbereich(textfieldFachbereich.getValue());
 			}
-			//wenn Datepicker oder Timepicker fuer Endzeitpunkt veraendert
-			if((!datepickerEndzeitpunktDatum.getValue().equals(veraendertesEventDAO.getEndzeitpunkt().toInstant().atZone(ZoneId.systemDefault()).toLocalDate()))||(!timepickerEndzeitpunktUhrzeit.getValue().equals(veraendertesEventDAO.getEndzeitpunkt().toInstant().atZone(ZoneId.systemDefault()).toLocalTime())))
+			if(!textfieldTelefonnr.getValue().equals(veraenderterEventorganisatorDAO.getTelefonnr()))
 			{
-				veraendertesEventDAO.setEndzeitpunkt(Date.from(LocalDateTime.of(datepickerEndzeitpunktDatum.getValue(), timepickerEndzeitpunktUhrzeit.getValue()).atZone(ZoneId.systemDefault()).toInstant()));
+				veraenderterEventorganisatorDAO.setTelefonnr(textfieldTelefonnr.getValue());
 			}
-			if(!checkboxAbgeschlossen.getValue()==true)
+			if(!textfieldEmail.getValue().equals(veraenderterEventorganisatorDAO.getEmail()))
 			{
-				veraendertesEventDAO.setAbgeschlossen(checkboxAbgeschlossen.getValue());
+				veraenderterEventorganisatorDAO.setEmail(textfieldEmail.getValue());
 			}
-			//Testen, ob gleiche Studierende und Unternehmen zu Event zugeordnet
-			Set<Integer> studentenInUnveraendertemEvent=new HashSet<>(veraendertesEventDAO.getTeilnehmendeStudierende());
-			Set<Integer> studentenInVeraendertemEvent=new HashSet<>();
-			
-			Set<Integer> unternehmenInUnveraendertemEvent=new HashSet<>(veraendertesEventDAO.getTeilnehmendeUnternehmen());
-			Set<Integer> unternehmenInVeraendertemEvent=new HashSet<>();
-			
-			for(Studierender einAusgewaehlterStudierender:selectionModelStud.getSelectedItems())
+			Set<Integer> eventsVonUnveraendertemEventorganisator=new HashSet<>(veraenderterEventorganisatorDAO.getVerwaltet_events());
+			Set<Integer> eventsVonVeraendertemEventorganisator=new HashSet<>();
+			for(Event einAusgewaehltesEvent:selectionModelEvent.getSelectedItems())
 			{
-				studentenInVeraendertemEvent.add(einAusgewaehlterStudierender.getStudent_id());
+				eventsVonVeraendertemEventorganisator.add(einAusgewaehltesEvent.getEvent_id());
 			}
-			for(Unternehmen einAusgewaehltesUnternehmen:selectionModelUnternehmen.getSelectedItems())
+			if(!eventsVonUnveraendertemEventorganisator.equals(eventsVonVeraendertemEventorganisator))
 			{
-				unternehmenInVeraendertemEvent.add(einAusgewaehltesUnternehmen.getUnternehmen_id());
+				System.out.println("Eventzuordnung zu Eventorganisator veraendert!");
+				veraenderterEventorganisatorDAO.setVerwaltet_events(eventsVonVeraendertemEventorganisator);
 			}
-			if(!studentenInUnveraendertemEvent.equals(studentenInVeraendertemEvent))
-			{
-				System.out.println("Teilnehmende Studenten veraendert!");
-				veraendertesEventDAO.setTeilnehmendeStudierende(studentenInVeraendertemEvent);
-			}
-			if(!unternehmenInUnveraendertemEvent.equals(unternehmenInVeraendertemEvent))
-			{
-				System.out.println("Teilnehmende Unternehmen veraendert!");
-				veraendertesEventDAO.setTeilnehmendeUnternehmen(unternehmenInVeraendertemEvent);
-			}
-			iAlterEventService.aenderEvent(veraendertesEventDAO);
+			iAlterEventorganisatorService.aenderEventorganisator(veraenderterEventorganisatorDAO);
 		});
 		
 		VerticalLayout v1 = new VerticalLayout(); // Textfelder sollen untereinander angeordnet werden
+		v1.add(eventorganisatorGrid);
+		v1.add(textfieldVorname);
+		v1.add(textfieldNachname);
+		v1.add(textfieldFachbereich);
+		v1.add(textfieldTelefonnr);
+		v1.add(textfieldEmail);
 		v1.add(eventGrid);
-		v1.add(textfieldBezeichnung);
-		v1.add(new HorizontalLayout(datepickerStartzeitpunktDatum,timepickerStartzeitpunktUhrzeit));
-		v1.add(new HorizontalLayout(datepickerEndzeitpunktDatum,timepickerEndzeitpunktUhrzeit));
-		v1.add(textfieldRundendauerInMinuten);
-		v1.add(studierenderGrid);
-		v1.add(unternehmenGrid);
 		v1.add(aendernButton);
 		add(v1);
 		
