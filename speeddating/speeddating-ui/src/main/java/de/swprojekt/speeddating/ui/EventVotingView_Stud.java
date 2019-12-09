@@ -78,7 +78,7 @@ public class EventVotingView_Stud extends VerticalLayout { // VerticalLayout fue
 		unternehmenGrid.setDataProvider(ldpEvent);
 		
 		Event vorausgewaehltesEvent = comboBox.getValue();
-		if (vorausgewaehltesEvent != null) {
+		if (vorausgewaehltesEvent != null) { //Vereinfachung moeglich, Unternehmen sind ja jetzt bereits in Event und muessen nicht mehr alle geladen werden
 			Event selectedEvent = iShowEventService.showEvent(vorausgewaehltesEvent.getEvent_id());
 			List<Unternehmen> listofUnternehmen = iShowUnternehmenService.showUnternehmen(); // alle Unternehmen aus DB holen
 			// jetzt iterieren wir durch die Teilnehmer des Events und adden diese in unser Grid

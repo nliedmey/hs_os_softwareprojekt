@@ -78,7 +78,7 @@ public class EventVotingView_Untern extends VerticalLayout {	//VerticalLayout fu
 		studierenderGrid.setDataProvider(ldpEvent);
 		
 		Event vorauswaehltesEvent = comboBox.getValue();
-		if (vorauswaehltesEvent != null) {	
+		if (vorauswaehltesEvent != null) {	//Vereinfachung moeglich, Studierende sind ja jetzt bereits in Event und muessen nicht mehr alle geladen werden
 	        Event selectedEvent = iShowEventService.showEvent(vorauswaehltesEvent.getEvent_id());
 			List<Studierender> listofStudierende = iShowStudierenderService.showStudierende(); //alle Studierenden holen					
 			//jetzt iterieren wir durch die Teilnehmer des Events und adden diese in unser Grid
