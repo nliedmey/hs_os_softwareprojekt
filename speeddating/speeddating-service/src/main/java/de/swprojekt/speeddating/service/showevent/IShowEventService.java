@@ -1,5 +1,6 @@
 package de.swprojekt.speeddating.service.showevent;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import de.swprojekt.speeddating.model.Event;
@@ -12,4 +13,5 @@ public interface IShowEventService {
 	public List<Event> showEvents();	//alle Events
 	public Event showEvent(int event_id); //ein Event
 	public List<Integer> showEventsOfUser(int user_id);
+	public ArrayList<Integer> generateMatchingResultSet(Event aEvent);
 }

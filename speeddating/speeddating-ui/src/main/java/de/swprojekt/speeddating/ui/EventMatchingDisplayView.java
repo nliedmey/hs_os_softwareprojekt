@@ -55,8 +55,7 @@ public class EventMatchingDisplayView extends HorizontalLayout {
 	List<Studierender> listOfStudVotedStimmen = new ArrayList<Studierender>();
 	List<Unternehmen> listOfUnternOffeneStimmen = new ArrayList<Unternehmen>();
 	List<Unternehmen> listOfUnternVotedStimmen = new ArrayList<Unternehmen>();
-	
-	
+
 	@Autowired
 	public EventMatchingDisplayView(IShowEventService iShowEventService,
 			IShowStudierendeService iShowStudierendeService, IShowUnternehmenService iShowUnternehmenService) {
@@ -75,7 +74,7 @@ public class EventMatchingDisplayView extends HorizontalLayout {
 		timepickerEndzeitpunktUhrzeit.setReadOnly(true);
 		textfieldRundendauerInMinuten.setReadOnly(true);
 		checkboxAbgeschlossen.setReadOnly(true);
-		
+
 		studentKontaktWuensche.clear();
 		unternehmenKontaktWuensche.clear();
 		listOfStudOffeneStimmen.clear();
@@ -100,7 +99,7 @@ public class EventMatchingDisplayView extends HorizontalLayout {
 		notificationZurueck.addThemeVariants(NotificationVariant.LUMO_ERROR);
 		Label labelZuruecksuccess = new Label("Bearbeitung abgebrochen! ");
 		notificationZurueck.add(labelZuruecksuccess);
-		
+
 		Notification notificationNotPossible = new Notification();
 		notificationNotPossible.addThemeVariants(NotificationVariant.LUMO_ERROR);
 		Label labelNotPossible = new Label("Offene Stimmabgaben, daher kein Matching moeglich! ");
@@ -139,7 +138,6 @@ public class EventMatchingDisplayView extends HorizontalLayout {
 				textfieldRundendauerInMinuten.setValue(String.valueOf(selectedEvent.getRundendauerInMinuten()));
 				checkboxAbgeschlossen.setValue(selectedEvent.isAbgeschlossen());
 
-
 				for (Integer student_id : selectedEvent.getTeilnehmendeStudierende()) {
 					Studierender aStudent = iShowStudierendeService.showStudierenden(student_id);
 					studentKontaktWuensche.clear();
@@ -174,7 +172,6 @@ public class EventMatchingDisplayView extends HorizontalLayout {
 				ListDataProvider<Unternehmen> ldpUnternehmen2 = DataProvider.ofCollection(listOfUnternOffeneStimmen);
 				unternehmenGrid2.setDataProvider(ldpUnternehmen2);
 
-				
 			} else {
 				// message.setText("No song is selected");
 			}
@@ -187,32 +184,23 @@ public class EventMatchingDisplayView extends HorizontalLayout {
 			// getUI().get().getSession().close(); //Vaadin Session leeren
 			buttonZurueck.getUI().ifPresent(ui -> ui.navigate("maincontent")); // zurueck auf andere Seite
 		});
-		
-		buttonMatchingDuerchfuehren.addClickListener(event -> {
-			
-//			if (listOfUnternOffeneStimmen.isEmpty() && listOfStudOffeneStimmen.isEmpty()) {
 
-			for (Integer i : studentKontaktWuensche) {
-				
-							    
-				// Pro Student schauen wir, ob ggf. auch ein Unternehmen den Studenten
-				// weiter kennenlernen moechte
-				for(Integer j : unternehmenKontaktWuensche) {
-					
-				
-				}
-				
-			}
-				
-				// Erfolgreich-Meldung anzeigen
-				notificationMatchingsuccess.open();
-				buttonZurueck.getUI().ifPresent(ui -> ui.navigate("maincontent")); // zurueck auf andere Seite
-				
+		buttonMatchingDuerchfuehren.addClickListener(event -> {
+//			if (listOfUnternOffeneStimmen.isEmpty() && listOfStudOffeneStimmen.isEmpty()) {
+			Event aEvent = comboBox.getValue();;
+			Event selectedEvent = iShowEventService.showEvent(aEvent.getEvent_id());
+			
+			iShowEventService.generateMatchingResultSet(selectedEvent);
+
+			// Erfolgreich-Meldung anzeigen
+			notificationMatchingsuccess.open();
+			buttonZurueck.getUI().ifPresent(ui -> ui.navigate("maincontent")); // zurueck auf andere Seite
+
 //			} else {
 //				notificationNotPossible.open();
 //			}			
 		});
-		
+
 		unternehmenGrid.removeColumnByKey("unternehmen_id");
 		unternehmenGrid.setColumns("unternehmensname", "ansprechpartner");
 		unternehmenGrid2.removeColumnByKey("unternehmen_id");

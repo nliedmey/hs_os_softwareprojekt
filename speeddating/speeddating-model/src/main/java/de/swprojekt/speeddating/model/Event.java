@@ -1,5 +1,6 @@
 package de.swprojekt.speeddating.model;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Set;
 
@@ -48,7 +49,7 @@ public class Event {
 	// "event_id"), inverseJoinColumns = @JoinColumn(name = "student_id"))
 	// //mappingtabelle event_studierender erstellen
 	// private List<Integer> teilnehmendeStudierende;
-
+	
 	public Event() {
 		// TODO Auto-generated constructor stub
 	}
@@ -124,5 +125,7 @@ public class Event {
 	public void setTeilnehmendeUnternehmen(Set<Integer> teilnehmendeUnternehmen) {
 		this.teilnehmendeUnternehmen = teilnehmendeUnternehmen;
 	}
+
+
 
 }
