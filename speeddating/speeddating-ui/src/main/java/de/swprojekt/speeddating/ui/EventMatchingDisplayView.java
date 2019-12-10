@@ -193,7 +193,8 @@ public class EventMatchingDisplayView extends HorizontalLayout {
 //			if (listOfUnternOffeneStimmen.isEmpty() && listOfStudOffeneStimmen.isEmpty()) {
 
 			for (Integer i : studentKontaktWuensche) {
-			    
+				
+							    
 				// Pro Student schauen wir, ob ggf. auch ein Unternehmen den Studenten
 				// weiter kennenlernen moechte
 				for(Integer j : unternehmenKontaktWuensche) {
