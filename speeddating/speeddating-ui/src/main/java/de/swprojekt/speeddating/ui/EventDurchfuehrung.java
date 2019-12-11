@@ -26,6 +26,7 @@ import com.vaadin.flow.router.Route;
 import de.swprojekt.speeddating.model.Event;
 import de.swprojekt.speeddating.model.Studierender;
 import de.swprojekt.speeddating.model.Unternehmen;
+import de.swprojekt.speeddating.service.alterevent.IAlterEventService;
 import de.swprojekt.speeddating.service.showevent.IShowEventService;
 import de.swprojekt.speeddating.service.showstudierender.IShowStudierendeService;
 import de.swprojekt.speeddating.service.showunternehmen.IShowUnternehmenService;
@@ -55,7 +56,7 @@ public class EventDurchfuehrung extends HorizontalLayout {
 	
 	@Autowired
 	public EventDurchfuehrung(IShowEventService iShowEventService, IShowUnternehmenService iShowUnternehmenService,
-			IShowStudierendeService iShowStudierendeService) {
+			IShowStudierendeService iShowStudierendeService, IAlterEventService iAlterEventService) {
 
 		// Buttons und Felder erzeugen
 		Label labelTabelle = new Label("Tabelle");
@@ -288,7 +289,9 @@ public class EventDurchfuehrung extends HorizontalLayout {
 		buttonBeenden.addClickListener(event ->{
 			
 			aEvent.setAbgeschlossen(true);
+			iAlterEventService.aenderEvent(aEvent);
 			buttonBeenden.getUI().ifPresent(ui -> ui.navigate("maincontent"));
+			
 			
 		});
 	}
