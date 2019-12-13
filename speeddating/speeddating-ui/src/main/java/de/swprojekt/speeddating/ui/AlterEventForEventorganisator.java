@@ -58,6 +58,8 @@ public class AlterEventForEventorganisator extends VerticalLayout {
 		GridMultiSelectionModel<Unternehmen> selectionModelUnternehmen;
 		
 		Button aendernButton=new Button("Aendern");
+		Button logoutButton=new Button("Logout");
+
 		
 		TextField textfieldBezeichnung = new TextField("Bezeichnung:");
 		DatePicker datepickerStartzeitpunktDatum=new DatePicker("Startdatum:");
@@ -212,6 +214,12 @@ public class AlterEventForEventorganisator extends VerticalLayout {
 			iAlterEventService.aenderEvent(veraendertesEventDAO);
 		});
 		
+		logoutButton.addClickListener(event -> {	//Bei Buttonklick werden folgende Aktionen ausgefuehrt
+			SecurityContextHolder.clearContext();	//Spring-Security-Session leeren
+			getUI().get().getSession().close();		//Vaadin Session leeren
+			logoutButton.getUI().ifPresent(ui->ui.navigate("login"));	//zurueck auf andere Seite 
+		});
+		
 		VerticalLayout v1 = new VerticalLayout(); // Textfelder sollen untereinander angeordnet werden
 		v1.add(eventGrid);
 		v1.add(textfieldBezeichnung);
@@ -221,6 +229,7 @@ public class AlterEventForEventorganisator extends VerticalLayout {
 		v1.add(studierenderGrid);
 		v1.add(unternehmenGrid);
 		v1.add(aendernButton);
+		v1.add(logoutButton);
 		add(v1);
 		
 	}

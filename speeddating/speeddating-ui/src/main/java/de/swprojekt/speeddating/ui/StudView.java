@@ -36,6 +36,7 @@ public class StudView extends VerticalLayout {	//VerticalLayout fuehrt zu Anordn
 
 		studierenderGrid.removeColumnByKey("student_id");	//studId nicht in Tabelle mit anzeigen
 		studierenderGrid.setColumns("vorname", "nachname");	//Spaltenordnung festlegen
+		
 		logoutButton.addClickListener(event -> {	//Bei Buttonklick werden folgende Aktionen ausgefuehrt
 			SecurityContextHolder.clearContext();	//Spring-Security-Session leeren
 			getUI().get().getSession().close();		//Vaadin Session leeren

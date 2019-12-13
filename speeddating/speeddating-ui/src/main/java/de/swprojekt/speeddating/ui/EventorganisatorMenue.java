@@ -1,7 +1,9 @@
 package de.swprojekt.speeddating.ui;
 
 import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.core.context.SecurityContextHolder;
 
+import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -16,6 +18,14 @@ public class EventorganisatorMenue extends Div {
 	
 	public EventorganisatorMenue() {
 		
+		Button logoutButton=new Button("Logout");
+		
+		logoutButton.addClickListener(event -> {	//Bei Buttonklick werden folgende Aktionen ausgefuehrt
+			SecurityContextHolder.clearContext();	//Spring-Security-Session leeren
+			getUI().get().getSession().close();		//Vaadin Session leeren
+			logoutButton.getUI().ifPresent(ui->ui.navigate("login"));	//zurueck auf andere Seite 
+		});	
+		
 		VerticalLayout v1=new VerticalLayout();		
 		v1.add(new Label("Eventorganisator-Menue"));
 		v1.add(new RouterLink("Events anzeigen/loeschen",EventViewForEventorganisator.class));
@@ -29,8 +39,9 @@ public class EventorganisatorMenue extends Div {
 		v1.add(new RouterLink("Unternehmen anzeigen",UnternView.class));
 		v1.add(new RouterLink("Unternehmen hinzufuegen",AddUntern.class));
 		v1.add(new RouterLink("Unternehmen aendern/loeschen",ChangeDeleteUntern.class));
-		
+		v1.add(logoutButton);
 		add(v1);
+		
 	}
 	
 }

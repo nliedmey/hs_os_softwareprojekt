@@ -6,7 +6,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import de.swprojekt.speeddating.model.Studierender;
+import de.swprojekt.speeddating.model.User;
 import de.swprojekt.speeddating.repository.IStudierenderRepository;
+import de.swprojekt.speeddating.repository.IUserRepository;
 /*
  * Implementierung von IAddStudierenderService 
  */
@@ -15,6 +17,9 @@ public class StudierenderImpl implements IStudierenderService {
 
 	@Autowired
 	IStudierenderRepository iStudierenderRepository;	//Interface zur Verwaltung von Studierenden aus DB einbinden
+	
+	@Autowired
+	private IUserRepository iUserRepository;
 	
 	@Override
 	public Studierender saveStudierenden(Studierender einStudierenderDAO) {
@@ -33,8 +38,17 @@ public class StudierenderImpl implements IStudierenderService {
 	
 	public void deleteStudierenden(Studierender einStudierenderDAO) {
 		
-		Studierender einStudierender=new Studierender();
+		Studierender einStudierender=new Studierender();		
 		einStudierender.setStudent_id(einStudierenderDAO.getStudent_id());
+		einStudierender.setNachname(einStudierenderDAO.getNachname());
+		einStudierender.setMatrikelnummer(einStudierenderDAO.getMatrikelnummer());
+	
+		String username = einStudierender.getNachname() + "_" + einStudierender.getMatrikelnummer();
+		User gefundenerUser=iUserRepository.findByUsername(username);
+		if (gefundenerUser!= null) {
+			iUserRepository.delete(gefundenerUser);
+		}
+		
 		iStudierenderRepository.deleteById(einStudierender.getStudent_id());
 	}
 

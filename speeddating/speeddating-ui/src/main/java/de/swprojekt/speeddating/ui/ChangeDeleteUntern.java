@@ -10,6 +10,7 @@ import com.vaadin.flow.component.notification.NotificationVariant;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
@@ -71,6 +72,8 @@ public class ChangeDeleteUntern extends VerticalLayout {
 		// Button #3 hinzufuegen
 		Button buttonAbbrechen = new Button("Abbrechen");
 		buttonAbbrechen.addThemeVariants(ButtonVariant.LUMO_SUCCESS);
+		
+		Button logoutButton=new Button("Logout");
 
 		// Notification Meldungen mit Button verknuepfen
 		Notification notificationAendernsuccess = new Notification();
@@ -98,7 +101,7 @@ public class ChangeDeleteUntern extends VerticalLayout {
 		h1.add(textfieldAnsprechpartner);
 		h1.add(textfieldKontaktmail);
 
-		add(h1, buttonUnternAendern, buttonUnternLoeschen, buttonAbbrechen); // darunter wird Button angeordnet
+		add(h1, buttonUnternAendern, buttonUnternLoeschen, buttonAbbrechen, logoutButton); // darunter wird Button angeordnet
 		// *** Erzeugen des Layouts ENDE ***
 
 		binder = new Binder<>(Unternehmen.class); // Klasse fuer Binder festlegen (kennt somit Objektattribute)
@@ -149,6 +152,12 @@ public class ChangeDeleteUntern extends VerticalLayout {
 //			SecurityContextHolder.clearContext();	//Spring-Security-Session leeren
 //			getUI().get().getSession().close();		//Vaadin Session leeren
 			buttonAbbrechen.getUI().ifPresent(ui -> ui.navigate("maincontent")); // zurueck auf andere Seite
+		});
+		
+		logoutButton.addClickListener(event -> {	//Bei Buttonklick werden folgende Aktionen ausgefuehrt
+			SecurityContextHolder.clearContext();	//Spring-Security-Session leeren
+			getUI().get().getSession().close();		//Vaadin Session leeren
+			logoutButton.getUI().ifPresent(ui->ui.navigate("login"));	//zurueck auf andere Seite 
 		});
 
 	}

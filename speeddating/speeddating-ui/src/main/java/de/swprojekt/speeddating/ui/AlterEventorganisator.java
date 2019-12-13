@@ -8,6 +8,7 @@ import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.Grid;
@@ -39,6 +40,7 @@ public class AlterEventorganisator extends VerticalLayout {
 		GridSingleSelectionModel<Eventorganisator> selectionModelEventorganisator;
 		
 		Button aendernButton=new Button("Aendern");
+		Button logoutButton=new Button("Logout");
 		
 		TextField textfieldVorname = new TextField("Vorname:");
 		TextField textfieldNachname = new TextField("Nachname:");
@@ -145,6 +147,12 @@ public class AlterEventorganisator extends VerticalLayout {
 			iAlterEventorganisatorService.aenderEventorganisator(veraenderterEventorganisatorDAO);
 		});
 		
+		logoutButton.addClickListener(event -> {	//Bei Buttonklick werden folgende Aktionen ausgefuehrt
+			SecurityContextHolder.clearContext();	//Spring-Security-Session leeren
+			getUI().get().getSession().close();		//Vaadin Session leeren
+			logoutButton.getUI().ifPresent(ui->ui.navigate("login"));	//zurueck auf andere Seite 
+		});
+		
 		VerticalLayout v1 = new VerticalLayout(); // Textfelder sollen untereinander angeordnet werden
 		v1.add(eventorganisatorGrid);
 		v1.add(textfieldVorname);
@@ -154,6 +162,7 @@ public class AlterEventorganisator extends VerticalLayout {
 		v1.add(textfieldEmail);
 		v1.add(eventGrid);
 		v1.add(aendernButton);
+		v1.add(logoutButton);
 		add(v1);
 		
 	}

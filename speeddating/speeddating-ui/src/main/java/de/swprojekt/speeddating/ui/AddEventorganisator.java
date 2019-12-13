@@ -8,6 +8,7 @@ import com.vaadin.flow.component.notification.NotificationVariant;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
@@ -43,6 +44,8 @@ public class AddEventorganisator extends VerticalLayout {
 		
 		// Button hinzufuegen
 		Button buttonHinzufuegen = new Button("Eventorganisator anlegen");
+		Button logoutButton=new Button("Logout");
+		
 		buttonHinzufuegen.addThemeVariants(ButtonVariant.LUMO_SUCCESS);
 
 		// Notification Meldungen mit Button verknuepfen
@@ -59,7 +62,7 @@ public class AddEventorganisator extends VerticalLayout {
 		v1.add(textfieldTelefonnr);
 		v1.add(textfieldEmail);
 				
-		add(v1, buttonHinzufuegen); // darunter wird Button angeordnet
+		add(v1, buttonHinzufuegen, logoutButton); // darunter wird Button angeordnet
 		
 		binder = new Binder<>(Eventorganisator.class); // Klasse fuer Binder festlegen (kennt somit Objektattribute)
 
@@ -81,6 +84,12 @@ public class AddEventorganisator extends VerticalLayout {
 			} catch (ValidationException e) {
 				e.printStackTrace();
 			}
+		});
+		
+		logoutButton.addClickListener(event -> {	//Bei Buttonklick werden folgende Aktionen ausgefuehrt
+			SecurityContextHolder.clearContext();	//Spring-Security-Session leeren
+			getUI().get().getSession().close();		//Vaadin Session leeren
+			logoutButton.getUI().ifPresent(ui->ui.navigate("login"));	//zurueck auf andere Seite 
 		});
 
 	}

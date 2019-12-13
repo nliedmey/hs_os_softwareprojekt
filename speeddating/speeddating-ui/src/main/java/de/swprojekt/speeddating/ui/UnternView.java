@@ -36,6 +36,7 @@ public class UnternView extends VerticalLayout {	//VerticalLayout fuehrt zu Anor
 
 		//studierenderGrid.removeColumnByKey("studId");	//studId nicht in Tabelle mit anzeigen
 		unternehmenGrid.setColumns("unternehmensname", "ansprechpartner");	//Spaltenordnung festlegen
+		
 		logoutButton.addClickListener(event -> {	//Bei Buttonklick werden folgende Aktionen ausgefuehrt
 			SecurityContextHolder.clearContext();	//Spring-Security-Session leeren
 			getUI().get().getSession().close();		//Vaadin Session leeren

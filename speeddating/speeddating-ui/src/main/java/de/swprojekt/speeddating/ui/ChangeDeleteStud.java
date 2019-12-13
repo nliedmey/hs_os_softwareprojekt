@@ -10,6 +10,7 @@ import com.vaadin.flow.component.notification.NotificationVariant;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
@@ -86,24 +87,26 @@ public class ChangeDeleteStud extends VerticalLayout {
 		Button buttonAbbrechen = new Button("Abbrechen");
 		buttonAbbrechen.addThemeVariants(ButtonVariant.LUMO_SUCCESS);
 
+		Button logoutButton = new Button("Logout");
+
 		// Notification Meldungen mit Button verknuepfen
 		Notification notificationAendernsuccess = new Notification();
 		notificationAendernsuccess.addThemeVariants(NotificationVariant.LUMO_SUCCESS);
 		Label labelAendernsuccess = new Label("Student erfolgreich aktualisiert! ");
 		notificationAendernsuccess.add(labelAendernsuccess);
-		notificationAendernsuccess.setDuration(5000); //Meldung wird 5 Sekunden lang angezeigt
+		notificationAendernsuccess.setDuration(5000); // Meldung wird 5 Sekunden lang angezeigt
 
 		Notification notificationLoeschensuccess = new Notification();
 		notificationLoeschensuccess.addThemeVariants(NotificationVariant.LUMO_SUCCESS);
 		Label labelLoeschensuccess = new Label("Student erfolgreich geloescht! ");
 		notificationLoeschensuccess.add(labelLoeschensuccess);
-		notificationLoeschensuccess.setDuration(5000); //Meldung wird 5 Sekunden lang angezeigt
+		notificationLoeschensuccess.setDuration(5000); // Meldung wird 5 Sekunden lang angezeigt
 
 		Notification notificationAbbruch = new Notification();
 		notificationAbbruch.addThemeVariants(NotificationVariant.LUMO_ERROR);
 		Label labelAbbruchsuccess = new Label("Studentbearbeitung abgebrochen! ");
 		notificationAbbruch.add(labelAbbruchsuccess);
-		notificationAbbruch.setDuration(5000); //Meldung wird 5 Sekunden lang angezeigt
+		notificationAbbruch.setDuration(5000); // Meldung wird 5 Sekunden lang angezeigt
 
 		// *** Erzeugen des Layouts START ***
 		VerticalLayout h1 = new VerticalLayout(); // Textfelder sollen nebeneinander angeordnet werden
@@ -120,7 +123,8 @@ public class ChangeDeleteStud extends VerticalLayout {
 		h1.add(textfieldTelefonnr);
 		h1.add(textfieldEMail);
 
-		add(h1, buttonStudAendern, buttonStudLoeschen, buttonAbbrechen); // darunter wird Button angeordnet
+		add(h1, buttonStudAendern, buttonStudLoeschen, buttonAbbrechen, logoutButton); // darunter wird Button
+																						// angeordnet
 		// *** Erzeugen des Layouts ENDE ***
 
 		binder = new Binder<>(Studierender.class); // Klasse fuer Binder festlegen (kennt somit Objektattribute)
@@ -180,6 +184,11 @@ public class ChangeDeleteStud extends VerticalLayout {
 			buttonAbbrechen.getUI().ifPresent(ui -> ui.navigate("maincontent")); // zurueck auf andere Seite
 		});
 
+		logoutButton.addClickListener(event -> { // Bei Buttonklick werden folgende Aktionen ausgefuehrt
+			SecurityContextHolder.clearContext(); // Spring-Security-Session leeren
+			getUI().get().getSession().close(); // Vaadin Session leeren
+			logoutButton.getUI().ifPresent(ui -> ui.navigate("login")); // zurueck auf andere Seite
+		});
 	}
 
 }

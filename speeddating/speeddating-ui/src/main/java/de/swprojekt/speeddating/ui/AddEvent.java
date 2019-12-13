@@ -20,6 +20,7 @@ import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -66,6 +67,8 @@ public class AddEvent extends VerticalLayout {
 		DatePicker datepickerEndzeitpunktDatum=new DatePicker("Enddatum:");
 		TimePicker timepickerEndzeitpunktUhrzeit=new TimePicker("Endzeit:");
 		
+		Button logoutButton=new Button("Logout");
+		
 		studierenderGrid = new Grid<>(Studierender.class);	//Tabelle initialisieren
 		ListDataProvider<Studierender> ldpStudent = DataProvider
 				.ofCollection(iShowStudierendeService.showStudierende());	//Dataprovider erstellen und Quelle fuer Studierende (via Service aus DB) festlegen 
@@ -107,6 +110,7 @@ public class AddEvent extends VerticalLayout {
 //		v1.add(h1);
 				
 		add(v1, buttonHinzufuegen); // darunter wird Button angeordnet
+		add(v1, logoutButton);
 		
 		binder = new Binder<>(Event.class); // Klasse fuer Binder festlegen (kennt somit Objektattribute)
 
@@ -155,6 +159,12 @@ public class AddEvent extends VerticalLayout {
 			} catch (ValidationException e) {
 				e.printStackTrace();
 			}
+		});
+		
+		logoutButton.addClickListener(event -> {	//Bei Buttonklick werden folgende Aktionen ausgefuehrt
+			SecurityContextHolder.clearContext();	//Spring-Security-Session leeren
+			getUI().get().getSession().close();		//Vaadin Session leeren
+			logoutButton.getUI().ifPresent(ui->ui.navigate("login"));	//zurueck auf andere Seite 
 		});
 
 	}

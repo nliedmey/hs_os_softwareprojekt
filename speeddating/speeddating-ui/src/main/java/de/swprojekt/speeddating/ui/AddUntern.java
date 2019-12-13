@@ -44,6 +44,7 @@ public class AddUntern extends VerticalLayout {
 		buttonHinzufuegen.addThemeVariants(ButtonVariant.LUMO_SUCCESS);
 		Button buttonAbbrechen = new Button("Abbrechen");
 		buttonAbbrechen.addThemeVariants(ButtonVariant.LUMO_ERROR);
+		Button logoutButton=new Button("Logout");
 		
 		//Notification
 		Notification notificationSavesuccess = new Notification();
@@ -57,7 +58,7 @@ public class AddUntern extends VerticalLayout {
 		h1.add(textfieldAnsprechpartner);
 		h1.add(textfieldKontaktmail);
 		
-		add(h1, buttonHinzufuegen, buttonAbbrechen);
+		add(h1, buttonHinzufuegen, buttonAbbrechen, logoutButton);
 		
 		binder = new Binder<>(Unternehmen.class);
 		
@@ -85,6 +86,12 @@ public class AddUntern extends VerticalLayout {
 			SecurityContextHolder.clearContext();	//Spring-Security-Session leeren
 			getUI().get().getSession().close();		//Vaadin Session leeren
 			buttonHinzufuegen.getUI().ifPresent(ui->ui.navigate("maincontent"));
+		});
+		
+		logoutButton.addClickListener(event -> {	//Bei Buttonklick werden folgende Aktionen ausgefuehrt
+			SecurityContextHolder.clearContext();	//Spring-Security-Session leeren
+			getUI().get().getSession().close();		//Vaadin Session leeren
+			logoutButton.getUI().ifPresent(ui->ui.navigate("login"));	//zurueck auf andere Seite 
 		});
 	}
 }

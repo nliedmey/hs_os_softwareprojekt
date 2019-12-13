@@ -110,6 +110,7 @@ public class EventDurchfuehrung extends HorizontalLayout {
 		Button buttonNaechsteRunde = new Button("Naechste Runde");
 		Button buttonPauseFortsetzen = new Button("Pause / Fortsetzen");
 		Button buttonBeenden = new Button("Beenden");
+		
 
 		// Erzeugen der Combo Box
 		ComboBox<Event> comboBox = new ComboBox<>();
