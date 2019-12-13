@@ -1,8 +1,10 @@
 package de.swprojekt.speeddating.service.showevent;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.Set;
@@ -56,9 +58,9 @@ public class ShowEventImpl implements IShowEventService {
 	}
 
 	@Override
-	public ArrayList<Integer> generateMatchingResultSet(Event aEvent) {
+	public Map<Studierender, Unternehmen> generateMatchingResultSet(Event aEvent) {
 	
-
+		Map<Studierender, Unternehmen> matchingResultMap = new HashMap<>();     
 		Set<Integer> studentKontaktWuensche = new HashSet<>();
 		Set<Integer> unternehmenKontaktWuensche = new HashSet<>();
 		
@@ -75,11 +77,11 @@ public class ShowEventImpl implements IShowEventService {
 							unternehmenKontaktWuensche = aUnternehmen.getUnternehmenKontaktwuensche();
 							for (Integer unternehmenWunsch : unternehmenKontaktWuensche) {
 								if (aStudent.getStudent_id() == unternehmenWunsch) {
-									System.out.println("Jawohl, das ist ein Matching -> Student"
-											+ aStudent.getStudent_id() + " und das Unternehmen"
-											+ aUnternehmen.getUnternehmen_id() + "gehoeren zusammen");
-
 									
+									matchingResultMap.put(aStudent, aUnternehmen);
+//									System.out.println("Jawohl, das ist ein Matching per For -> Student"
+//											+ aStudent.getStudent_id() + " und das Unternehmen"
+//											+ aUnternehmen.getUnternehmen_id() + "gehoeren zusammen");				
 								}
 							}
 						}
@@ -90,8 +92,8 @@ public class ShowEventImpl implements IShowEventService {
 				//daher machen wir beim naechsten weiter um Zeit zu sparen
 				continue;
 			}
-		}
-		return null;		
+		}		
+		return matchingResultMap;		
 		
 	}
 
