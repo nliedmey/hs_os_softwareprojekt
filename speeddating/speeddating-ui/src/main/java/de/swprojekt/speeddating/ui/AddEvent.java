@@ -93,6 +93,7 @@ public class AddEvent extends VerticalLayout {
 		notificationSavesuccess.addThemeVariants(NotificationVariant.LUMO_SUCCESS);
 		Label labelSavesuccess = new Label("Event erfolgreich hinzugefuegt! ");
 		notificationSavesuccess.add(labelSavesuccess);
+		notificationSavesuccess.setDuration(5000); //Meldung wird 5 Sekunden lang angezeigt
 				
 		VerticalLayout v1 = new VerticalLayout(); // Textfelder sollen untereinander angeordnet werden
 		v1.add(textfieldBezeichnung);

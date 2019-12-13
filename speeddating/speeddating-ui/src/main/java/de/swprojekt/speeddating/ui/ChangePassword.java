@@ -53,11 +53,13 @@ public class ChangePassword extends VerticalLayout {
 		notificationAlterPwsuccess.addThemeVariants(NotificationVariant.LUMO_SUCCESS);
 		Label labelAlterPwsuccess = new Label("Passwort erfolgreich geaendert!");
 		notificationAlterPwsuccess.add(labelAlterPwsuccess);
+		notificationAlterPwsuccess.setDuration(5000); //Meldung wird 5 Sekunden lang angezeigt
 		
 		Notification notificationAlterPwerror = new Notification();
 		notificationAlterPwerror.addThemeVariants(NotificationVariant.LUMO_ERROR);
 		Label labelAlterPwerror = new Label("Passwoerter stimmen nicht ueberein!");
 		notificationAlterPwerror.add(labelAlterPwerror);
+		notificationAlterPwerror.setDuration(5000); //Meldung wird 5 Sekunden lang angezeigt
 		
 		
 		VerticalLayout h1 = new VerticalLayout();

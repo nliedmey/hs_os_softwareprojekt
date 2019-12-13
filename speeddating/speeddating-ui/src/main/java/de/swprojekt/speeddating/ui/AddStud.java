@@ -64,6 +64,7 @@ public class AddStud extends VerticalLayout {
 		notificationSavesuccess.addThemeVariants(NotificationVariant.LUMO_SUCCESS);
 		Label labelSavesuccess = new Label("Student erfolgreich hinzugefuegt! ");
 		notificationSavesuccess.add(labelSavesuccess);
+		notificationSavesuccess.setDuration(5000); //Meldung wird 5 Sekunden lang angezeigt
 				
 		VerticalLayout h1 = new VerticalLayout(); // Textfelder sollen nebeneinander angeordnet werden
 		h1.add(textfieldMatrikelnr);

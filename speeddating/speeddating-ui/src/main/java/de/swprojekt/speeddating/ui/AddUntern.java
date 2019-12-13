@@ -50,6 +50,7 @@ public class AddUntern extends VerticalLayout {
 		notificationSavesuccess.addThemeVariants(NotificationVariant.LUMO_SUCCESS);
 		Label labelSavesuccess = new Label("Unternehmen erfolgreich hinzugefuegt!");
 		notificationSavesuccess.add(labelSavesuccess);
+		notificationSavesuccess.setDuration(5000); //Meldung wird 5 Sekunden lang angezeigt
 		
 		VerticalLayout h1 = new VerticalLayout();
 		h1.add(textfieldUnternehmensname);

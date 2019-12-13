@@ -77,16 +77,19 @@ public class ChangeDeleteUntern extends VerticalLayout {
 		notificationAendernsuccess.addThemeVariants(NotificationVariant.LUMO_SUCCESS);
 		Label labelAendernsuccess = new Label("Unternehmen erfolgreich aktualisiert! ");
 		notificationAendernsuccess.add(labelAendernsuccess);
+		notificationAendernsuccess.setDuration(5000); //Meldung wird 5 Sekunden lang angezeigt
 
 		Notification notificationLoeschensuccess = new Notification();
 		notificationLoeschensuccess.addThemeVariants(NotificationVariant.LUMO_SUCCESS);
 		Label labelLoeschensuccess = new Label("Unternehmen erfolgreich geloescht! ");
 		notificationLoeschensuccess.add(labelLoeschensuccess);
+		notificationLoeschensuccess.setDuration(5000); //Meldung wird 5 Sekunden lang angezeigt
 
 		Notification notificationAbbruch = new Notification();
 		notificationAbbruch.addThemeVariants(NotificationVariant.LUMO_ERROR);
 		Label labelAbbruchsuccess = new Label("Bearbeitung abgebrochen! ");
 		notificationAbbruch.add(labelAbbruchsuccess);
+		notificationAbbruch.setDuration(5000); //Meldung wird 5 Sekunden lang angezeigt
 
 		// *** Erzeugen des Layouts START ***
 		VerticalLayout h1 = new VerticalLayout(); // Textfelder sollen nebeneinander angeordnet werden
