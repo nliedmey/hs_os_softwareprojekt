@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.context.SecurityContextHolder;
 
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.data.provider.DataProvider;
 import com.vaadin.flow.data.provider.ListDataProvider;
@@ -33,6 +34,7 @@ public class EventorganisatorView extends VerticalLayout {	//VerticalLayout fueh
 		GridMultiSelectionModel<Eventorganisator> selectionModelEventorganisator;
 		Button loeschenButton=new Button("Loeschen");		
 		Button logoutButton=new Button("Logout");
+		Button zurueckButton = new Button("Zurueck");
 		
 		eventorganisatorGrid = new Grid<>(Eventorganisator.class); // Tabelle initialisieren
 		ListDataProvider<Eventorganisator> ldpEventorganisator = DataProvider
@@ -58,11 +60,16 @@ public class EventorganisatorView extends VerticalLayout {	//VerticalLayout fueh
 			getUI().get().getSession().close();		//Vaadin Session leeren
 			logoutButton.getUI().ifPresent(ui->ui.navigate("maincontent"));	//zurueck auf andere Seite 
 		});
+		
+		zurueckButton.addClickListener(event -> {	//Bei Buttonklick werden folgende Aktionen ausgefuehrt
+			logoutButton.getUI().ifPresent(ui->ui.navigate("ui/admin/menue"));	//zurueck auf andere Seite 
+		});
 
 
 		add(eventorganisatorGrid);	//Hinzufuegen der Elemente zum VerticalLayout
 		add(loeschenButton);
-		add(logoutButton);
+		add(new HorizontalLayout(zurueckButton,logoutButton));
+
 	}
 	//@PostConstruct	//Ausfuehrung nach Konstruktoraufruf
 	//public void init()

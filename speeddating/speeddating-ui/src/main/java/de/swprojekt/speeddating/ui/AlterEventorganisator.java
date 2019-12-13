@@ -15,6 +15,7 @@ import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.Grid.SelectionMode;
 import com.vaadin.flow.component.grid.GridMultiSelectionModel;
 import com.vaadin.flow.component.grid.GridSingleSelectionModel;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
@@ -41,6 +42,7 @@ public class AlterEventorganisator extends VerticalLayout {
 		
 		Button aendernButton=new Button("Aendern");
 		Button logoutButton=new Button("Logout");
+		Button zurueckButton = new Button("Zurueck");
 		
 		TextField textfieldVorname = new TextField("Vorname:");
 		TextField textfieldNachname = new TextField("Nachname:");
@@ -153,6 +155,10 @@ public class AlterEventorganisator extends VerticalLayout {
 			logoutButton.getUI().ifPresent(ui->ui.navigate("login"));	//zurueck auf andere Seite 
 		});
 		
+		zurueckButton.addClickListener(event -> {	//Bei Buttonklick werden folgende Aktionen ausgefuehrt
+			logoutButton.getUI().ifPresent(ui->ui.navigate("ui/admin/menue"));	//zurueck auf andere Seite 
+		});
+		
 		VerticalLayout v1 = new VerticalLayout(); // Textfelder sollen untereinander angeordnet werden
 		v1.add(eventorganisatorGrid);
 		v1.add(textfieldVorname);
@@ -162,7 +168,7 @@ public class AlterEventorganisator extends VerticalLayout {
 		v1.add(textfieldEmail);
 		v1.add(eventGrid);
 		v1.add(aendernButton);
-		v1.add(logoutButton);
+		v1.add(new HorizontalLayout(zurueckButton,logoutButton));
 		add(v1);
 		
 	}
