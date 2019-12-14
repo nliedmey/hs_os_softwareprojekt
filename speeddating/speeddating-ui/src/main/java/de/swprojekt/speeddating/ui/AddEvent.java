@@ -90,6 +90,7 @@ public class AddEvent extends VerticalLayout {
 		// Button hinzufuegen
 		Button buttonHinzufuegen = new Button("Event anlegen");
 		buttonHinzufuegen.addThemeVariants(ButtonVariant.LUMO_SUCCESS);
+		Button zurueckButton = new Button("Zurueck");
 
 		// Notification Meldungen mit Button verknuepfen
 		Notification notificationSavesuccess = new Notification();
@@ -109,8 +110,9 @@ public class AddEvent extends VerticalLayout {
 		v1.add(studierenderGrid);
 //		v1.add(h1);
 				
-		add(v1, buttonHinzufuegen); // darunter wird Button angeordnet
-		add(v1, logoutButton);
+		v1.add(buttonHinzufuegen); // darunter wird Button angeordnet
+		v1.add(new HorizontalLayout(zurueckButton, logoutButton));
+		add(v1);
 		
 		binder = new Binder<>(Event.class); // Klasse fuer Binder festlegen (kennt somit Objektattribute)
 
@@ -166,6 +168,11 @@ public class AddEvent extends VerticalLayout {
 			getUI().get().getSession().close();		//Vaadin Session leeren
 			logoutButton.getUI().ifPresent(ui->ui.navigate("login"));	//zurueck auf andere Seite 
 		});
+		
+		zurueckButton.addClickListener(event -> {	//Bei Buttonklick werden folgende Aktionen ausgefuehrt
+			zurueckButton.getUI().ifPresent(ui->ui.navigate("ui/eventorganisator/menue"));	//zurueck auf andere Seite 
+		});
+
 
 	}
 }

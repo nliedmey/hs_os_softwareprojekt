@@ -11,6 +11,7 @@ import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.notification.NotificationVariant;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
@@ -42,8 +43,8 @@ public class AddUntern extends VerticalLayout {
 		//Button hinzufuegen
 		Button buttonHinzufuegen = new Button("Unternehmen anlegen");
 		buttonHinzufuegen.addThemeVariants(ButtonVariant.LUMO_SUCCESS);
-		Button buttonAbbrechen = new Button("Abbrechen");
-		buttonAbbrechen.addThemeVariants(ButtonVariant.LUMO_ERROR);
+		Button buttonZurueck = new Button("Zurueck");
+		buttonZurueck.addThemeVariants(ButtonVariant.LUMO_ERROR);
 		Button logoutButton=new Button("Logout");
 		
 		//Notification
@@ -58,7 +59,9 @@ public class AddUntern extends VerticalLayout {
 		h1.add(textfieldAnsprechpartner);
 		h1.add(textfieldKontaktmail);
 		
-		add(h1, buttonHinzufuegen, buttonAbbrechen, logoutButton);
+		h1.add(buttonHinzufuegen);
+		h1.add(new HorizontalLayout(buttonZurueck, logoutButton));
+		add(h1);
 		
 		binder = new Binder<>(Unternehmen.class);
 		
@@ -82,10 +85,8 @@ public class AddUntern extends VerticalLayout {
 			}
 		});
 		
-		buttonAbbrechen.addClickListener(event -> {
-			SecurityContextHolder.clearContext();	//Spring-Security-Session leeren
-			getUI().get().getSession().close();		//Vaadin Session leeren
-			buttonHinzufuegen.getUI().ifPresent(ui->ui.navigate("maincontent"));
+		buttonZurueck.addClickListener(event -> {
+			buttonZurueck.getUI().ifPresent(ui->ui.navigate("ui/eventorganisator/menue"));	//zurueck auf andere Seite 
 		});
 		
 		logoutButton.addClickListener(event -> {	//Bei Buttonklick werden folgende Aktionen ausgefuehrt

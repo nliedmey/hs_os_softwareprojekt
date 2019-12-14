@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.context.SecurityContextHolder;
 
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.data.provider.DataProvider;
 import com.vaadin.flow.data.provider.ListDataProvider;
@@ -28,6 +29,7 @@ public class UnternView extends VerticalLayout {	//VerticalLayout fuehrt zu Anor
 	
 		Grid<Unternehmen> unternehmenGrid;	//Tabelle mit Studierenden
 		Button logoutButton=new Button("Logout");
+		Button zurueckButton = new Button("Zurueck");
 		
 		unternehmenGrid = new Grid<>(Unternehmen.class);	//Tabelle initialisieren
 		ListDataProvider<Unternehmen> ldpUnternehmen = DataProvider
@@ -43,9 +45,12 @@ public class UnternView extends VerticalLayout {	//VerticalLayout fuehrt zu Anor
 			logoutButton.getUI().ifPresent(ui->ui.navigate("maincontent"));	//zurueck auf andere Seite 
 		});
 
+		zurueckButton.addClickListener(event -> {	//Bei Buttonklick werden folgende Aktionen ausgefuehrt
+			zurueckButton.getUI().ifPresent(ui->ui.navigate("ui/eventorganisator/menue"));	//zurueck auf andere Seite 
+		});
 
 		add(unternehmenGrid);	//Hinzufuegen der Elemente zum VerticalLayout
-		add(logoutButton);
+		add(new HorizontalLayout(zurueckButton, logoutButton));
 	}
 	//@PostConstruct	//Ausfuehrung nach Konstruktoraufruf
 	//public void init()

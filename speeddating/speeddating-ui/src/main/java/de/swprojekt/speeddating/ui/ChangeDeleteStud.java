@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.context.SecurityContextHolder;
 
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
@@ -84,8 +85,8 @@ public class ChangeDeleteStud extends VerticalLayout {
 		Button buttonStudLoeschen = new Button("Student loeschen");
 		buttonStudLoeschen.addThemeVariants(ButtonVariant.LUMO_ERROR);
 		// Button #3 hinzufuegen
-		Button buttonAbbrechen = new Button("Abbrechen");
-		buttonAbbrechen.addThemeVariants(ButtonVariant.LUMO_SUCCESS);
+		Button buttonZurueck = new Button("Zurueck");
+		buttonZurueck.addThemeVariants(ButtonVariant.LUMO_SUCCESS);
 
 		Button logoutButton = new Button("Logout");
 
@@ -123,8 +124,9 @@ public class ChangeDeleteStud extends VerticalLayout {
 		h1.add(textfieldTelefonnr);
 		h1.add(textfieldEMail);
 
-		add(h1, buttonStudAendern, buttonStudLoeschen, buttonAbbrechen, logoutButton); // darunter wird Button
-																						// angeordnet
+		h1.add(new HorizontalLayout(buttonStudAendern, buttonStudLoeschen));
+		h1.add(new HorizontalLayout(buttonZurueck, logoutButton)); // darunter wird Button
+		add(h1);																				// angeordnet
 		// *** Erzeugen des Layouts ENDE ***
 
 		binder = new Binder<>(Studierender.class); // Klasse fuer Binder festlegen (kennt somit Objektattribute)
@@ -170,18 +172,17 @@ public class ChangeDeleteStud extends VerticalLayout {
 				notificationLoeschensuccess.open();
 //			SecurityContextHolder.clearContext();	//Spring-Security-Session leeren
 //			getUI().get().getSession().close();		//Vaadin Session leeren
-				buttonAbbrechen.getUI().ifPresent(ui -> ui.navigate("maincontent")); // zurueck auf andere Seite
+				buttonZurueck.getUI().ifPresent(ui -> ui.navigate("maincontent")); // zurueck auf andere Seite
 			} catch (ValidationException e) {
 				e.printStackTrace();
 			}
 		});
 
-		buttonAbbrechen.addClickListener(event -> {
+		buttonZurueck.addClickListener(event -> {
 			// Erfolgreich-Meldung anzeigen
 			notificationAbbruch.open();
-//			SecurityContextHolder.clearContext();	//Spring-Security-Session leeren
-//			getUI().get().getSession().close();		//Vaadin Session leeren
-			buttonAbbrechen.getUI().ifPresent(ui -> ui.navigate("maincontent")); // zurueck auf andere Seite
+			buttonZurueck.getUI().ifPresent(ui->ui.navigate("ui/eventorganisator/menue"));	//zurueck auf andere Seite 
+			
 		});
 
 		logoutButton.addClickListener(event -> { // Bei Buttonklick werden folgende Aktionen ausgefuehrt

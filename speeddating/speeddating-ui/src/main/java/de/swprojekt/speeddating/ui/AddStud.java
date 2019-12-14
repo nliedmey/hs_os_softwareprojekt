@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.context.SecurityContextHolder;
 
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
@@ -53,10 +54,11 @@ public class AddStud extends VerticalLayout {
 		// Button hinzufuegen
 		Button buttonHinzufuegen = new Button("Student anlegen");
 		buttonHinzufuegen.addThemeVariants(ButtonVariant.LUMO_SUCCESS);
-		Button buttonAbbrechen = new Button("Abbrechen");
-		buttonAbbrechen.addThemeVariants(ButtonVariant.LUMO_ERROR);
+		Button zurueckbutton = new Button("Zurueck");
+		zurueckbutton.addThemeVariants(ButtonVariant.LUMO_ERROR);
 		
 		Button logoutButton=new Button("Logout");
+
 
 		// Notification Meldungen mit Button verknuepfen
 		Notification notificationSavesuccess = new Notification();
@@ -75,7 +77,8 @@ public class AddStud extends VerticalLayout {
 		h1.add(textfieldOrt);
 		h1.add(textfieldTelefonnr);
 		h1.add(textfieldEMail);
-		add(h1, buttonHinzufuegen, buttonAbbrechen, logoutButton); // darunter wird Button angeordnet
+		h1.add(buttonHinzufuegen);
+		add(h1, new HorizontalLayout(zurueckbutton, logoutButton)); // darunter wird Button angeordnet
 
 		binder = new Binder<>(Studierender.class); // Klasse fuer Binder festlegen (kennt somit Objektattribute)
 
@@ -117,10 +120,8 @@ public class AddStud extends VerticalLayout {
 			}
 		});
 
-		buttonAbbrechen.addClickListener(event -> {
-			SecurityContextHolder.clearContext(); // Spring-Security-Session leeren
-			getUI().get().getSession().close(); // Vaadin Session leeren
-			buttonHinzufuegen.getUI().ifPresent(ui -> ui.navigate("maincontent")); // zurueck auf andere Seite
+		zurueckbutton.addClickListener(event -> {	//Bei Buttonklick werden folgende Aktionen ausgefuehrt
+			zurueckbutton.getUI().ifPresent(ui->ui.navigate("ui/eventorganisator/menue"));	//zurueck auf andere Seite 
 		});
 		
 		logoutButton.addClickListener(event -> {	//Bei Buttonklick werden folgende Aktionen ausgefuehrt

@@ -59,7 +59,7 @@ public class AlterEventForEventorganisator extends VerticalLayout {
 		
 		Button aendernButton=new Button("Aendern");
 		Button logoutButton=new Button("Logout");
-
+		Button zurueckButton = new Button("Zurueck");
 		
 		TextField textfieldBezeichnung = new TextField("Bezeichnung:");
 		DatePicker datepickerStartzeitpunktDatum=new DatePicker("Startdatum:");
@@ -220,6 +220,11 @@ public class AlterEventForEventorganisator extends VerticalLayout {
 			logoutButton.getUI().ifPresent(ui->ui.navigate("login"));	//zurueck auf andere Seite 
 		});
 		
+		zurueckButton.addClickListener(event -> {	//Bei Buttonklick werden folgende Aktionen ausgefuehrt
+			zurueckButton.getUI().ifPresent(ui->ui.navigate("ui/eventorganisator/menue"));	//zurueck auf andere Seite 
+		});
+
+		
 		VerticalLayout v1 = new VerticalLayout(); // Textfelder sollen untereinander angeordnet werden
 		v1.add(eventGrid);
 		v1.add(textfieldBezeichnung);
@@ -229,7 +234,7 @@ public class AlterEventForEventorganisator extends VerticalLayout {
 		v1.add(studierenderGrid);
 		v1.add(unternehmenGrid);
 		v1.add(aendernButton);
-		v1.add(logoutButton);
+		v1.add(new HorizontalLayout(zurueckButton, logoutButton));
 		add(v1);
 		
 	}
