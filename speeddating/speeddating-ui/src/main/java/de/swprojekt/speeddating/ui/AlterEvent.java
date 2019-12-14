@@ -45,7 +45,7 @@ public class AlterEvent extends VerticalLayout {
 	public AlterEvent(IShowEventService iShowEventService, IShowStudierendeService iShowStudierendeService, IShowUnternehmenService iShowUnternehmenService, IAlterEventService iAlterEventService) {
 
 		Binder<Event> binder; // verknuepft Input aus Textfeldern mit Objektattributen
-		
+		 
 		Grid<Event> eventGrid; // Tabelle mit Events
 		GridSingleSelectionModel<Event> selectionModelEvent;
 		
