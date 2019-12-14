@@ -1,11 +1,16 @@
 package de.swprojekt.speeddating.ui;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 import java.util.Stack;
 import java.util.TimerTask;
+import java.util.concurrent.TimeUnit;
 
 import javax.swing.Timer;
 
@@ -52,8 +57,10 @@ public class EventDurchfuehrung extends HorizontalLayout {
 	int anzahlUntern;
 	int tempRunde;
 	int lv_id = 0;
+	int geplanteRundenzeit = 0;
 	Event aEvent;
 	
+	@SuppressWarnings("deprecation")
 	@Autowired
 	public EventDurchfuehrung(IShowEventService iShowEventService, IShowUnternehmenService iShowUnternehmenService,
 			IShowStudierendeService iShowStudierendeService, IAlterEventService iAlterEventService) {
@@ -64,6 +71,7 @@ public class EventDurchfuehrung extends HorizontalLayout {
 		Label labelRundeAnzahl = new Label("1");
 		Label labelMaxRunden = new Label("");
 
+		Label labelTimer = new Label();
 		Label labelTischordnung = new Label("Tischordnung:");
 
 		Label labelTisch1 = new Label("Tisch 1:");
@@ -134,10 +142,8 @@ public class EventDurchfuehrung extends HorizontalLayout {
 		// Button nachsteRunde zunächst unsichtbar
 		buttonNaechsteRunde.setVisible(false);
 
-		// Timer
-		Timer timer = new Timer(1000, null);
-		Label labelTimer = new Label();
-
+		
+		
 		// Layouts
 		// Links
 		VerticalLayout vLinks = new VerticalLayout();
@@ -180,6 +186,7 @@ public class EventDurchfuehrung extends HorizontalLayout {
 		VerticalLayout vRechts = new VerticalLayout();
 		vRechts.add(new HorizontalLayout(comboBox, buttonEventauswahl));
 		vRechts.add(new HorizontalLayout(labelRunde, labelRundeAnzahl, labelMaxRunden));
+		vRechts.add(labelTimer);
 		vRechts.add(new HorizontalLayout(buttonStart, buttonNaechsteRunde, buttonPauseFortsetzen, buttonBeenden));
 
 		// Zunaechst unsichtbar. Werden nach Eventauswahl sichtbar
@@ -190,6 +197,7 @@ public class EventDurchfuehrung extends HorizontalLayout {
 		labelRunde.setVisible(false);
 		labelRundeAnzahl.setVisible(false);
 		labelMaxRunden.setVisible(false);
+		labelTimer.setVisible(false);
 
 		add(vLinks, vRechts);
 
@@ -231,8 +239,15 @@ public class EventDurchfuehrung extends HorizontalLayout {
 					}
 
 				}
-//				//Studenten zu Stack hinzufuegen. Wird benoetigt, damit diese die Tische zur naechsten Runde wechseln koennen
-//				stackStud.addAll(listeStuds);
+
+				//Timer starten
+				geplanteRundenzeit = aEvent.getRundendauerInMinuten();
+				int min = geplanteRundenzeit;
+				int sec = 00;
+				
+				
+				String dateStr = min + ":" + sec;
+				labelTimer.setText(dateStr);
 				
 				// Elemente (un)visible machen
 				comboBox.setVisible(false);
@@ -245,6 +260,7 @@ public class EventDurchfuehrung extends HorizontalLayout {
 				labelRundeAnzahl.setVisible(true);
 				labelMaxRunden.setVisible(true);
 				labelMaxRunden.setText("/ " + Integer.toString(listeStuds.size()));
+				labelTimer.setVisible(true);
 			}
 		});
 
