@@ -12,6 +12,7 @@ import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.notification.NotificationVariant;
 
+import java.io.FileNotFoundException;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -19,6 +20,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -31,6 +33,7 @@ import com.vaadin.flow.data.provider.ListDataProvider;
 import com.vaadin.flow.router.Route;
 
 import de.swprojekt.speeddating.model.Event;
+import de.swprojekt.speeddating.model.MatchingAsPDF;
 import de.swprojekt.speeddating.model.Studierender;
 import de.swprojekt.speeddating.model.Unternehmen;
 import de.swprojekt.speeddating.service.showevent.IShowEventService;
@@ -48,6 +51,11 @@ public class EventMatchingDisplayView extends HorizontalLayout {
 	// BestPractice: Konstruktor-Injection im Vergleich zu
 	// Attribut/Methoden-Injection
 	// Parameter (hier: IAddStudierenderService) wird also automatisch autowired
+	Grid<Unternehmen> unternehmenGrid = new Grid<>(Unternehmen.class);
+	Grid<Unternehmen> unternehmenGrid2 = new Grid<>(Unternehmen.class);
+
+	Grid<Studierender> studierenderGrid = new Grid<>(Studierender.class);
+	Grid<Studierender> studierenderGrid2 = new Grid<>(Studierender.class);
 
 	Set<Integer> studentKontaktWuensche = new HashSet<>();
 	Set<Integer> unternehmenKontaktWuensche = new HashSet<>();
@@ -75,24 +83,18 @@ public class EventMatchingDisplayView extends HorizontalLayout {
 		textfieldRundendauerInMinuten.setReadOnly(true);
 		checkboxAbgeschlossen.setReadOnly(true);
 
-		studentKontaktWuensche.clear();
-		unternehmenKontaktWuensche.clear();
-		listOfStudOffeneStimmen.clear();
-		listOfStudVotedStimmen.clear();
-		listOfUnternOffeneStimmen.clear();
-		listOfUnternVotedStimmen.clear();
-
 		// Button #1 hinzufuegen
 		Button buttonMatchingDuerchfuehren = new Button("Matching durchfuehren");
 		buttonMatchingDuerchfuehren.addThemeVariants(ButtonVariant.LUMO_SUCCESS);
 		// Button #2 hinzufuegen
 		Button buttonZurueck = new Button("Zurueck");
 		buttonZurueck.addThemeVariants(ButtonVariant.LUMO_ERROR);
+		Button logoutButton=new Button("Logout");
 
 		// Notification Meldungen mit Button verknuepfen
 		Notification notificationMatchingsuccess = new Notification();
 		notificationMatchingsuccess.addThemeVariants(NotificationVariant.LUMO_SUCCESS);
-		Label labelMatchingsuccess = new Label("Unternehmen erfolgreich aktualisiert! ");
+		Label labelMatchingsuccess = new Label("Matching Ergebnisse wurde als PDF bereitgestellt! ");
 		notificationMatchingsuccess.add(labelMatchingsuccess);
 
 		Notification notificationZurueck = new Notification();
@@ -105,16 +107,6 @@ public class EventMatchingDisplayView extends HorizontalLayout {
 		Label labelNotPossible = new Label("Offene Stimmabgaben, daher kein Matching moeglich! ");
 		notificationNotPossible.add(labelNotPossible);
 
-		Grid<Unternehmen> unternehmenGrid;
-		unternehmenGrid = new Grid<>(Unternehmen.class);
-		Grid<Unternehmen> unternehmenGrid2;
-		unternehmenGrid2 = new Grid<>(Unternehmen.class);
-
-		Grid<Studierender> studierenderGrid;
-		studierenderGrid = new Grid<>(Studierender.class);
-		Grid<Studierender> studierenderGrid2;
-		studierenderGrid2 = new Grid<>(Studierender.class);
-
 		// Erzeugen der Combo Box
 		ComboBox<Event> comboBox = new ComboBox<>();
 		comboBox.setLabel("Event auswaehlen");
@@ -124,6 +116,9 @@ public class EventMatchingDisplayView extends HorizontalLayout {
 		comboBox.addValueChangeListener(event -> {
 			Event aEvent = comboBox.getValue();
 			if (aEvent != null) {
+
+				initialize();
+
 				lv_id = aEvent.getEvent_id();
 				Event selectedEvent = iShowEventService.showEvent(lv_id);
 				// Uhrzeit und Datum aus Date herausfiltern und in date/timepicker einsetzen
@@ -141,22 +136,26 @@ public class EventMatchingDisplayView extends HorizontalLayout {
 				for (Integer student_id : selectedEvent.getTeilnehmendeStudierende()) {
 					Studierender aStudent = iShowStudierendeService.showStudierenden(student_id);
 					studentKontaktWuensche.clear();
-					studentKontaktWuensche = aStudent.getStudentKontaktwuensche();
-					if (studentKontaktWuensche.isEmpty()) {
-						listOfStudOffeneStimmen.add(aStudent);
-					} else {
-						listOfStudVotedStimmen.add(aStudent);
+					if (aStudent != null) {
+						studentKontaktWuensche = aStudent.getStudentKontaktwuensche();
+						if (studentKontaktWuensche.isEmpty()) {
+							listOfStudOffeneStimmen.add(aStudent);
+						} else {
+							listOfStudVotedStimmen.add(aStudent);
+						}
 					}
 				}
 
 				for (Integer unternehmen_id : selectedEvent.getTeilnehmendeUnternehmen()) {
 					Unternehmen aUnternehmen = iShowUnternehmenService.showEinUnternehmen(unternehmen_id);
 					unternehmenKontaktWuensche.clear();
-					unternehmenKontaktWuensche = aUnternehmen.getUnternehmenKontaktwuensche();
-					if (unternehmenKontaktWuensche.isEmpty()) {
-						listOfUnternOffeneStimmen.add(aUnternehmen);
-					} else {
-						listOfUnternVotedStimmen.add(aUnternehmen);
+					if (aUnternehmen != null) {
+						unternehmenKontaktWuensche = aUnternehmen.getUnternehmenKontaktwuensche();
+						if (unternehmenKontaktWuensche.isEmpty()) {
+							listOfUnternOffeneStimmen.add(aUnternehmen);
+						} else {
+							listOfUnternVotedStimmen.add(aUnternehmen);
+						}
 					}
 				}
 
@@ -187,10 +186,17 @@ public class EventMatchingDisplayView extends HorizontalLayout {
 
 		buttonMatchingDuerchfuehren.addClickListener(event -> {
 //			if (listOfUnternOffeneStimmen.isEmpty() && listOfStudOffeneStimmen.isEmpty()) {
-			Event aEvent = comboBox.getValue();;
+			Event aEvent = comboBox.getValue();
+			;
 			Event selectedEvent = iShowEventService.showEvent(aEvent.getEvent_id());
-			
-			iShowEventService.generateMatchingResultSet(selectedEvent);
+
+			MatchingAsPDF objektForCreatingPDF = new MatchingAsPDF();
+			try {
+				objektForCreatingPDF.pdfErstellen(iShowEventService.generateMatchingResultSet(selectedEvent));
+			} catch (FileNotFoundException e) {
+				System.out.println("Bei Aufruf der PDF Erstellung gibt es Probleme");
+				e.printStackTrace();
+			}
 
 			// Erfolgreich-Meldung anzeigen
 			notificationMatchingsuccess.open();
@@ -199,6 +205,12 @@ public class EventMatchingDisplayView extends HorizontalLayout {
 //			} else {
 //				notificationNotPossible.open();
 //			}			
+		});
+		
+		logoutButton.addClickListener(event -> {	//Bei Buttonklick werden folgende Aktionen ausgefuehrt
+			SecurityContextHolder.clearContext();	//Spring-Security-Session leeren
+			getUI().get().getSession().close();		//Vaadin Session leeren
+			logoutButton.getUI().ifPresent(ui->ui.navigate("login"));	//zurueck auf andere Seite 
 		});
 
 		unternehmenGrid.removeColumnByKey("unternehmen_id");
@@ -222,7 +234,7 @@ public class EventMatchingDisplayView extends HorizontalLayout {
 		v1.add(new HorizontalLayout(datepickerStartzeitpunktDatum, timepickerStartzeitpunktUhrzeit));
 		v1.add(new HorizontalLayout(datepickerEndzeitpunktDatum, timepickerEndzeitpunktUhrzeit));
 		v1.add(new HorizontalLayout(textfieldRundendauerInMinuten, checkboxAbgeschlossen));
-		v1.add(new HorizontalLayout(buttonMatchingDuerchfuehren, buttonZurueck));
+		v1.add(new HorizontalLayout(buttonMatchingDuerchfuehren, buttonZurueck, logoutButton));
 
 		VerticalLayout v2 = new VerticalLayout();
 		v2.setHeight("800px");
@@ -252,6 +264,26 @@ public class EventMatchingDisplayView extends HorizontalLayout {
 		add(v2);
 		add(v3);
 		// *** Erzeugen des Layouts ENDE ***
+	}
+
+	private void initialize() {
+
+		studentKontaktWuensche.clear();
+		unternehmenKontaktWuensche.clear();
+		listOfStudOffeneStimmen.clear();
+		listOfStudVotedStimmen.clear();
+		listOfUnternOffeneStimmen.clear();
+		listOfUnternVotedStimmen.clear();
+
+		ListDataProvider<Studierender> ldpStudent = DataProvider.ofCollection(listOfStudVotedStimmen);
+		studierenderGrid.setDataProvider(ldpStudent);
+		ListDataProvider<Studierender> ldpStudent2 = DataProvider.ofCollection(listOfStudOffeneStimmen);
+		studierenderGrid2.setDataProvider(ldpStudent2);
+		ListDataProvider<Unternehmen> ldpUnternehmen = DataProvider.ofCollection(listOfUnternVotedStimmen);
+		unternehmenGrid.setDataProvider(ldpUnternehmen);
+		ListDataProvider<Unternehmen> ldpUnternehmen2 = DataProvider.ofCollection(listOfUnternOffeneStimmen);
+		unternehmenGrid2.setDataProvider(ldpUnternehmen2);
+
 	}
 
 }

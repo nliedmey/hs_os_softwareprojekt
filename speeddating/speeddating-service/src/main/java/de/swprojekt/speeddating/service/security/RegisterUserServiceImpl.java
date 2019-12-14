@@ -36,6 +36,22 @@ public class RegisterUserServiceImpl implements IRegisterUserService {
 		user.setEntity_id_ref(refEntityId);	//Id des Unternehmens/Studentens setzen
 		System.out.println("Jetzt wird User gespeichert "+user+", getAuth: "+user.getAuthorities()+", Roles: "+user.getRoles());
 		iUserRepository.save(user);										//derzeit muss die Aenderung auf Admin noch manuell getaetigt werden, spaeter eventuell ueber Adminkonsole
-	}																	
+	}
+
+	@Override
+	public boolean changePassword(String username,String oldPassword, String newPassword) {
+		User gefundenerUser=iUserRepository.findByUsername(username);
+		if(passwordEncoder.matches(oldPassword, gefundenerUser.getPassword()))
+		{
+			gefundenerUser.setPassword(passwordEncoder.encode(newPassword)); //Passwort verschluesseln
+			iUserRepository.save(gefundenerUser);
+			return true;
+		}
+		else
+		{
+			System.out.println("Altes Passwort falsch!");
+			return false;
+		}
+	}																
 	
 }

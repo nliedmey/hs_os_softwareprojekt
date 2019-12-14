@@ -1,8 +1,10 @@
 package de.swprojekt.speeddating.service.showevent;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.Set;
@@ -35,7 +37,7 @@ public class ShowEventImpl implements IShowEventService {
 
 	@Override
 	public List<Event> showEvents() {
-		return iEventRepository.findAll(); // gibt Liste 
+		return iEventRepository.findAll(); // gibt Liste
 	}
 
 	@Override
@@ -56,46 +58,45 @@ public class ShowEventImpl implements IShowEventService {
 	}
 
 	@Override
-	public ArrayList<Integer> generateMatchingResultSet(Event aEvent) {
-	
+	public Map<Studierender, Unternehmen> generateMatchingResultSet(Event aEvent) {
 
+		Map<Studierender, Unternehmen> matchingResultMap = new HashMap<>();
 		Set<Integer> studentKontaktWuensche = new HashSet<>();
 		Set<Integer> unternehmenKontaktWuensche = new HashSet<>();
-		
+
 		for (Integer student_id : aEvent.getTeilnehmendeStudierende()) {
 			Studierender aStudent = iShowStudierendeService.showStudierenden(student_id);
 			studentKontaktWuensche.clear();
-			studentKontaktWuensche = aStudent.getStudentKontaktwuensche();//
-			if (!(studentKontaktWuensche.isEmpty())) {
-				for (Integer studentenWunsch : studentKontaktWuensche) {
-					for (Integer unternehmen_id : aEvent.getTeilnehmendeUnternehmen()) {
-						unternehmenKontaktWuensche.clear();
-						Unternehmen aUnternehmen = iShowUnternehmenService.showEinUnternehmen(unternehmen_id);
-						if (aUnternehmen.getUnternehmen_id() == studentenWunsch) { 
-							unternehmenKontaktWuensche = aUnternehmen.getUnternehmenKontaktwuensche();
-							for (Integer unternehmenWunsch : unternehmenKontaktWuensche) {
-								if (aStudent.getStudent_id() == unternehmenWunsch) {
-									System.out.println("Jawohl, das ist ein Matching -> Student"
-											+ aStudent.getStudent_id() + " und das Unternehmen"
-											+ aUnternehmen.getUnternehmen_id() + "gehoeren zusammen");
+			if (aStudent != null) {
+				studentKontaktWuensche = aStudent.getStudentKontaktwuensche();//
+				if (!(studentKontaktWuensche.isEmpty())) {
+					for (Integer studentenWunsch : studentKontaktWuensche) {
+						for (Integer unternehmen_id : aEvent.getTeilnehmendeUnternehmen()) {
+							unternehmenKontaktWuensche.clear();
+							Unternehmen aUnternehmen = iShowUnternehmenService.showEinUnternehmen(unternehmen_id);
+							if (aUnternehmen.getUnternehmen_id() == studentenWunsch) {
+								unternehmenKontaktWuensche = aUnternehmen.getUnternehmenKontaktwuensche();
+								for (Integer unternehmenWunsch : unternehmenKontaktWuensche) {
+									if (aStudent.getStudent_id() == unternehmenWunsch) {
 
-									
+										matchingResultMap.put(aStudent, aUnternehmen);
+//									System.out.println("Jawohl, das ist ein Matching per For -> Student"
+//											+ aStudent.getStudent_id() + " und das Unternehmen"
+//											+ aUnternehmen.getUnternehmen_id() + "gehoeren zusammen");				
+									}
 								}
 							}
 						}
 					}
 				}
 			} else {
-				// Student hat keine Angaben gemacht, 
-				//daher machen wir beim naechsten weiter um Zeit zu sparen
+				// Student hat keine Angaben gemacht,
+				// daher machen wir beim naechsten weiter um Zeit zu sparen
 				continue;
 			}
 		}
-		return null;		
-		
+		return matchingResultMap;
+
 	}
-
-	
-
 
 }

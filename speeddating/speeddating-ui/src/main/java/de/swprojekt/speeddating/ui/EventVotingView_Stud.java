@@ -73,6 +73,7 @@ public class EventVotingView_Stud extends VerticalLayout { // VerticalLayout fue
 		notificationVotingSuccess.addThemeVariants(NotificationVariant.LUMO_SUCCESS);
 		Label labelVotingsuccess = new Label("Voting erfolgreich abgegeben! ");
 		notificationVotingSuccess.add(labelVotingsuccess);
+		notificationVotingSuccess.setDuration(5000); //Meldung wird 5 Sekunden lang angezeigt
 
 		ListDataProvider<Unternehmen> ldpEvent = DataProvider.ofCollection(listOfUnternehmenForDisplay);
 		unternehmenGrid.setDataProvider(ldpEvent);

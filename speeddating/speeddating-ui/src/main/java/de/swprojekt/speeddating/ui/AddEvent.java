@@ -20,6 +20,7 @@ import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -66,6 +67,8 @@ public class AddEvent extends VerticalLayout {
 		DatePicker datepickerEndzeitpunktDatum=new DatePicker("Enddatum:");
 		TimePicker timepickerEndzeitpunktUhrzeit=new TimePicker("Endzeit:");
 		
+		Button logoutButton=new Button("Logout");
+		
 		studierenderGrid = new Grid<>(Studierender.class);	//Tabelle initialisieren
 		ListDataProvider<Studierender> ldpStudent = DataProvider
 				.ofCollection(iShowStudierendeService.showStudierende());	//Dataprovider erstellen und Quelle fuer Studierende (via Service aus DB) festlegen 
@@ -87,12 +90,14 @@ public class AddEvent extends VerticalLayout {
 		// Button hinzufuegen
 		Button buttonHinzufuegen = new Button("Event anlegen");
 		buttonHinzufuegen.addThemeVariants(ButtonVariant.LUMO_SUCCESS);
+		Button zurueckButton = new Button("Zurueck");
 
 		// Notification Meldungen mit Button verknuepfen
 		Notification notificationSavesuccess = new Notification();
 		notificationSavesuccess.addThemeVariants(NotificationVariant.LUMO_SUCCESS);
 		Label labelSavesuccess = new Label("Event erfolgreich hinzugefuegt! ");
 		notificationSavesuccess.add(labelSavesuccess);
+		notificationSavesuccess.setDuration(5000); //Meldung wird 5 Sekunden lang angezeigt
 				
 		VerticalLayout v1 = new VerticalLayout(); // Textfelder sollen untereinander angeordnet werden
 		v1.add(textfieldBezeichnung);
@@ -105,7 +110,9 @@ public class AddEvent extends VerticalLayout {
 		v1.add(studierenderGrid);
 //		v1.add(h1);
 				
-		add(v1, buttonHinzufuegen); // darunter wird Button angeordnet
+		v1.add(buttonHinzufuegen); // darunter wird Button angeordnet
+		v1.add(new HorizontalLayout(zurueckButton, logoutButton));
+		add(v1);
 		
 		binder = new Binder<>(Event.class); // Klasse fuer Binder festlegen (kennt somit Objektattribute)
 
@@ -155,6 +162,17 @@ public class AddEvent extends VerticalLayout {
 				e.printStackTrace();
 			}
 		});
+		
+		logoutButton.addClickListener(event -> {	//Bei Buttonklick werden folgende Aktionen ausgefuehrt
+			SecurityContextHolder.clearContext();	//Spring-Security-Session leeren
+			getUI().get().getSession().close();		//Vaadin Session leeren
+			logoutButton.getUI().ifPresent(ui->ui.navigate("login"));	//zurueck auf andere Seite 
+		});
+		
+		zurueckButton.addClickListener(event -> {	//Bei Buttonklick werden folgende Aktionen ausgefuehrt
+			zurueckButton.getUI().ifPresent(ui->ui.navigate("ui/eventorganisator/menue"));	//zurueck auf andere Seite 
+		});
+
 
 	}
 }

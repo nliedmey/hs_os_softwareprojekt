@@ -35,13 +35,12 @@ public class AdminInit extends VerticalLayout {
 		Set<Role> roles=new HashSet<Role>();
 		roles.add(iRoleRepository.findByRolename("ADMIN"));
 		einUser.setRoles(roles);
-		iUserRepository.save(einUser);
-		
-		
-		
+	
 		
 		buttonAdminerstellen.addClickListener(event -> {
+			iUserRepository.save(einUser);
 			System.out.println("ADMIN ERSTELLT!");
+			
 		});
 		add(labelPWUsername);
 		add(buttonAdminerstellen);

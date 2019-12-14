@@ -114,10 +114,12 @@ public class EventDurchfuehrung extends HorizontalLayout {
 		Label labelUnter12 = new Label("");
 
 		Button buttonEventauswahl = new Button("Event auswaehlen");
+		Button zurueckButton = new Button("Zurueck");
 		Button buttonStart = new Button("Start Timer");
 		Button buttonNaechsteRunde = new Button("Naechste Runde");
 		Button buttonPauseFortsetzen = new Button("Pause / Fortsetzen");
 		Button buttonBeenden = new Button("Beenden");
+		
 
 		// Erzeugen der Combo Box
 		ComboBox<Event> comboBox = new ComboBox<>();
@@ -184,7 +186,7 @@ public class EventDurchfuehrung extends HorizontalLayout {
 
 		// Rechts
 		VerticalLayout vRechts = new VerticalLayout();
-		vRechts.add(new HorizontalLayout(comboBox, buttonEventauswahl));
+		vRechts.add(new HorizontalLayout(comboBox, buttonEventauswahl, zurueckButton));
 		vRechts.add(new HorizontalLayout(labelRunde, labelRundeAnzahl, labelMaxRunden));
 		vRechts.add(labelTimer);
 		vRechts.add(new HorizontalLayout(buttonStart, buttonNaechsteRunde, buttonPauseFortsetzen, buttonBeenden));
@@ -200,7 +202,10 @@ public class EventDurchfuehrung extends HorizontalLayout {
 		labelTimer.setVisible(false);
 
 		add(vLinks, vRechts);
-
+		
+		zurueckButton.addClickListener(event -> {	//Bei Buttonklick werden folgende Aktionen ausgefuehrt
+			zurueckButton.getUI().ifPresent(ui->ui.navigate("ui/eventorganisator/menue"));	//zurueck auf andere Seite 
+		});
 		
 		// Buttons-Funktionen
 		buttonEventauswahl.addClickListener(event -> {
@@ -252,6 +257,7 @@ public class EventDurchfuehrung extends HorizontalLayout {
 				// Elemente (un)visible machen
 				comboBox.setVisible(false);
 				buttonEventauswahl.setVisible(false);
+				zurueckButton.setVisible(false);
 				buttonStart.setVisible(true);
 				buttonNaechsteRunde.setVisible(true);
 				buttonPauseFortsetzen.setVisible(true);
