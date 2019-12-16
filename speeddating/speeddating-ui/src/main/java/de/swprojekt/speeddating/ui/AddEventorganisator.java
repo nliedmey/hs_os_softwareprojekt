@@ -85,6 +85,7 @@ public class AddEventorganisator extends VerticalLayout {
 				Eventorganisator neuerEventorga=iAddEventorganisatorService.speicherEventorganisator(einEventorganisator); // Uebergabe an Service zur Speicherung in DB
 				iRegisterUserService.save(neuerEventorga.getNachname()+"_"+neuerEventorga.getEventorganisator_id(), "standard", "EVENTORGANISATOR", neuerEventorga.getEventorganisator_id()); //Einloggbenutzer anlegen fuer den Eventorganisator
 				notificationSavesuccess.open(); // Erfolgreich-Meldung anzeigen
+				buttonHinzufuegen.getUI().ifPresent(ui->ui.navigate("ui/admin/menue"));	//zurueck auf andere Seite 
 			} catch (ValidationException e) {
 				e.printStackTrace();
 			}
