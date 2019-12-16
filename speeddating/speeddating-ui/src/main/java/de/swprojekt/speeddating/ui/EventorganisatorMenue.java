@@ -39,6 +39,8 @@ public class EventorganisatorMenue extends Div {
 		v1.add(new RouterLink("Unternehmen anzeigen",UnternView.class));
 		v1.add(new RouterLink("Unternehmen hinzufuegen",AddUntern.class));
 		v1.add(new RouterLink("Unternehmen aendern/loeschen",ChangeDeleteUntern.class));
+		v1.add("-----------");
+		v1.add(new RouterLink("Mein Passwort aendern",ChangePassword.class));
 		v1.add(logoutButton);
 		add(v1);
 		

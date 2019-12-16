@@ -37,6 +37,7 @@ import de.swprojekt.speeddating.model.Event;
 import de.swprojekt.speeddating.model.Studierender;
 import de.swprojekt.speeddating.model.Unternehmen;
 import de.swprojekt.speeddating.service.addevent.IAddEventService;
+import de.swprojekt.speeddating.service.security.CustomUserDetails;
 import de.swprojekt.speeddating.service.showstudierender.IShowStudierendeService;
 import de.swprojekt.speeddating.service.showunternehmen.IShowUnternehmenService;
 
@@ -155,8 +156,11 @@ public class AddEvent extends VerticalLayout {
 					teilnehmendeUnternehmen.add(einUnternehmen.getUnternehmen_id());	
 				}
 				einEvent.setTeilnehmendeUnternehmen(teilnehmendeUnternehmen);
+				Event erstelltesEvent=iAddEventService.speicherEvent(einEvent); // Uebergabe an Service zur Speicherung in DB
 				
-				iAddEventService.speicherEvent(einEvent); // Uebergabe an Service zur Speicherung in DB
+				CustomUserDetails userDetails=(CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+			
+				iAddEventService.addeEventInEventorga(erstelltesEvent.getEvent_id(), userDetails.getEntityRefId() ); //dem Eventorganisator dieses Event zuordnen (er verwaltet dies)
 				notificationSavesuccess.open(); // Erfolgreich-Meldung anzeigen
 			} catch (ValidationException e) {
 				e.printStackTrace();
