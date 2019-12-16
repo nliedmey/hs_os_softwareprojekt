@@ -1,43 +1,27 @@
 package de.swprojekt.speeddating.ui;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Calendar;
 import java.util.Collection;
-import java.util.Date;
 import java.util.List;
-import java.util.Stack;
-import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
-
-import javax.swing.Timer;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
-import org.springframework.security.core.context.SecurityContextHolder;
 
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.dialog.Dialog;
-import com.vaadin.flow.component.grid.Grid;
-import com.vaadin.flow.component.html.H4;
 import com.vaadin.flow.component.html.Label;
-import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.component.progressbar.ProgressBar;
-import com.vaadin.flow.data.provider.DataProvider;
-import com.vaadin.flow.data.provider.ListDataProvider;
 import com.vaadin.flow.router.Route;
 
 import de.swprojekt.speeddating.model.Event;
 import de.swprojekt.speeddating.model.Studierender;
 import de.swprojekt.speeddating.model.Unternehmen;
 import de.swprojekt.speeddating.service.alterevent.IAlterEventService;
-import de.swprojekt.speeddating.service.security.CustomUserDetails;
 import de.swprojekt.speeddating.service.showevent.IShowEventService;
 import de.swprojekt.speeddating.service.showstudierender.IShowStudierendeService;
 import de.swprojekt.speeddating.service.showunternehmen.IShowUnternehmenService;
@@ -157,7 +141,13 @@ public class EventDurchfuehrung extends HorizontalLayout {
 		// Listen
 		List<Unternehmen> listeUntern = new ArrayList();
 		List<Studierender> listeStuds = new ArrayList();
+		
+		//Pooling zunächst deaktivieren fuer Timer
+		UI.getCurrent().setPollInterval(-1);
 
+		//SoundPlayer fuer Signalton
+//		AudioPlayer player = new AudioPlayer
+		
 		// Layouts
 
 		// Timer-Popup
@@ -226,9 +216,6 @@ public class EventDurchfuehrung extends HorizontalLayout {
 			zurueckButton.getUI().ifPresent(ui -> ui.navigate("ui/eventorganisator/menue")); // zurueck auf andere Seite
 		});
 
-		// Poll-Timer deaktivieren
-		UI.getCurrent().setPollInterval(-1);
-
 		// Buttons-Funktionen
 		buttonEventauswahl.addClickListener(event -> {
 			this.aEvent = comboBox.getValue();
@@ -270,10 +257,6 @@ public class EventDurchfuehrung extends HorizontalLayout {
 				// Timer starten
 				geplanteRundenzeit = aEvent.getRundendauerInMinuten();
 				secGepl = geplanteRundenzeit * 60;
-//				s = secGepl % 60;
-//				m = (secGepl /60) %60;
-//				time = String.format("%02d:%02d", m,s);
-//				labelTimer.setText(time);
 
 				time = String.format("%02d:%02d", TimeUnit.SECONDS.toMinutes(secGepl),
 						TimeUnit.SECONDS.toSeconds(secGepl) % TimeUnit.MINUTES.toSeconds(1));
@@ -292,12 +275,16 @@ public class EventDurchfuehrung extends HorizontalLayout {
 				labelMaxRunden.setVisible(true);
 				labelMaxRunden.setText("/ " + Integer.toString(listeStuds.size()));
 				labelTimer.setVisible(true);
+				
+				//Button nachsteRunde zunächst disabled. Wird enabled, nachdem Zeit abgelaufen ist
+				buttonNaechsteRunde.setEnabled(false);
 			}
 		});
 
 		// Startet den Timer
 		buttonStart.addClickListener(event -> {
 
+			buttonStart.setEnabled(false);
 			// Polling
 			UI.getCurrent().setPollInterval(1000);
 
@@ -317,6 +304,7 @@ public class EventDurchfuehrung extends HorizontalLayout {
 				// Zeit ist abgelaufen...
 				UI.getCurrent().setPollInterval(-1);
 				popUp.open();
+//				player.play("http://www.a1sounddownload.com/freesounds5/alarmring.mp3");
 			}
 
 		});
@@ -324,7 +312,7 @@ public class EventDurchfuehrung extends HorizontalLayout {
 		// Timer pausieren oder fortsetzen
 		buttonPauseFortsetzen.addClickListener(event -> {
 
-			if (timerLaeuft = true) {
+			if (timerLaeuft == true) {
 				UI.getCurrent().setPollInterval(-1);
 				timerLaeuft = false;
 			} else {
@@ -362,10 +350,31 @@ public class EventDurchfuehrung extends HorizontalLayout {
 				// buttonNaechsteRunde.setEnabled(false);
 			}
 
+			//Zeit wieder aus max setzen
+			geplanteRundenzeit = aEvent.getRundendauerInMinuten();
+			secGepl = geplanteRundenzeit * 60;
+//			s = secGepl % 60;
+//			m = (secGepl /60) %60;
+//			time = String.format("%02d:%02d", m,s);
+//			labelTimer.setText(time);
+
+			time = String.format("%02d:%02d", TimeUnit.SECONDS.toMinutes(secGepl),
+					TimeUnit.SECONDS.toSeconds(secGepl) % TimeUnit.MINUTES.toSeconds(1));
+			labelTimer.setText(time);
+			
+			//Button wieder disbale
+			buttonNaechsteRunde.setEnabled(false);
+			//Timer-Buttons enable
+			buttonStart.setEnabled(true);
+			buttonPauseFortsetzen.setEnabled(true);
+			
 		});
 
 		buttonPopUp.addClickListener(event -> {
 			popUp.close();
+			buttonNaechsteRunde.setEnabled(true);
+			buttonStart.setEnabled(false);
+			buttonPauseFortsetzen.setEnabled(false);
 		});
 
 		buttonBeenden.addClickListener(event -> {
