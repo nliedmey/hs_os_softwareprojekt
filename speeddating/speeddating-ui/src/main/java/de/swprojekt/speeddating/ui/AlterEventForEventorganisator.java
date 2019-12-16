@@ -132,12 +132,39 @@ public class AlterEventForEventorganisator extends VerticalLayout {
 				timepickerStartzeitpunktUhrzeit.setValue(zuAendernderndesEvent.getStartzeitpunkt().toInstant().atZone(ZoneId.systemDefault()).toLocalTime());
 				datepickerEndzeitpunktDatum.setValue(zuAendernderndesEvent.getEndzeitpunkt().toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
 				timepickerEndzeitpunktUhrzeit.setValue(zuAendernderndesEvent.getEndzeitpunkt().toInstant().atZone(ZoneId.systemDefault()).toLocalTime());
-				textfieldRundendauerInMinuten.setValue(String.valueOf(zuAendernderndesEvent.getRundendauerInMinuten()));
-				
+				textfieldRundendauerInMinuten.setValue(String.valueOf(zuAendernderndesEvent.getRundendauerInMinuten()));	
 				checkboxAbgeschlossen.setValue(zuAendernderndesEvent.isAbgeschlossen());
 				Collection<Integer> listStudentenInUnveraendertemEvent=new ArrayList<>(iShowEventService.showEvent(zuAendernderndesEvent.getEvent_id()).getTeilnehmendeStudierende());
 				Collection<Integer> listUnternehmenInUnveraendertemEvent=new ArrayList<>(iShowEventService.showEvent(zuAendernderndesEvent.getEvent_id()).getTeilnehmendeUnternehmen());
 			
+				
+				if (zuAendernderndesEvent.isAbgeschlossen() == true) {
+
+					aendernButton.setEnabled(false);					
+					textfieldBezeichnung.setEnabled(false);
+					datepickerStartzeitpunktDatum.setEnabled(false);
+					timepickerStartzeitpunktUhrzeit.setEnabled(false);
+					datepickerEndzeitpunktDatum.setEnabled(false);
+					timepickerEndzeitpunktUhrzeit.setEnabled(false);
+					textfieldRundendauerInMinuten.setEnabled(false);
+					checkboxAbgeschlossen.setEnabled(false);
+					unternehmenGrid.setEnabled(false);
+					studierenderGrid.setEnabled(false);
+					
+				} else {
+					aendernButton.setEnabled(true);					
+					textfieldBezeichnung.setEnabled(true);
+					datepickerStartzeitpunktDatum.setEnabled(true);
+					timepickerStartzeitpunktUhrzeit.setEnabled(true);
+					datepickerEndzeitpunktDatum.setEnabled(true);
+					timepickerEndzeitpunktUhrzeit.setEnabled(true);
+					textfieldRundendauerInMinuten.setEnabled(true);
+					checkboxAbgeschlossen.setEnabled(true);
+					unternehmenGrid.setEnabled(true);
+					studierenderGrid.setEnabled(true);
+					
+				}
+				
 				studierenderGrid.deselectAll(); //zunaechst alle ausgewaehlten von vorheriger Eventmarkierung entfernen
 				for(Studierender s:ldpStudent.getItems())
 				{
@@ -234,7 +261,7 @@ public class AlterEventForEventorganisator extends VerticalLayout {
 		v1.add(textfieldBezeichnung);
 		v1.add(new HorizontalLayout(datepickerStartzeitpunktDatum,timepickerStartzeitpunktUhrzeit));
 		v1.add(new HorizontalLayout(datepickerEndzeitpunktDatum,timepickerEndzeitpunktUhrzeit));
-		v1.add(textfieldRundendauerInMinuten);
+		v1.add(new HorizontalLayout(textfieldRundendauerInMinuten, checkboxAbgeschlossen));
 		v1.add(studierenderGrid);
 		v1.add(unternehmenGrid);
 		v1.add(aendernButton);
