@@ -31,6 +31,8 @@ public class EventorganisatorMenue extends Div {
 		v1.add(new RouterLink("Events anzeigen/loeschen",EventViewForEventorganisator.class));
 		v1.add(new RouterLink("Event hinzufuegen",AddEvent.class));
 		v1.add(new RouterLink("Events aendern",AlterEventForEventorganisator.class));
+		v1.add(new RouterLink("Events durchfuehren",EventDurchfuehrung.class));
+		v1.add(new RouterLink("Events Matchings auswerten",EventMatchingDisplayView.class));
 		v1.add("-----------");
 		v1.add(new RouterLink("Studenten anzeigen",StudView.class));
 		v1.add(new RouterLink("Studenten hinzufuegen",AddStud.class));

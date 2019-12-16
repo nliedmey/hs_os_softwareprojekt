@@ -52,7 +52,7 @@ public class AddUntern extends VerticalLayout {
 		notificationSavesuccess.addThemeVariants(NotificationVariant.LUMO_SUCCESS);
 		Label labelSavesuccess = new Label("Unternehmen erfolgreich hinzugefuegt!");
 		notificationSavesuccess.add(labelSavesuccess);
-		notificationSavesuccess.setDuration(5000); //Meldung wird 5 Sekunden lang angezeigt
+		notificationSavesuccess.setDuration(2500); //Meldung wird 2,5 Sekunden lang angezeigt
 		
 		VerticalLayout h1 = new VerticalLayout();
 		h1.add(textfieldUnternehmensname);
@@ -77,9 +77,8 @@ public class AddUntern extends VerticalLayout {
 				Unternehmen neuesUnternehmen=iUnternehmenService.speicherUnternehmen(einUnternehmen);
 				iRegisterUserService.save(neuesUnternehmen.getUnternehmensname()+"_"+neuesUnternehmen.getUnternehmen_id(), "standard", "UNTERNEHMEN", neuesUnternehmen.getUnternehmen_id()); //Einloggbenutzer anlegen fuer das Unternehmen
 				//Nutzername: Unternehmensname_Unternehmenid, Initialpasswort: standard
-				notificationSavesuccess.open();
-				
-				buttonHinzufuegen.getUI().ifPresent(ui->ui.navigate("maincontent"));
+				notificationSavesuccess.open();				
+				buttonHinzufuegen.getUI().ifPresent(ui->ui.navigate("ui/eventorganisator/menue"));
 			} catch(ValidationException | com.vaadin.flow.data.binder.ValidationException e) {
 				e.printStackTrace();
 			}

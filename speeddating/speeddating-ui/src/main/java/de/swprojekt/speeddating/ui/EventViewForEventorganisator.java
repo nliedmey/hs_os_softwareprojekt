@@ -3,6 +3,9 @@ package de.swprojekt.speeddating.ui;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.GridMultiSelectionModel;
+import com.vaadin.flow.component.html.Label;
+import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.grid.Grid.SelectionMode;
 
 import java.util.ArrayList;
@@ -26,66 +29,86 @@ import de.swprojekt.speeddating.service.showevent.IShowEventService;
  * View fuer die Anzeige vorhandener Events
  */
 
-@Route("ui/eventsForOrganisator")	//Erreichbar ueber Adresse: http://localhost:8080/speeddating-web-7.0-SNAPSHOT/ui/events	
-@Secured("ROLE_EVENTORGANISATOR") //nur User mit Rolle EVENTORGANISATOR koennen auf Seite zugreifen, @Secured prueft auch bei RouterLink-Weiterleitungen
+@Route("ui/eventsForOrganisator") // Erreichbar ueber Adresse:
+									// http://localhost:8080/speeddating-web-7.0-SNAPSHOT/ui/events
+@Secured("ROLE_EVENTORGANISATOR") // nur User mit Rolle EVENTORGANISATOR koennen auf Seite zugreifen, @Secured
+									// prueft auch bei RouterLink-Weiterleitungen
 //@Secured kann auch an einzelnen Methoden angewendet werden
-public class EventViewForEventorganisator extends VerticalLayout {	//VerticalLayout fuehrt zu Anordnung von Elementen untereinander statt nebeneinander (HorizontalLayout)
+public class EventViewForEventorganisator extends VerticalLayout { // VerticalLayout fuehrt zu Anordnung von Elementen
+																	// untereinander statt nebeneinander
+																	// (HorizontalLayout)
 
-	@Autowired	//Konstruktor-basierte Injection, Parameter wird autowired (hier: Interface)
+	@Autowired // Konstruktor-basierte Injection, Parameter wird autowired (hier: Interface)
 	public EventViewForEventorganisator(IShowEventService iShowEventService, IDeleteEventService iDeleteEventService) {
-	
-		Grid<Event> eventGrid;	//Tabelle mit Events
+
+		Grid<Event> eventGrid; // Tabelle mit Events
 		GridMultiSelectionModel<Event> selectionModelEvent;
-		Button loeschenButton=new Button("Loeschen");		
-		Button logoutButton=new Button("Logout");
+		Button loeschenButton = new Button("Loeschen");
+		Button logoutButton = new Button("Logout");
 		Button zurueckButton = new Button("Zurueck");
-		
-		
+
+		Notification notificationSavesuccess = new Notification();
+		notificationSavesuccess.addThemeVariants(NotificationVariant.LUMO_SUCCESS);
+		Label labelSavesuccess = new Label("Event wurde geloescht! ");
+		notificationSavesuccess.add(labelSavesuccess);
+		notificationSavesuccess.setDuration(2500); //Meldung wird 2,5 Sekunden lang angezeigt
+
 		List<Event> listOfEvents = new ArrayList<Event>();
-		CustomUserDetails userDetails=(CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();	//Id des eingeloggten Users aus SecurityKontext holen
-		
-		//Hier auskommentieren, wenn Events nur fuer den Organisator geladen werden sollen
-		for(int event_id:iShowEventService.showEventsOfUser(userDetails.getEntityRefId()))	//alle Events, welche von Eventorganisator verwaltet, laden
+		CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication()
+				.getPrincipal(); // Id des eingeloggten Users aus SecurityKontext holen
+
+		// Hier auskommentieren, wenn Events nur fuer den Organisator geladen werden
+		// sollen
+		for (int event_id : iShowEventService.showEventsOfUser(userDetails.getEntityRefId())) // alle Events, welche von
+																								// Eventorganisator
+																								// verwaltet, laden
 		{
-			listOfEvents.add(iShowEventService.showEvent(event_id));
+			Event aEvent = iShowEventService.showEvent(event_id);
+			if (aEvent != null) {
+				listOfEvents.add(aEvent);
+			}
 		}
 //		listOfEvents.addAll(iShowEventService.showEvents());
-		
-		eventGrid = new Grid<>(Event.class);	//Tabelle initialisieren
-		ListDataProvider<Event> ldpEvent = DataProvider
-				.ofCollection(listOfEvents);	//Dataprovider erstellen und Quelle fuer Events (via Service aus DB) festlegen 
-		eventGrid.setDataProvider(ldpEvent);	//erstellten Dataprovider als Datenquelle fuer Tabelle festlegen
-		
-		eventGrid.removeColumnByKey("event_id");	//event_id nicht in Tabelle mit anzeigen
-		eventGrid.setColumns("bezeichnung", "startzeitpunkt", "endzeitpunkt", "abgeschlossen", "teilnehmendeStudierende", "teilnehmendeUnternehmen");	//Spaltenordnung festlegen
-		eventGrid.setSelectionMode(SelectionMode.MULTI);	//es koennen mehrere Events ausgewaehlt sein
+
+		eventGrid = new Grid<>(Event.class); // Tabelle initialisieren
+		ListDataProvider<Event> ldpEvent = DataProvider.ofCollection(listOfEvents); // Dataprovider erstellen und Quelle
+																					// fuer Events (via Service aus DB)
+																					// festlegen
+		eventGrid.setDataProvider(ldpEvent); // erstellten Dataprovider als Datenquelle fuer Tabelle festlegen
+
+		eventGrid.removeColumnByKey("event_id"); // event_id nicht in Tabelle mit anzeigen
+		eventGrid.setColumns("bezeichnung", "startzeitpunkt", "endzeitpunkt", "abgeschlossen",
+				"teilnehmendeStudierende", "teilnehmendeUnternehmen"); // Spaltenordnung festlegen
+		eventGrid.setSelectionMode(SelectionMode.MULTI); // es koennen mehrere Events ausgewaehlt sein
 		selectionModelEvent = (GridMultiSelectionModel<Event>) eventGrid.getSelectionModel();
-		
-		loeschenButton.addClickListener(event -> {	//Bei Buttonklick werden folgende Aktionen ausgefuehrt
-			for(Event e:selectionModelEvent.getSelectedItems())	//markierte Events durchgehen
+
+		loeschenButton.addClickListener(event -> { // Bei Buttonklick werden folgende Aktionen ausgefuehrt
+			for (Event e : selectionModelEvent.getSelectedItems()) // markierte Events durchgehen
 			{
 				iDeleteEventService.loescheEvent(e);
 			}
-		});
-		
-		logoutButton.addClickListener(event -> {	//Bei Buttonklick werden folgende Aktionen ausgefuehrt
-			SecurityContextHolder.clearContext();	//Spring-Security-Session leeren
-			getUI().get().getSession().close();		//Vaadin Session leeren
-			logoutButton.getUI().ifPresent(ui->ui.navigate("login"));	//zurueck auf andere Seite 
-		});
-		
-		zurueckButton.addClickListener(event -> {	//Bei Buttonklick werden folgende Aktionen ausgefuehrt
-			zurueckButton.getUI().ifPresent(ui->ui.navigate("ui/eventorganisator/menue"));	//zurueck auf andere Seite 
+			notificationSavesuccess.open();
+			loeschenButton.getUI().ifPresent(ui -> ui.navigate("ui/eventorganisator/menue")); // zurueck auf andere Seite
+
 		});
 
+		logoutButton.addClickListener(event -> { // Bei Buttonklick werden folgende Aktionen ausgefuehrt
+			SecurityContextHolder.clearContext(); // Spring-Security-Session leeren
+			getUI().get().getSession().close(); // Vaadin Session leeren
+			logoutButton.getUI().ifPresent(ui -> ui.navigate("login")); // zurueck auf andere Seite
+		});
 
-		add(eventGrid);	//Hinzufuegen der Elemente zum VerticalLayout
+		zurueckButton.addClickListener(event -> { // Bei Buttonklick werden folgende Aktionen ausgefuehrt
+			zurueckButton.getUI().ifPresent(ui -> ui.navigate("ui/eventorganisator/menue")); // zurueck auf andere Seite
+		});
+
+		add(eventGrid); // Hinzufuegen der Elemente zum VerticalLayout
 		add(loeschenButton);
-		add(new HorizontalLayout(zurueckButton,logoutButton));
+		add(new HorizontalLayout(zurueckButton, logoutButton));
 	}
-	//@PostConstruct	//Ausfuehrung nach Konstruktoraufruf
-	//public void init()
-	//{
-	//	
-	//}
+	// @PostConstruct //Ausfuehrung nach Konstruktoraufruf
+	// public void init()
+	// {
+	//
+	// }
 }

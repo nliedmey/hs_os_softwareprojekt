@@ -98,7 +98,7 @@ public class AddEvent extends VerticalLayout {
 		notificationSavesuccess.addThemeVariants(NotificationVariant.LUMO_SUCCESS);
 		Label labelSavesuccess = new Label("Event erfolgreich hinzugefuegt! ");
 		notificationSavesuccess.add(labelSavesuccess);
-		notificationSavesuccess.setDuration(5000); //Meldung wird 5 Sekunden lang angezeigt
+		notificationSavesuccess.setDuration(2500); //Meldung wird 2,5 Sekunden lang angezeigt
 				
 		VerticalLayout v1 = new VerticalLayout(); // Textfelder sollen untereinander angeordnet werden
 		v1.add(textfieldBezeichnung);
@@ -162,6 +162,7 @@ public class AddEvent extends VerticalLayout {
 			
 				iAddEventService.addeEventInEventorga(erstelltesEvent.getEvent_id(), userDetails.getEntityRefId() ); //dem Eventorganisator dieses Event zuordnen (er verwaltet dies)
 				notificationSavesuccess.open(); // Erfolgreich-Meldung anzeigen
+				buttonHinzufuegen.getUI().ifPresent(ui->ui.navigate("ui/eventorganisator/menue"));	//zurueck auf andere Seite 
 			} catch (ValidationException e) {
 				e.printStackTrace();
 			}

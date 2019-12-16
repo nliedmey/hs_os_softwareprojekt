@@ -21,6 +21,9 @@ import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.Grid.SelectionMode;
 import com.vaadin.flow.component.grid.GridMultiSelectionModel;
 import com.vaadin.flow.component.grid.GridSingleSelectionModel;
+import com.vaadin.flow.component.html.Label;
+import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
@@ -68,6 +71,12 @@ public class AlterEventForEventorganisator extends VerticalLayout {
 		TimePicker timepickerEndzeitpunktUhrzeit=new TimePicker("Endzeit:");
 		TextField textfieldRundendauerInMinuten = new TextField("Rundendauer (min):");
 		Checkbox checkboxAbgeschlossen=new Checkbox("Abgeschlossen:");
+		
+		Notification notificationSavesuccess = new Notification();
+		notificationSavesuccess.addThemeVariants(NotificationVariant.LUMO_SUCCESS);
+		Label labelSavesuccess = new Label("Event erfolgreich aktualisiert! ");
+		notificationSavesuccess.add(labelSavesuccess);
+		notificationSavesuccess.setDuration(2500); //Meldung wird 2,5 Sekunden lang angezeigt
 		
 		List<Event> listOfEvents = new ArrayList<Event>();
 		CustomUserDetails userDetails=(CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();	//Id des eingeloggten Users aus SecurityKontext holen
@@ -242,6 +251,8 @@ public class AlterEventForEventorganisator extends VerticalLayout {
 				veraendertesEventDAO.setTeilnehmendeUnternehmen(unternehmenInVeraendertemEvent);
 			}
 			iAlterEventService.aenderEvent(veraendertesEventDAO);
+			notificationSavesuccess.open();
+			aendernButton.getUI().ifPresent(ui->ui.navigate("ui/eventorganisator/menue"));	//zurueck auf andere Seite 
 		});
 		
 		logoutButton.addClickListener(event -> {	//Bei Buttonklick werden folgende Aktionen ausgefuehrt

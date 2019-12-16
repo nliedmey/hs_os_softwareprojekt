@@ -58,7 +58,7 @@ public class AlterEventorganisator extends VerticalLayout {
 		notificationSavesuccess.addThemeVariants(NotificationVariant.LUMO_SUCCESS);
 		Label labelSavesuccess = new Label("Eventorganisator erfolgreich aktualisiert! ");
 		notificationSavesuccess.add(labelSavesuccess);
-		notificationSavesuccess.setDuration(5000);  //Meldung wird 5 Sekunden lang angezeigt
+		notificationSavesuccess.setDuration(2500); //Meldung wird 2,5 Sekunden lang angezeigt
 
 		Grid<Event> eventGrid; // Tabelle mit Events, welcher Eventorganisator verwaltet
 		GridMultiSelectionModel<Event> selectionModelEvent;
@@ -95,6 +95,7 @@ public class AlterEventorganisator extends VerticalLayout {
 				"teilnehmendeStudierende", "teilnehmendeUnternehmen"); // Spaltenordnung festlegen
 
 		eventGrid.setSelectionMode(SelectionMode.MULTI); // es koennen mehrere Events ausgewaehlt sein
+		eventGrid.setEnabled(false);
 		selectionModelEvent = (GridMultiSelectionModel<Event>) eventGrid.getSelectionModel();
 
 		eventorganisatorGrid.addSelectionListener(event -> {

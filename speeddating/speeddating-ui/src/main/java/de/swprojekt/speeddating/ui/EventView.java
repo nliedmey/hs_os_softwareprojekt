@@ -54,7 +54,7 @@ public class EventView extends VerticalLayout {	//VerticalLayout fuehrt zu Anord
 		logoutButton.addClickListener(event -> {	//Bei Buttonklick werden folgende Aktionen ausgefuehrt
 			SecurityContextHolder.clearContext();	//Spring-Security-Session leeren
 			getUI().get().getSession().close();		//Vaadin Session leeren
-			logoutButton.getUI().ifPresent(ui->ui.navigate("maincontent"));	//zurueck auf andere Seite 
+			logoutButton.getUI().ifPresent(ui->ui.navigate("login"));	//zurueck auf andere Seite 
 		});
 
 

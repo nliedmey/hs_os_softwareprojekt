@@ -19,6 +19,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.aspectj.weaver.patterns.NotTypePattern;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -97,18 +98,21 @@ public class EventMatchingDisplayView extends HorizontalLayout {
 		// Notification Meldungen mit Button verknuepfen
 		Notification notificationMatchingsuccess = new Notification();
 		notificationMatchingsuccess.addThemeVariants(NotificationVariant.LUMO_SUCCESS);
-		Label labelMatchingsuccess = new Label("Matching Ergebnisse wurde als PDF bereitgestellt! ");
+		Label labelMatchingsuccess = new Label("Matching Ergebnisse wurden als PDF bereitgestellt! ");
 		notificationMatchingsuccess.add(labelMatchingsuccess);
+		notificationMatchingsuccess.setDuration(2500); //Meldung wird 2,5 Sekunden lang angezeigt
 
 		Notification notificationZurueck = new Notification();
 		notificationZurueck.addThemeVariants(NotificationVariant.LUMO_ERROR);
 		Label labelZuruecksuccess = new Label("Bearbeitung abgebrochen! ");
 		notificationZurueck.add(labelZuruecksuccess);
+		notificationZurueck.setDuration(2500); //Meldung wird 2,5 Sekunden lang angezeigt
 
 		Notification notificationNotPossible = new Notification();
 		notificationNotPossible.addThemeVariants(NotificationVariant.LUMO_ERROR);
 		Label labelNotPossible = new Label("Offene Stimmabgaben, daher kein Matching moeglich! ");
 		notificationNotPossible.add(labelNotPossible);
+		notificationNotPossible.setDuration(2500); //Meldung wird 2,5 Sekunden lang angezeigt
 
 		List<Event> listOfEvents = new ArrayList<Event>();
 		CustomUserDetails userDetails=(CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();	//Id des eingeloggten Users aus SecurityKontext holen
@@ -195,7 +199,7 @@ public class EventMatchingDisplayView extends HorizontalLayout {
 			notificationZurueck.open();
 			// SecurityContextHolder.clearContext(); //Spring-Security-Session leeren
 			// getUI().get().getSession().close(); //Vaadin Session leeren
-			buttonZurueck.getUI().ifPresent(ui -> ui.navigate("maincontent")); // zurueck auf andere Seite
+			buttonZurueck.getUI().ifPresent(ui -> ui.navigate("ui/eventorganisator/menue")); // zurueck auf andere Seite
 		});
 
 		buttonMatchingDuerchfuehren.addClickListener(event -> {
@@ -214,7 +218,7 @@ public class EventMatchingDisplayView extends HorizontalLayout {
 
 			// Erfolgreich-Meldung anzeigen
 			notificationMatchingsuccess.open();
-			buttonZurueck.getUI().ifPresent(ui -> ui.navigate("maincontent")); // zurueck auf andere Seite
+			buttonMatchingDuerchfuehren.getUI().ifPresent(ui -> ui.navigate("ui/eventorganisator/menue")); // zurueck auf andere Seite
 
 //			} else {
 //				notificationNotPossible.open();

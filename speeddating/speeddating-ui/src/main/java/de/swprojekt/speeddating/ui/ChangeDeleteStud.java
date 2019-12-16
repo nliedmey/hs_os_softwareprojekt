@@ -51,6 +51,7 @@ public class ChangeDeleteStud extends VerticalLayout {
 		TextField textfieldOrt = new TextField("Ort: ");
 		TextField textfieldTelefonnr = new TextField("Telefonnr.: ");
 		TextField textfieldEMail = new TextField("E-Mail Adresse: ");
+		
 
 		// Erzeugen der Combo Box
 		ComboBox<Studierender> comboBox = new ComboBox<>();
@@ -95,19 +96,19 @@ public class ChangeDeleteStud extends VerticalLayout {
 		notificationAendernsuccess.addThemeVariants(NotificationVariant.LUMO_SUCCESS);
 		Label labelAendernsuccess = new Label("Student erfolgreich aktualisiert! ");
 		notificationAendernsuccess.add(labelAendernsuccess);
-		notificationAendernsuccess.setDuration(5000); // Meldung wird 5 Sekunden lang angezeigt
+		notificationAendernsuccess.setDuration(2500); //Meldung wird 2,5 Sekunden lang angezeigt
 
 		Notification notificationLoeschensuccess = new Notification();
 		notificationLoeschensuccess.addThemeVariants(NotificationVariant.LUMO_SUCCESS);
 		Label labelLoeschensuccess = new Label("Student erfolgreich geloescht! ");
 		notificationLoeschensuccess.add(labelLoeschensuccess);
-		notificationLoeschensuccess.setDuration(5000); // Meldung wird 5 Sekunden lang angezeigt
+		notificationLoeschensuccess.setDuration(2500); //Meldung wird 2,5 Sekunden lang angezeigt
 
 		Notification notificationAbbruch = new Notification();
 		notificationAbbruch.addThemeVariants(NotificationVariant.LUMO_ERROR);
 		Label labelAbbruchsuccess = new Label("Studentbearbeitung abgebrochen! ");
 		notificationAbbruch.add(labelAbbruchsuccess);
-		notificationAbbruch.setDuration(5000); // Meldung wird 5 Sekunden lang angezeigt
+		notificationAbbruch.setDuration(2500); //Meldung wird 2,5 Sekunden lang angezeigt
 
 		// *** Erzeugen des Layouts START ***
 		VerticalLayout h1 = new VerticalLayout(); // Textfelder sollen nebeneinander angeordnet werden
@@ -155,7 +156,7 @@ public class ChangeDeleteStud extends VerticalLayout {
 				notificationAendernsuccess.open();
 //				SecurityContextHolder.clearContext();	//Spring-Security-Session leeren
 //				getUI().get().getSession().close();		//Vaadin Session leeren
-				buttonStudAendern.getUI().ifPresent(ui -> ui.navigate("maincontent")); // zurueck auf andere Seite
+				buttonStudAendern.getUI().ifPresent(ui -> ui.navigate("ui/eventorganisator/menue")); // zurueck auf andere Seite
 				// }
 				// }
 			} catch (ValidationException e) {
@@ -172,7 +173,7 @@ public class ChangeDeleteStud extends VerticalLayout {
 				notificationLoeschensuccess.open();
 //			SecurityContextHolder.clearContext();	//Spring-Security-Session leeren
 //			getUI().get().getSession().close();		//Vaadin Session leeren
-				buttonZurueck.getUI().ifPresent(ui -> ui.navigate("maincontent")); // zurueck auf andere Seite
+				buttonZurueck.getUI().ifPresent(ui -> ui.navigate("ui/eventorganisator/menue")); // zurueck auf andere Seite
 			} catch (ValidationException e) {
 				e.printStackTrace();
 			}
