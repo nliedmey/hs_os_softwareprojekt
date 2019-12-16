@@ -36,6 +36,7 @@ import de.swprojekt.speeddating.model.Event;
 import de.swprojekt.speeddating.model.MatchingAsPDF;
 import de.swprojekt.speeddating.model.Studierender;
 import de.swprojekt.speeddating.model.Unternehmen;
+import de.swprojekt.speeddating.service.security.CustomUserDetails;
 import de.swprojekt.speeddating.service.showevent.IShowEventService;
 import de.swprojekt.speeddating.service.showstudierender.IShowStudierendeService;
 import de.swprojekt.speeddating.service.showunternehmen.IShowUnternehmenService;
@@ -107,12 +108,23 @@ public class EventMatchingDisplayView extends HorizontalLayout {
 		Label labelNotPossible = new Label("Offene Stimmabgaben, daher kein Matching moeglich! ");
 		notificationNotPossible.add(labelNotPossible);
 
+		List<Event> listOfEvents = new ArrayList<Event>();
+		CustomUserDetails userDetails=(CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();	//Id des eingeloggten Users aus SecurityKontext holen
+		
+		for(int event_id:iShowEventService.showEventsOfUser(userDetails.getEntityRefId()))	//alle Events, welche von Eventorganisator verwaltet, laden
+		{
+			listOfEvents.add(iShowEventService.showEvent(event_id));
+		}
+		
 		// Erzeugen der Combo Box
 		ComboBox<Event> comboBox = new ComboBox<>();
 		comboBox.setLabel("Event auswaehlen");
 		comboBox.setItemLabelGenerator(Event::getBezeichnung);
-		List<Event> listOfEvents = iShowEventService.showEvents();
-		comboBox.setItems(listOfEvents);
+		ListDataProvider<Event> ldpEvent = DataProvider
+				.ofCollection(listOfEvents); // Dataprovider erstellen und Quelle fuer
+																			// Events (via Service aus DB)
+																			// festlegen
+		comboBox.setDataProvider(ldpEvent); // erstellten Dataprovider als Datenquelle fuer Tabelle festlegen
 		comboBox.addValueChangeListener(event -> {
 			Event aEvent = comboBox.getValue();
 			if (aEvent != null) {
