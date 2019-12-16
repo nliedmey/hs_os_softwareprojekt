@@ -15,15 +15,20 @@ import java.util.concurrent.TimeUnit;
 import javax.swing.Timer;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.core.context.SecurityContextHolder;
 
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.ComboBox;
+import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.H4;
 import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.progressbar.ProgressBar;
 import com.vaadin.flow.data.provider.DataProvider;
 import com.vaadin.flow.data.provider.ListDataProvider;
 import com.vaadin.flow.router.Route;
@@ -32,6 +37,7 @@ import de.swprojekt.speeddating.model.Event;
 import de.swprojekt.speeddating.model.Studierender;
 import de.swprojekt.speeddating.model.Unternehmen;
 import de.swprojekt.speeddating.service.alterevent.IAlterEventService;
+import de.swprojekt.speeddating.service.security.CustomUserDetails;
 import de.swprojekt.speeddating.service.showevent.IShowEventService;
 import de.swprojekt.speeddating.service.showstudierender.IShowStudierendeService;
 import de.swprojekt.speeddating.service.showunternehmen.IShowUnternehmenService;
@@ -42,9 +48,8 @@ import de.swprojekt.speeddating.service.showunternehmen.IShowUnternehmenService;
 
 @Route("ui/eventDurchfuehrung") // Erreichbar ueber Adresse:
 								// http://localhost:8080/speeddating-web-7.0-SNAPSHOT/ui/events
-//@Secured("ROLE_NORMAL")	//nur User mit Rolle NORMAL koennen auf Seite zugreifen, @Secured prueft auch bei RouterLink-Weiterleitungen
+@Secured("ROLE_EVENTORGANISATOR")	//nur User mit Rolle EVENTORGANISATOR koennen auf Seite zugreifen, @Secured prueft auch bei RouterLink-Weiterleitungen
 //@Secured kann auch an einzelnen Methoden angewendet werden
-
 
 //NOTIZEN
 //Timer fehlt
@@ -58,8 +63,16 @@ public class EventDurchfuehrung extends HorizontalLayout {
 	int tempRunde;
 	int lv_id = 0;
 	int geplanteRundenzeit = 0;
+
+	boolean timerLaeuft = false;
+
+	long secGepl;
+	long s;
+	long m;
+	String time;
+
 	Event aEvent;
-	
+
 	@SuppressWarnings("deprecation")
 	@Autowired
 	public EventDurchfuehrung(IShowEventService iShowEventService, IShowUnternehmenService iShowUnternehmenService,
@@ -119,7 +132,6 @@ public class EventDurchfuehrung extends HorizontalLayout {
 		Button buttonNaechsteRunde = new Button("Naechste Runde");
 		Button buttonPauseFortsetzen = new Button("Pause / Fortsetzen");
 		Button buttonBeenden = new Button("Beenden");
-		
 
 		// Erzeugen der Combo Box
 		ComboBox<Event> comboBox = new ComboBox<>();
@@ -127,6 +139,14 @@ public class EventDurchfuehrung extends HorizontalLayout {
 		List<Event> listOfEvents = iShowEventService.showEvents();
 		comboBox.setItems(listOfEvents);
 		comboBox.setPlaceholder("Event auswaehlen");
+//		List<Event> listOfEvents = new ArrayList<>();
+
+//		CustomUserDetails userDetails=(CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();	//Id des eingeloggten Users aus SecurityKontext holen
+//		
+//		for(int event_id:iShowEventService.showEventsOfUser(userDetails.getEntityRefId()))	//alle Events, an welchen der User beteiligt ist, laden
+//		{
+//			listOfEvents.add(iShowEventService.showEvent(event_id));
+//		}
 
 		// Labels in Arrays speichern um spaetere Befuellung zu vereinfachen
 		List<Label> labelsStuds = Arrays.asList(labelStud1, labelStud2, labelStud3, labelStud4, labelStud5, labelStud6,
@@ -137,16 +157,15 @@ public class EventDurchfuehrung extends HorizontalLayout {
 		// Listen
 		List<Unternehmen> listeUntern = new ArrayList();
 		List<Studierender> listeStuds = new ArrayList();
-//
-//		// Stack fuer Rotation je Runde
-//		Stack<Studierender> stackStud = new Stack<Studierender>();
 
-		// Button nachsteRunde zunächst unsichtbar
-		buttonNaechsteRunde.setVisible(false);
-
-		
-		
 		// Layouts
+
+		// Timer-Popup
+		Button buttonPopUp = new Button("Close");
+		Dialog popUp = new Dialog();
+		popUp.add(new Label("Zeit abgelaufen!"));
+		popUp.add(buttonPopUp);
+
 		// Links
 		VerticalLayout vLinks = new VerticalLayout();
 		HorizontalLayout h1 = new HorizontalLayout();
@@ -189,7 +208,7 @@ public class EventDurchfuehrung extends HorizontalLayout {
 		vRechts.add(new HorizontalLayout(comboBox, buttonEventauswahl, zurueckButton));
 		vRechts.add(new HorizontalLayout(labelRunde, labelRundeAnzahl, labelMaxRunden));
 		vRechts.add(labelTimer);
-		vRechts.add(new HorizontalLayout(buttonStart, buttonNaechsteRunde, buttonPauseFortsetzen, buttonBeenden));
+		vRechts.add(new HorizontalLayout(buttonNaechsteRunde, buttonStart, buttonPauseFortsetzen, buttonBeenden));
 
 		// Zunaechst unsichtbar. Werden nach Eventauswahl sichtbar
 		buttonStart.setVisible(false);
@@ -202,11 +221,14 @@ public class EventDurchfuehrung extends HorizontalLayout {
 		labelTimer.setVisible(false);
 
 		add(vLinks, vRechts);
-		
-		zurueckButton.addClickListener(event -> {	//Bei Buttonklick werden folgende Aktionen ausgefuehrt
-			zurueckButton.getUI().ifPresent(ui->ui.navigate("ui/eventorganisator/menue"));	//zurueck auf andere Seite 
+
+		zurueckButton.addClickListener(event -> { // Bei Buttonklick werden folgende Aktionen ausgefuehrt
+			zurueckButton.getUI().ifPresent(ui -> ui.navigate("ui/eventorganisator/menue")); // zurueck auf andere Seite
 		});
-		
+
+		// Poll-Timer deaktivieren
+		UI.getCurrent().setPollInterval(-1);
+
 		// Buttons-Funktionen
 		buttonEventauswahl.addClickListener(event -> {
 			this.aEvent = comboBox.getValue();
@@ -245,15 +267,18 @@ public class EventDurchfuehrung extends HorizontalLayout {
 
 				}
 
-				//Timer starten
+				// Timer starten
 				geplanteRundenzeit = aEvent.getRundendauerInMinuten();
-				int min = geplanteRundenzeit;
-				int sec = 00;
-				
-				
-				String dateStr = min + ":" + sec;
-				labelTimer.setText(dateStr);
-				
+				secGepl = geplanteRundenzeit * 60;
+//				s = secGepl % 60;
+//				m = (secGepl /60) %60;
+//				time = String.format("%02d:%02d", m,s);
+//				labelTimer.setText(time);
+
+				time = String.format("%02d:%02d", TimeUnit.SECONDS.toMinutes(secGepl),
+						TimeUnit.SECONDS.toSeconds(secGepl) % TimeUnit.MINUTES.toSeconds(1));
+				labelTimer.setText(time);
+
 				// Elemente (un)visible machen
 				comboBox.setVisible(false);
 				buttonEventauswahl.setVisible(false);
@@ -270,31 +295,62 @@ public class EventDurchfuehrung extends HorizontalLayout {
 			}
 		});
 
+		// Startet den Timer
 		buttonStart.addClickListener(event -> {
 
-			//Starten des Timers
-			
+			// Polling
+			UI.getCurrent().setPollInterval(1000);
+
+		});
+
+		// Zaehlt den Timer jede Sekunde um 1 herunter
+		UI.getCurrent().addPollListener(event -> {
+
+			timerLaeuft = true;
+			if (secGepl > 0) {
+				// Wenn Zeit noch nicht abgelaufen ist...
+				secGepl = secGepl - 1;
+				time = String.format("%02d:%02d", TimeUnit.SECONDS.toMinutes(secGepl),
+						TimeUnit.SECONDS.toSeconds(secGepl) % TimeUnit.MINUTES.toSeconds(1));
+				labelTimer.setText(time);
+			} else {
+				// Zeit ist abgelaufen...
+				UI.getCurrent().setPollInterval(-1);
+				popUp.open();
+			}
+
+		});
+
+		// Timer pausieren oder fortsetzen
+		buttonPauseFortsetzen.addClickListener(event -> {
+
+			if (timerLaeuft = true) {
+				UI.getCurrent().setPollInterval(-1);
+				timerLaeuft = false;
+			} else {
+				UI.getCurrent().setPollInterval(1000);
+				timerLaeuft = true;
+			}
 
 		});
 
 		buttonNaechsteRunde.addClickListener(event -> {
-			
+
 			anzahlRunden = Integer.parseInt(labelRundeAnzahl.getText());
 			anzahlRunden = anzahlRunden + 1;
-			
-			//Pruefen, ob alle Runden gelaufen sind
+
+			// Pruefen, ob alle Runden gelaufen sind
 			if (anzahlRunden <= listeStuds.size()) {
 				labelRundeAnzahl.setText(Integer.toString(anzahlRunden));
 
 				Studierender ersterStud = listeStuds.get(0);
 				listeStuds.remove(0);
 				listeStuds.add(ersterStud);
-				
+
 				// Hier Schleife für Befuellung der Labels der Studenten
 				int i = 0;
 				while (i < listeStuds.size()) {
-					labelsStuds.get(i)
-							.setText(listeStuds.get(i).getNachname() + ", " + listeStuds.get(i).getVorname());
+					labelsStuds.get(i).setText(listeStuds.get(i).getNachname() + ", " + listeStuds.get(i).getVorname());
 					i++;
 				}
 				if (anzahlRunden == listeStuds.size()) {
@@ -302,19 +358,22 @@ public class EventDurchfuehrung extends HorizontalLayout {
 				}
 
 			} else {
-				
-				//buttonNaechsteRunde.setEnabled(false);
+
+				// buttonNaechsteRunde.setEnabled(false);
 			}
-			
+
 		});
-		
-		buttonBeenden.addClickListener(event ->{
-			
+
+		buttonPopUp.addClickListener(event -> {
+			popUp.close();
+		});
+
+		buttonBeenden.addClickListener(event -> {
+
 			aEvent.setAbgeschlossen(true);
 			iAlterEventService.aenderEvent(aEvent);
 			buttonBeenden.getUI().ifPresent(ui -> ui.navigate("maincontent"));
-			
-			
+
 		});
 	}
 

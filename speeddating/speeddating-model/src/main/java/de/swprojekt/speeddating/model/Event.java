@@ -126,6 +126,6 @@ public class Event {
 		this.teilnehmendeUnternehmen = teilnehmendeUnternehmen;
 	}
 
-
+	
 
 }
