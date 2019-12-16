@@ -114,6 +114,19 @@ public class AlterEvent extends VerticalLayout {
 				Event zuAendernderndesEvent=iShowEventService.showEvent(selectedEvent.get().getEvent_id());
 				textfieldBezeichnung.setValue(zuAendernderndesEvent.getBezeichnung());
 				//Uhrzeit und Datum aus Date herausfiltern und in date/timepicker einsetzen
+					
+				if (zuAendernderndesEvent.isAbgeschlossen() == true) {
+
+					aendernButton.setEnabled(false);					
+					textfieldBezeichnung.setEnabled(false);
+					datepickerStartzeitpunktDatum.setEnabled(false);
+					timepickerStartzeitpunktUhrzeit.setEnabled(false);
+					datepickerEndzeitpunktDatum.setEnabled(false);
+					timepickerEndzeitpunktUhrzeit.setEnabled(false);
+					textfieldRundendauerInMinuten.setEnabled(false);
+					checkboxAbgeschlossen.setEnabled(false);
+				}
+													
 				datepickerStartzeitpunktDatum.setValue(zuAendernderndesEvent.getStartzeitpunkt().toInstant().atZone(ZoneId.systemDefault()).toLocalDate()); 
 				timepickerStartzeitpunktUhrzeit.setValue(zuAendernderndesEvent.getStartzeitpunkt().toInstant().atZone(ZoneId.systemDefault()).toLocalTime());
 				datepickerEndzeitpunktDatum.setValue(zuAendernderndesEvent.getEndzeitpunkt().toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
