@@ -73,12 +73,11 @@ public class AlterEventForEventorganisator extends VerticalLayout {
 		CustomUserDetails userDetails=(CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();	//Id des eingeloggten Users aus SecurityKontext holen
 		
 		//Hier auskommentieren, wenn Events nur fuer den Organisator geladen werden sollen
-//		for(int event_id:iShowEventService.showEventsOfUser(userDetails.getEntityRefId()))	//alle Events, welche von Eventorganisator verwaltet, laden
-//		{
-//			listOfEvents.add(iShowEventService.showEvent(event_id));
-//		}
-		
-		listOfEvents.addAll(iShowEventService.showEvents());
+		for(int event_id:iShowEventService.showEventsOfUser(userDetails.getEntityRefId()))	//alle Events, welche von Eventorganisator verwaltet, laden
+		{
+			listOfEvents.add(iShowEventService.showEvent(event_id));
+		}
+//		listOfEvents.addAll(iShowEventService.showEvents());
 		
 		
 		eventGrid = new Grid<>(Event.class); // Tabelle initialisieren

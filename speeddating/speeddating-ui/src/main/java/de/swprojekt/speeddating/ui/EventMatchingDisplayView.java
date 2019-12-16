@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -46,6 +47,7 @@ import de.swprojekt.speeddating.service.unternehmen.IUnternehmenService;
  * 
  */
 @Route(value = "ui/untern/EventMatchingDisplayView", layout = MainLayout.class) // Abgeleitet von Root-Layout MainLayout
+@Secured("ROLE_EVENTORGANISATOR")
 public class EventMatchingDisplayView extends HorizontalLayout {
 
 	int lv_id = 0;
@@ -184,7 +186,7 @@ public class EventMatchingDisplayView extends HorizontalLayout {
 				unternehmenGrid2.setDataProvider(ldpUnternehmen2);
 
 			} else {
-				// message.setText("No song is selected");
+			
 			}
 		});
 
