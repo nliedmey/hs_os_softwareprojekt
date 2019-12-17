@@ -31,6 +31,7 @@ import de.swprojekt.speeddating.service.unternehmen.IUnternehmenService;
 public class ChangeDeleteUntern extends VerticalLayout {
 
 	int lv_id = 0;
+
 	// BestPractice: Konstruktor-Injection im Vergleich zu
 	// Attribut/Methoden-Injection
 	// Parameter (hier: IAddStudierenderService) wird also automatisch autowired
@@ -73,27 +74,27 @@ public class ChangeDeleteUntern extends VerticalLayout {
 		// Button #3 hinzufuegen
 		Button buttonZurueck = new Button("Zurueck");
 		buttonZurueck.addThemeVariants(ButtonVariant.LUMO_SUCCESS);
-		
-		Button logoutButton=new Button("Logout");
+
+		Button logoutButton = new Button("Logout");
 
 		// Notification Meldungen mit Button verknuepfen
 		Notification notificationAendernsuccess = new Notification();
 		notificationAendernsuccess.addThemeVariants(NotificationVariant.LUMO_SUCCESS);
 		Label labelAendernsuccess = new Label("Unternehmen erfolgreich aktualisiert! ");
 		notificationAendernsuccess.add(labelAendernsuccess);
-		notificationAendernsuccess.setDuration(5000); //Meldung wird 5 Sekunden lang angezeigt
+		notificationAendernsuccess.setDuration(2500); //Meldung wird 2,5 Sekunden lang angezeigt
 
 		Notification notificationLoeschensuccess = new Notification();
 		notificationLoeschensuccess.addThemeVariants(NotificationVariant.LUMO_SUCCESS);
 		Label labelLoeschensuccess = new Label("Unternehmen erfolgreich geloescht! ");
 		notificationLoeschensuccess.add(labelLoeschensuccess);
-		notificationLoeschensuccess.setDuration(5000); //Meldung wird 5 Sekunden lang angezeigt
+		notificationLoeschensuccess.setDuration(2500); //Meldung wird 2,5 Sekunden lang angezeigt
 
 		Notification notificationAbbruch = new Notification();
 		notificationAbbruch.addThemeVariants(NotificationVariant.LUMO_ERROR);
 		Label labelAbbruchsuccess = new Label("Bearbeitung abgebrochen! ");
 		notificationAbbruch.add(labelAbbruchsuccess);
-		notificationAbbruch.setDuration(5000); //Meldung wird 5 Sekunden lang angezeigt
+		notificationAbbruch.setDuration(2500); //Meldung wird 2,5 Sekunden lang angezeigt
 
 		// *** Erzeugen des Layouts START ***
 		VerticalLayout h1 = new VerticalLayout(); // Textfelder sollen nebeneinander angeordnet werden
@@ -111,8 +112,10 @@ public class ChangeDeleteUntern extends VerticalLayout {
 		// Musseingaben definieren textfieldXXX wird mit Objektattribut "xxx" verknuepft
 		// verknuepf
 
-		binder.forField(textfieldUnternehmensname).asRequired("Unternehmensname darf nicht leer sein...").bind("unternehmensname");
-		binder.forField(textfieldAnsprechpartner).asRequired("Ansprechpartner darf nicht leer sein...").bind("ansprechpartner");
+		binder.forField(textfieldUnternehmensname).asRequired("Unternehmensname darf nicht leer sein...")
+				.bind("unternehmensname");
+		binder.forField(textfieldAnsprechpartner).asRequired("Ansprechpartner darf nicht leer sein...")
+				.bind("ansprechpartner");
 		binder.forField(textfieldKontaktmail).asRequired("Kontakt-EMail darf nicht leer sein...").bind("kontaktmail");
 
 		Unternehmen einUnternehmen = new Unternehmen();
@@ -125,7 +128,8 @@ public class ChangeDeleteUntern extends VerticalLayout {
 				notificationAendernsuccess.open();
 //				SecurityContextHolder.clearContext();	//Spring-Security-Session leeren
 //				getUI().get().getSession().close();		//Vaadin Session leeren
-				buttonUnternAendern.getUI().ifPresent(ui -> ui.navigate("maincontent")); // zurueck auf andere Seite
+				buttonUnternAendern.getUI().ifPresent(ui -> ui.navigate("ui/eventorganisator/menue")); // zurueck auf
+																										// andere Seite
 
 			} catch (ValidationException e) {
 				e.printStackTrace();
@@ -133,32 +137,29 @@ public class ChangeDeleteUntern extends VerticalLayout {
 		});
 
 		buttonUnternLoeschen.addClickListener(event -> {
-
 			try {
-
 				binder.writeBean(einUnternehmen);
 				einUnternehmen.setUnternehmen_id(lv_id);
 				iUnternehmenService.deleteUnternehmen(einUnternehmen);
 				notificationLoeschensuccess.open();
-//			SecurityContextHolder.clearContext();	//Spring-Security-Session leeren
-//			getUI().get().getSession().close();		//Vaadin Session leeren
-				buttonZurueck.getUI().ifPresent(ui -> ui.navigate("maincontent")); // zurueck auf andere Seite
+				buttonZurueck.getUI().ifPresent(ui -> ui.navigate("ui/eventorganisator/menue")); // zurueck auf andere
+																									// Seite
 
 			} catch (ValidationException e) {
 				e.printStackTrace();
 			}
 		});
-		
+
 		buttonZurueck.addClickListener(event -> {
 			// Erfolgreich-Meldung anzeigen
 			notificationAbbruch.open();
-			buttonZurueck.getUI().ifPresent(ui->ui.navigate("ui/eventorganisator/menue"));	//zurueck auf andere Seite 
+			buttonZurueck.getUI().ifPresent(ui -> ui.navigate("ui/eventorganisator/menue")); // zurueck auf andere Seite
 		});
-		
-		logoutButton.addClickListener(event -> {	//Bei Buttonklick werden folgende Aktionen ausgefuehrt
-			SecurityContextHolder.clearContext();	//Spring-Security-Session leeren
-			getUI().get().getSession().close();		//Vaadin Session leeren
-			logoutButton.getUI().ifPresent(ui->ui.navigate("login"));	//zurueck auf andere Seite 
+
+		logoutButton.addClickListener(event -> { // Bei Buttonklick werden folgende Aktionen ausgefuehrt
+			SecurityContextHolder.clearContext(); // Spring-Security-Session leeren
+			getUI().get().getSession().close(); // Vaadin Session leeren
+			logoutButton.getUI().ifPresent(ui -> ui.navigate("login")); // zurueck auf andere Seite
 		});
 
 	}

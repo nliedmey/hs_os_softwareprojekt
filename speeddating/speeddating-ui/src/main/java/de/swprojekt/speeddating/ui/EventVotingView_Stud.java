@@ -73,7 +73,7 @@ public class EventVotingView_Stud extends VerticalLayout { // VerticalLayout fue
 		notificationVotingSuccess.addThemeVariants(NotificationVariant.LUMO_SUCCESS);
 		Label labelVotingsuccess = new Label("Voting erfolgreich abgegeben! ");
 		notificationVotingSuccess.add(labelVotingsuccess);
-		notificationVotingSuccess.setDuration(5000); //Meldung wird 5 Sekunden lang angezeigt
+		notificationVotingSuccess.setDuration(2500); //Meldung wird 2,5 Sekunden lang angezeigt
 
 		ListDataProvider<Unternehmen> ldpEvent = DataProvider.ofCollection(listOfUnternehmenForDisplay);
 		unternehmenGrid.setDataProvider(ldpEvent);
@@ -139,7 +139,7 @@ public class EventVotingView_Stud extends VerticalLayout { // VerticalLayout fue
 //				
 
 			}
-			votingSendenButton.getUI().ifPresent(ui -> ui.navigate("maincontent")); // zurueck auf andere Seite
+			votingSendenButton.getUI().ifPresent(ui -> ui.navigate("login")); // zurueck auf andere Seite
 		});
 
 		logoutButton.addClickListener(event -> { // Bei Buttonklick werden folgende Aktionen ausgefuehrt

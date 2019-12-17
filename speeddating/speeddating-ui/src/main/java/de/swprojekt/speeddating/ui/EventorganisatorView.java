@@ -3,6 +3,9 @@ package de.swprojekt.speeddating.ui;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.GridMultiSelectionModel;
+import com.vaadin.flow.component.html.Label;
+import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.grid.Grid.SelectionMode;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +39,13 @@ public class EventorganisatorView extends VerticalLayout {	//VerticalLayout fueh
 		Button logoutButton=new Button("Logout");
 		Button zurueckButton = new Button("Zurueck");
 		
+		
+		Notification notificationSavesuccess = new Notification();
+		notificationSavesuccess.addThemeVariants(NotificationVariant.LUMO_SUCCESS);
+		Label labelSavesuccess = new Label("Eventorganisator erfolgreich geloescht! ");
+		notificationSavesuccess.add(labelSavesuccess);
+		notificationSavesuccess.setDuration(2500); //Meldung wird 2,5 Sekunden lang angezeigt
+		
 		eventorganisatorGrid = new Grid<>(Eventorganisator.class); // Tabelle initialisieren
 		ListDataProvider<Eventorganisator> ldpEventorganisator = DataProvider
 				.ofCollection(iShowEventorganisatorService.showEventorganisatoren()); // Dataprovider erstellen und Quelle fuer
@@ -53,6 +63,9 @@ public class EventorganisatorView extends VerticalLayout {	//VerticalLayout fueh
 			{
 				iDeleteEventorganisatorService.loescheEventorganisator(eo);
 			}
+			
+			notificationSavesuccess.open(); // Erfolgreich-Meldung anzeigen
+			loeschenButton.getUI().ifPresent(ui->ui.navigate("ui/admin/menue"));	//zurueck auf andere Seite 
 		});
 		
 		logoutButton.addClickListener(event -> {	//Bei Buttonklick werden folgende Aktionen ausgefuehrt

@@ -24,6 +24,8 @@ import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.html.Label;
+import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.Route;
@@ -43,7 +45,8 @@ import de.swprojekt.speeddating.service.showunternehmen.IShowUnternehmenService;
 
 @Route("ui/eventDurchfuehrung") // Erreichbar ueber Adresse:
 								// http://localhost:8080/speeddating-web-7.0-SNAPSHOT/ui/events
-@Secured("ROLE_EVENTORGANISATOR")	//nur User mit Rolle EVENTORGANISATOR koennen auf Seite zugreifen, @Secured prueft auch bei RouterLink-Weiterleitungen
+@Secured("ROLE_EVENTORGANISATOR") // nur User mit Rolle EVENTORGANISATOR koennen auf Seite zugreifen, @Secured
+									// prueft auch bei RouterLink-Weiterleitungen
 //@Secured kann auch an einzelnen Methoden angewendet werden
 
 //NOTIZEN
@@ -73,6 +76,13 @@ public class EventDurchfuehrung extends HorizontalLayout {
 	@Autowired
 	public EventDurchfuehrung(IShowEventService iShowEventService, IShowUnternehmenService iShowUnternehmenService,
 			IShowStudierendeService iShowStudierendeService, IAlterEventService iAlterEventService) {
+		
+		
+		Notification notificationEventBeendetsuccess = new Notification();
+		notificationEventBeendetsuccess.addThemeVariants(NotificationVariant.LUMO_SUCCESS);
+		Label labelBeendetGeklicktsuccess = new Label("Event erfolgreich beendet! ");
+		notificationEventBeendetsuccess.add(labelBeendetGeklicktsuccess);
+		notificationEventBeendetsuccess.setDuration(2500); //Meldung wird 2,5 Sekunden lang angezeigt
 
 		// Buttons und Felder erzeugen
 		Label labelTabelle = new Label("Tabelle");
@@ -385,9 +395,7 @@ public class EventDurchfuehrung extends HorizontalLayout {
 				if (anzahlRunden == listeStuds.size()) {
 					buttonNaechsteRunde.setEnabled(false);
 				}
-
 			} else {
-
 				// buttonNaechsteRunde.setEnabled(false);
 			}
 
@@ -419,12 +427,10 @@ public class EventDurchfuehrung extends HorizontalLayout {
 		});
 
 		buttonBeenden.addClickListener(event -> {
-
 			aEvent.setAbgeschlossen(true);
 			iAlterEventService.aenderEvent(aEvent);
-			buttonBeenden.getUI().ifPresent(ui -> ui.navigate("maincontent"));
-			listOfEvents.clear();
-			
+			notificationEventBeendetsuccess.open();
+			buttonBeenden.getUI().ifPresent(ui -> ui.navigate("ui/eventorganisator/menue"));
 		});
 	}
 

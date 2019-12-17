@@ -73,7 +73,7 @@ public class EventVotingView_Untern extends VerticalLayout {	//VerticalLayout fu
 		notificationVotingSuccess.addThemeVariants(NotificationVariant.LUMO_SUCCESS);
 		Label labelVotingsuccess = new Label("Voting erfolgreich abgegeben! ");
 		notificationVotingSuccess.add(labelVotingsuccess);
-		notificationVotingSuccess.setDuration(5000); //Meldung wird 5 Sekunden lang angezeigt
+		notificationVotingSuccess.setDuration(2500); //Meldung wird 2,5 Sekunden lang angezeigt
 		
 		ListDataProvider<Studierender> ldpEvent = DataProvider.ofCollection(listOfStudierendeForDisplay);
 		studierenderGrid.setDataProvider(ldpEvent);
@@ -142,7 +142,7 @@ public class EventVotingView_Untern extends VerticalLayout {	//VerticalLayout fu
 				iUnternehmenService.changeUnternehmen(einUnternehmen);
 
 				notificationVotingSuccess.open();
-				votingSendenButton.getUI().ifPresent(ui -> ui.navigate("maincontent")); // zurueck auf andere Seite
+				votingSendenButton.getUI().ifPresent(ui -> ui.navigate("login")); // zurueck auf andere Seite
 
 				
 				
