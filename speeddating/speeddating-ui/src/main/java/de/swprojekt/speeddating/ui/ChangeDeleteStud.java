@@ -3,6 +3,7 @@ package de.swprojekt.speeddating.ui;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.combobox.ComboBox;
+import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.notification.NotificationVariant;
@@ -109,7 +110,14 @@ public class ChangeDeleteStud extends VerticalLayout {
 		Label labelAbbruchsuccess = new Label("Studentbearbeitung abgebrochen! ");
 		notificationAbbruch.add(labelAbbruchsuccess);
 		notificationAbbruch.setDuration(2500); //Meldung wird 2,5 Sekunden lang angezeigt
-
+		
+		// Bestaetigungs-Popup
+		Button buttonBestaetigenJa = new Button("Ja");
+		Button buttonBestaetigenNein = new Button("Nein");
+		Dialog popUpBestaetigen = new Dialog();
+		popUpBestaetigen.add(new Label("Den Studierenden endgueltig loeschen?"));
+		popUpBestaetigen.add(buttonBestaetigenJa, buttonBestaetigenNein);
+		
 		// *** Erzeugen des Layouts START ***
 		VerticalLayout h1 = new VerticalLayout(); // Textfelder sollen nebeneinander angeordnet werden
 		h1.add(comboBox);
@@ -166,6 +174,22 @@ public class ChangeDeleteStud extends VerticalLayout {
 
 		buttonStudLoeschen.addClickListener(event -> {
 
+//			try {
+//				binder.writeBean(einStudierender);
+//				einStudierender.setStudent_id(lv_id);
+//				iStudierenderService.deleteStudierenden(einStudierender);
+//				notificationLoeschensuccess.open();
+////			SecurityContextHolder.clearContext();	//Spring-Security-Session leeren
+////			getUI().get().getSession().close();		//Vaadin Session leeren
+//				buttonZurueck.getUI().ifPresent(ui -> ui.navigate("ui/eventorganisator/menue")); // zurueck auf andere Seite
+//			} catch (ValidationException e) {
+//				e.printStackTrace();
+//			}
+			
+			popUpBestaetigen.open();
+		});
+		
+		buttonBestaetigenJa.addClickListener(event -> {
 			try {
 				binder.writeBean(einStudierender);
 				einStudierender.setStudent_id(lv_id);
@@ -173,10 +197,15 @@ public class ChangeDeleteStud extends VerticalLayout {
 				notificationLoeschensuccess.open();
 //			SecurityContextHolder.clearContext();	//Spring-Security-Session leeren
 //			getUI().get().getSession().close();		//Vaadin Session leeren
+				popUpBestaetigen.close();
 				buttonZurueck.getUI().ifPresent(ui -> ui.navigate("ui/eventorganisator/menue")); // zurueck auf andere Seite
 			} catch (ValidationException e) {
 				e.printStackTrace();
 			}
+		});
+		
+		buttonBestaetigenNein.addClickListener(event -> {
+			popUpBestaetigen.close();
 		});
 
 		buttonZurueck.addClickListener(event -> {

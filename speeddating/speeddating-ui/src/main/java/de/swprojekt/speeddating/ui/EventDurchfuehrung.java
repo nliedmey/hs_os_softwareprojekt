@@ -156,7 +156,6 @@ public class EventDurchfuehrung extends HorizontalLayout {
 			listOfEvents.add(iShowEventService.showEvent(event_id));
 			
 		}
-		System.out.println(listOfEvents);
 
 		List<Event> listOfEventsLoeschen = new ArrayList<>();
 		//Abgeschlossene Events aus Liste entfernen
@@ -168,10 +167,12 @@ public class EventDurchfuehrung extends HorizontalLayout {
 			}
 			listOfEvents.removeAll(listOfEventsLoeschen);
 			comboBox.setItems(listOfEvents);
+			if(listOfEvents.isEmpty()) {
+				comboBox.setPlaceholder("Keine Events");
+			}
 		} else {
 			comboBox.setPlaceholder("Keine Events");
 		}
-		System.out.println(listOfEvents);
 
 		// Labels in Arrays speichern um spaetere Befuellung zu vereinfachen
 		List<Label> labelsStuds = Arrays.asList(labelStud1, labelStud2, labelStud3, labelStud4, labelStud5, labelStud6,
@@ -202,11 +203,18 @@ public class EventDurchfuehrung extends HorizontalLayout {
 		// Layouts
 
 		// Timer-Popup
-		Button buttonPopUp = new Button("Close");
-		Dialog popUp = new Dialog();
-		popUp.add(new Label("Zeit abgelaufen!"));
-		popUp.add(buttonPopUp);
-
+		Button buttonClose = new Button("Close");
+		Dialog popUpClose = new Dialog();
+		popUpClose.add(new Label("Zeit abgelaufen!"));
+		popUpClose.add(buttonClose);
+		
+		// Bestaetigungs-Popup
+		Button buttonBestaetigenJa = new Button("Ja");
+		Button buttonBestaetigenNein = new Button("Nein");
+		Dialog popUpBestaetigen = new Dialog();
+		popUpBestaetigen.add(new Label("Das Event endgueltig beenden?"));
+		popUpBestaetigen.add(buttonBestaetigenJa, buttonBestaetigenNein);
+		
 		// Links
 		VerticalLayout vLinks = new VerticalLayout();
 		HorizontalLayout h1 = new HorizontalLayout();
@@ -355,7 +363,7 @@ public class EventDurchfuehrung extends HorizontalLayout {
 				// Zeit ist abgelaufen...
 				UI.getCurrent().setPollInterval(-1);
 				clip.start();
-				popUp.open();
+				popUpClose.open();
 			}
 
 		});
@@ -402,10 +410,6 @@ public class EventDurchfuehrung extends HorizontalLayout {
 			//Zeit wieder aus max setzen
 			geplanteRundenzeit = aEvent.getRundendauerInMinuten();
 			secGepl = geplanteRundenzeit * 60;
-//			s = secGepl % 60;
-//			m = (secGepl /60) %60;
-//			time = String.format("%02d:%02d", m,s);
-//			labelTimer.setText(time);
 
 			time = String.format("%02d:%02d", TimeUnit.SECONDS.toMinutes(secGepl),
 					TimeUnit.SECONDS.toSeconds(secGepl) % TimeUnit.MINUTES.toSeconds(1));
@@ -419,19 +423,29 @@ public class EventDurchfuehrung extends HorizontalLayout {
 			
 		});
 
-		buttonPopUp.addClickListener(event -> {
-			popUp.close();
+		buttonClose.addClickListener(event -> {
+			popUpClose.close();
 			buttonNaechsteRunde.setEnabled(true);
 			buttonStart.setEnabled(false);
 			buttonPauseFortsetzen.setEnabled(false);
 		});
 
 		buttonBeenden.addClickListener(event -> {
+			popUpBestaetigen.open();
+		});
+		
+		buttonBestaetigenJa.addClickListener(event ->{
 			aEvent.setAbgeschlossen(true);
 			iAlterEventService.aenderEvent(aEvent);
 			notificationEventBeendetsuccess.open();
 			buttonBeenden.getUI().ifPresent(ui -> ui.navigate("ui/eventorganisator/menue"));
+			popUpBestaetigen.close();
 		});
+		
+		buttonBestaetigenNein.addClickListener(event ->{
+			popUpBestaetigen.close();
+		});
+		
 	}
 
 }

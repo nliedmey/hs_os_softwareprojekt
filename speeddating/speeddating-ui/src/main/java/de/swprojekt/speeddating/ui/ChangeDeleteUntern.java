@@ -3,6 +3,7 @@ package de.swprojekt.speeddating.ui;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.combobox.ComboBox;
+import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.notification.NotificationVariant;
@@ -95,7 +96,14 @@ public class ChangeDeleteUntern extends VerticalLayout {
 		Label labelAbbruchsuccess = new Label("Bearbeitung abgebrochen! ");
 		notificationAbbruch.add(labelAbbruchsuccess);
 		notificationAbbruch.setDuration(2500); //Meldung wird 2,5 Sekunden lang angezeigt
-
+		
+		// Bestaetigungs-Popup
+		Button buttonBestaetigenJa = new Button("Ja");
+		Button buttonBestaetigenNein = new Button("Nein");
+		Dialog popUpBestaetigen = new Dialog();
+		popUpBestaetigen.add(new Label("Das Unternehmen endgueltig loeschen?"));
+		popUpBestaetigen.add(buttonBestaetigenJa, buttonBestaetigenNein);
+		
 		// *** Erzeugen des Layouts START ***
 		VerticalLayout h1 = new VerticalLayout(); // Textfelder sollen nebeneinander angeordnet werden
 		h1.add(comboBox);
@@ -137,19 +145,27 @@ public class ChangeDeleteUntern extends VerticalLayout {
 		});
 
 		buttonUnternLoeschen.addClickListener(event -> {
+			popUpBestaetigen.open();
+		});
+
+		buttonBestaetigenJa.addClickListener(event -> {
 			try {
 				binder.writeBean(einUnternehmen);
 				einUnternehmen.setUnternehmen_id(lv_id);
 				iUnternehmenService.deleteUnternehmen(einUnternehmen);
 				notificationLoeschensuccess.open();
+				popUpBestaetigen.close();
 				buttonZurueck.getUI().ifPresent(ui -> ui.navigate("ui/eventorganisator/menue")); // zurueck auf andere
 																									// Seite
-
 			} catch (ValidationException e) {
 				e.printStackTrace();
 			}
 		});
-
+		
+		buttonBestaetigenNein.addClickListener(event -> {
+			popUpBestaetigen.close();
+		});
+		
 		buttonZurueck.addClickListener(event -> {
 			// Erfolgreich-Meldung anzeigen
 			notificationAbbruch.open();
