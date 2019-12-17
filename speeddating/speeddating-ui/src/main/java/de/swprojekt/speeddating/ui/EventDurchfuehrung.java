@@ -1,13 +1,23 @@
 package de.swprojekt.speeddating.ui;
 
+import java.io.File;
+import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.UnsupportedAudioFileException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
@@ -22,6 +32,7 @@ import de.swprojekt.speeddating.model.Event;
 import de.swprojekt.speeddating.model.Studierender;
 import de.swprojekt.speeddating.model.Unternehmen;
 import de.swprojekt.speeddating.service.alterevent.IAlterEventService;
+import de.swprojekt.speeddating.service.security.CustomUserDetails;
 import de.swprojekt.speeddating.service.showevent.IShowEventService;
 import de.swprojekt.speeddating.service.showstudierender.IShowStudierendeService;
 import de.swprojekt.speeddating.service.showunternehmen.IShowUnternehmenService;
@@ -55,6 +66,7 @@ public class EventDurchfuehrung extends HorizontalLayout {
 	long m;
 	String time;
 
+	Clip clip;
 	Event aEvent;
 
 	@SuppressWarnings("deprecation")
@@ -120,17 +132,36 @@ public class EventDurchfuehrung extends HorizontalLayout {
 		// Erzeugen der Combo Box
 		ComboBox<Event> comboBox = new ComboBox<>();
 		comboBox.setItemLabelGenerator(Event::getBezeichnung);
-		List<Event> listOfEvents = iShowEventService.showEvents();
-		comboBox.setItems(listOfEvents);
+//		List<Event> listOfEvents = iShowEventService.showEvents();
+//		comboBox.setItems(listOfEvents);
 		comboBox.setPlaceholder("Event auswaehlen");
-//		List<Event> listOfEvents = new ArrayList<>();
+		List<Event> listOfEvents = new ArrayList<>();
 
-//		CustomUserDetails userDetails=(CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();	//Id des eingeloggten Users aus SecurityKontext holen
-//		
-//		for(int event_id:iShowEventService.showEventsOfUser(userDetails.getEntityRefId()))	//alle Events, an welchen der User beteiligt ist, laden
-//		{
-//			listOfEvents.add(iShowEventService.showEvent(event_id));
-//		}
+		//Alle Events des angemeldeten Organisators laden
+		CustomUserDetails userDetails=(CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();	//Id des eingeloggten Users aus SecurityKontext holen
+		
+		for(int event_id:iShowEventService.showEventsOfUser(userDetails.getEntityRefId()))	//alle Events, an welchen der User beteiligt ist, laden
+		{
+			
+			listOfEvents.add(iShowEventService.showEvent(event_id));
+			
+		}
+		System.out.println(listOfEvents);
+
+		List<Event> listOfEventsLoeschen = new ArrayList<>();
+		//Abgeschlossene Events aus Liste entfernen
+		if(!listOfEvents.isEmpty()) {
+			for(Event aEvent : listOfEvents) {
+				if(aEvent.isAbgeschlossen()){
+					listOfEventsLoeschen.add(aEvent);
+				}
+			}
+			listOfEvents.removeAll(listOfEventsLoeschen);
+			comboBox.setItems(listOfEvents);
+		} else {
+			comboBox.setPlaceholder("Keine Events");
+		}
+		System.out.println(listOfEvents);
 
 		// Labels in Arrays speichern um spaetere Befuellung zu vereinfachen
 		List<Label> labelsStuds = Arrays.asList(labelStud1, labelStud2, labelStud3, labelStud4, labelStud5, labelStud6,
@@ -146,7 +177,17 @@ public class EventDurchfuehrung extends HorizontalLayout {
 		UI.getCurrent().setPollInterval(-1);
 
 		//SoundPlayer fuer Signalton
-//		AudioPlayer player = new AudioPlayer
+		try {
+			clip = AudioSystem.getClip();
+			URL link = this.getClass().getResource("./WAV001.WAV");
+			System.out.println(link);
+			File file = new File(link.getPath());
+			AudioInputStream audio = AudioSystem.getAudioInputStream(file);
+			clip.open(audio);
+		} catch (LineUnavailableException | UnsupportedAudioFileException | IOException e) {
+
+			e.printStackTrace();
+		}
 		
 		// Layouts
 
@@ -303,8 +344,8 @@ public class EventDurchfuehrung extends HorizontalLayout {
 			} else {
 				// Zeit ist abgelaufen...
 				UI.getCurrent().setPollInterval(-1);
+				clip.start();
 				popUp.open();
-//				player.play("http://www.a1sounddownload.com/freesounds5/alarmring.mp3");
 			}
 
 		});
@@ -382,7 +423,8 @@ public class EventDurchfuehrung extends HorizontalLayout {
 			aEvent.setAbgeschlossen(true);
 			iAlterEventService.aenderEvent(aEvent);
 			buttonBeenden.getUI().ifPresent(ui -> ui.navigate("maincontent"));
-
+			listOfEvents.clear();
+			
 		});
 	}
 
