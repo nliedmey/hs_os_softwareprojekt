@@ -80,12 +80,13 @@ public class EventMatchingDisplayView extends HorizontalLayout {
 		TextField textfieldRundendauerInMinuten = new TextField("Rundendauer (min):");
 		Checkbox checkboxAbgeschlossen = new Checkbox("Abgeschlossen:");
 
-		datepickerStartzeitpunktDatum.setReadOnly(true);
-		timepickerStartzeitpunktUhrzeit.setReadOnly(true);
-		datepickerEndzeitpunktDatum.setReadOnly(true);
-		timepickerEndzeitpunktUhrzeit.setReadOnly(true);
-		textfieldRundendauerInMinuten.setReadOnly(true);
-		checkboxAbgeschlossen.setReadOnly(true);
+		datepickerStartzeitpunktDatum.setEnabled(false);
+		timepickerStartzeitpunktUhrzeit.setEnabled(false);
+		datepickerEndzeitpunktDatum.setEnabled(false);
+		timepickerEndzeitpunktUhrzeit.setEnabled(false);
+		textfieldRundendauerInMinuten.setEnabled(false);
+		checkboxAbgeschlossen.setEnabled(false);
+		//Alternative ist setReadableOnly...
 
 		// Button #1 hinzufuegen
 		Button buttonMatchingDuerchfuehren = new Button("Matching durchfuehren");
