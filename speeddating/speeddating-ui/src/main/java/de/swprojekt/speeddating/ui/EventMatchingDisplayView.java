@@ -211,7 +211,7 @@ public class EventMatchingDisplayView extends HorizontalLayout {
 
 			MatchingAsPDF objektForCreatingPDF = new MatchingAsPDF();
 			try {
-				objektForCreatingPDF.pdfErstellen(iShowEventService.generateMatchingResultSet(selectedEvent));
+				objektForCreatingPDF.pdfErstellen(iShowEventService.generateMatchingResultSet(selectedEvent), selectedEvent.getBezeichnung());
 			} catch (FileNotFoundException e) {
 				System.out.println("Bei Aufruf der PDF Erstellung gibt es Probleme");
 				e.printStackTrace();

@@ -8,6 +8,7 @@ import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.grid.Grid.SelectionMode;
 
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,6 +23,7 @@ import com.vaadin.flow.data.provider.ListDataProvider;
 import com.vaadin.flow.router.Route;
 
 import de.swprojekt.speeddating.model.Event;
+import de.swprojekt.speeddating.model.MatchingAsPDF;
 import de.swprojekt.speeddating.service.deleteevent.IDeleteEventService;
 import de.swprojekt.speeddating.service.security.CustomUserDetails;
 import de.swprojekt.speeddating.service.showevent.IShowEventService;
@@ -43,6 +45,7 @@ public class EventViewForEventorganisator extends VerticalLayout { // VerticalLa
 
 		Grid<Event> eventGrid; // Tabelle mit Events
 		GridMultiSelectionModel<Event> selectionModelEvent;
+		Button pdfButton = new Button("PDF-Download");
 		Button loeschenButton = new Button("Loeschen");
 		Button logoutButton = new Button("Logout");
 		Button zurueckButton = new Button("Zurueck");
@@ -52,6 +55,19 @@ public class EventViewForEventorganisator extends VerticalLayout { // VerticalLa
 		Label labelSavesuccess = new Label("Event wurde geloescht! ");
 		notificationSavesuccess.add(labelSavesuccess);
 		notificationSavesuccess.setDuration(2500); //Meldung wird 2,5 Sekunden lang angezeigt
+		
+		//Notifications fuer PDF
+		Notification notificationPDFerror = new Notification();
+		notificationPDFerror.addThemeVariants(NotificationVariant.LUMO_ERROR);
+		Label labelPDFerror = new Label();
+		notificationPDFerror.add(labelPDFerror);
+		notificationPDFerror.setDuration(2500); //Meldung wird 2,5 Sekunden lang angezeigt
+
+		Notification notificationPDFsuccess = new Notification();
+		notificationPDFsuccess.addThemeVariants(NotificationVariant.LUMO_SUCCESS);
+		Label labelPDFsuccess = new Label();
+		notificationPDFsuccess.add(labelPDFsuccess);
+		notificationPDFsuccess.setDuration(2500); //Meldung wird 2,5 Sekunden lang angezeigt
 
 		List<Event> listOfEvents = new ArrayList<Event>();
 		CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication()
@@ -82,6 +98,28 @@ public class EventViewForEventorganisator extends VerticalLayout { // VerticalLa
 		eventGrid.setSelectionMode(SelectionMode.MULTI); // es koennen mehrere Events ausgewaehlt sein
 		selectionModelEvent = (GridMultiSelectionModel<Event>) eventGrid.getSelectionModel();
 
+		pdfButton.addClickListener(event -> {
+			for (Event aEvent : selectionModelEvent.getSelectedItems()) // markierte Events durchgehen
+			{
+				Event selectedEvent = iShowEventService.showEvent(aEvent.getEvent_id());
+				if (selectedEvent.isAbgeschlossen()) {
+
+					MatchingAsPDF objektForCreatingPDF = new MatchingAsPDF();
+					try {
+						objektForCreatingPDF.pdfErstellen(iShowEventService.generateMatchingResultSet(selectedEvent), selectedEvent.getBezeichnung());
+						labelPDFsuccess.setText("PDF duer das Event " + selectedEvent.getBezeichnung() + " erstellt!");
+						notificationPDFsuccess.open();
+					} catch (FileNotFoundException e) {
+						System.out.println("Bei Aufruf der PDF Erstellung gibt es Probleme");
+						e.printStackTrace();
+					}
+				} else {
+					labelPDFerror.setText("Das Event "+ selectedEvent.getBezeichnung() +" ist noch nicht abgeschlossen!");
+					notificationPDFerror.open();
+				}
+			}
+		});
+		
 		loeschenButton.addClickListener(event -> { // Bei Buttonklick werden folgende Aktionen ausgefuehrt
 			for (Event e : selectionModelEvent.getSelectedItems()) // markierte Events durchgehen
 			{
@@ -103,7 +141,7 @@ public class EventViewForEventorganisator extends VerticalLayout { // VerticalLa
 		});
 
 		add(eventGrid); // Hinzufuegen der Elemente zum VerticalLayout
-		add(loeschenButton);
+		add(pdfButton, loeschenButton);
 		add(new HorizontalLayout(zurueckButton, logoutButton));
 	}
 	// @PostConstruct //Ausfuehrung nach Konstruktoraufruf

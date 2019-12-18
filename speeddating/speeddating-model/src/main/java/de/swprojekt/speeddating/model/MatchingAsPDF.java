@@ -28,23 +28,23 @@ public class MatchingAsPDF {
 
 	}
 
-	public void pdfErstellen(Map<Studierender, Unternehmen> matchingResultMap) throws FileNotFoundException {
+	public void pdfErstellen(Map<Studierender, Unternehmen> matchingResultMap, String eventname) throws FileNotFoundException {
 		try {
 
 			String filename;
-			filename = "C:\\Users\\patri\\Desktop\\MatchingErgebnisse.pdf";
+			filename = "C:\\projekt\\MatchingErgebnisse-"+eventname+".pdf";
 			Document doc = new Document();
 			doc.addAuthor("Patrick_Marius_Nico");
 			doc.addCreationDate();
 			doc.addProducer();
 			doc.addCreator("speeddating_gruppe");
-			doc.addTitle("Matching Ergebnis");
+			doc.addTitle("Matching Ergebnis - " + eventname);
 
 			PdfWriter writer = PdfWriter.getInstance(doc, new FileOutputStream(filename));
 			doc.open();
 
 			// Uberschrift setzen
-			doc.add(new Paragraph("Event Matching Ergebnisse",
+			doc.add(new Paragraph("Event Matching Ergebnisse - "+ eventname,
 					FontFactory.getFont(FontFactory.COURIER, 18, Font.BOLD, BaseColor.BLACK)));
 			// Leerzeile einfuegen
 			doc.add(new Paragraph(" "));
