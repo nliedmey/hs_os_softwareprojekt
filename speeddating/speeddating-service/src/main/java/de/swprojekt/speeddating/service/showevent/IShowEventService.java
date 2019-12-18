@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import de.swprojekt.speeddating.model.Event;
+import de.swprojekt.speeddating.model.EventMatching;
 import de.swprojekt.speeddating.model.Studierender;
 import de.swprojekt.speeddating.model.Unternehmen;
 /*
@@ -15,5 +16,5 @@ public interface IShowEventService {
 	public List<Event> showEvents();	//alle Events
 	public Event showEvent(int event_id); //ein Event
 	public List<Integer> showEventsOfUser(int user_id);
-	public Map<Studierender, Unternehmen> generateMatchingResultSet(Event aEvent);
+	public ArrayList<EventMatching> generateMatchingResultSet(Event aEvent);
 }

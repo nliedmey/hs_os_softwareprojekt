@@ -2,8 +2,12 @@ package de.swprojekt.speeddating.model;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+
 import java.io.FileNotFoundException;
 
 import com.itextpdf.text.BaseColor;
@@ -23,12 +27,14 @@ import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfPCell;
 
 public class MatchingAsPDF {
+	
+
 
 	public MatchingAsPDF() {
 
 	}
 
-	public void pdfErstellen(Map<Studierender, Unternehmen> matchingResultMap, String eventname) throws FileNotFoundException {
+	public void pdfErstellen(ArrayList<EventMatching> arrayList, String eventname) throws FileNotFoundException {
 		try {
 
 			String filename;
@@ -59,19 +65,34 @@ public class MatchingAsPDF {
 		        header.setPhrase(new Phrase("Unternehmen"));
 		        table.addCell(header);
 
-			if (matchingResultMap.isEmpty()) {				
+			if (arrayList.isEmpty()) {				
 				String zeilentext = "Es konnte keine passenden Matchings ermittelt werden";
 				table.addCell(zeilentext);
 			} else {
-				for (Map.Entry<Studierender, Unternehmen> entry : matchingResultMap.entrySet()) {
-					String zeilentext = "";
-					Studierender aStudierender = entry.getKey();
-					Unternehmen aUnternehmen = entry.getValue();
-					zeilentext = aStudierender.getStringFullNameOfStudent();
-					table.addCell(zeilentext);
-					zeilentext = aUnternehmen.getUnternehmensname();
-					table.addCell(zeilentext);
+				
+				for(EventMatching aEventMatching: arrayList) {
+					
+					System.out.println("abc");
+//					Studierender aStudierender 
+//					
+//					
+//					String zeilentext = "";
+//					zeilentext = aStudierender.getStringFullNameOfStudent();
+//					table.addCell(zeilentext);
+//					zeilentext = aUnternehmen.getUnternehmensname();
+//					table.addCell(zeilentext);
 				}
+		
+				
+//				for (Map.Entry<Studierender, Unternehmen> entry : matchingResultMap.entrySet()) {
+//					String zeilentext = "";
+//					Studierender aStudierender = entry.getKey();
+//					Unternehmen aUnternehmen = entry.getValue();
+//					zeilentext = aStudierender.getStringFullNameOfStudent();
+//					table.addCell(zeilentext);
+//					zeilentext = aUnternehmen.getUnternehmensname();
+//					table.addCell(zeilentext);
+//				}
 			}
 			table.completeRow();
 			doc.add(table);

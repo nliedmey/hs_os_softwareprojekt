@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import de.swprojekt.speeddating.model.Event;
+import de.swprojekt.speeddating.model.EventMatching;
 import de.swprojekt.speeddating.model.Studierender;
 import de.swprojekt.speeddating.model.Unternehmen;
 import de.swprojekt.speeddating.repository.IEventRepository;
@@ -58,12 +59,13 @@ public class ShowEventImpl implements IShowEventService {
 	}
 
 	@Override
-	public Map<Studierender, Unternehmen> generateMatchingResultSet(Event aEvent) {
+	public ArrayList<EventMatching> generateMatchingResultSet(Event aEvent) {
 
 		Map<Studierender, Unternehmen> matchingResultMap = new HashMap<>();
 		Set<Integer> studentKontaktWuensche = new HashSet<>();
 		Set<Integer> unternehmenKontaktWuensche = new HashSet<>();
-
+		ArrayList<EventMatching> eventMatchingList = new ArrayList<EventMatching>();
+		
 		for (Integer student_id : aEvent.getTeilnehmendeStudierende()) {
 			Studierender aStudent = iShowStudierendeService.showStudierenden(student_id);
 			studentKontaktWuensche.clear();
@@ -79,7 +81,11 @@ public class ShowEventImpl implements IShowEventService {
 								for (Integer unternehmenWunsch : unternehmenKontaktWuensche) {
 									if (aStudent.getStudent_id() == unternehmenWunsch) {
 
-										matchingResultMap.put(aStudent, aUnternehmen);
+//										matchingResultMap.put(aStudent, aUnternehmen);
+									    EventMatching aNewEventMatching = new EventMatching(aStudent.getStudent_id(), aUnternehmen.getUnternehmen_id());
+										eventMatchingList.add(aNewEventMatching);
+										
+										
 //									System.out.println("Jawohl, das ist ein Matching per For -> Student"
 //											+ aStudent.getStudent_id() + " und das Unternehmen"
 //											+ aUnternehmen.getUnternehmen_id() + "gehoeren zusammen");				
@@ -95,7 +101,7 @@ public class ShowEventImpl implements IShowEventService {
 				continue;
 			}
 		}
-		return matchingResultMap;
+		return eventMatchingList;
 
 	}
 
