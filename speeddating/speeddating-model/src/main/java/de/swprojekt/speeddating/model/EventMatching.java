@@ -2,24 +2,30 @@ package de.swprojekt.speeddating.model;
 
 public class EventMatching {
 	
-	private int student_id;
-	private int unternehmen_id;
 	
-	public EventMatching(int student_id, int unternehmen_id) {
+	private String studentenname;
+	private String unternehmensname;
+	
+	public EventMatching(String studentenname, String unternehmensname) {
 		super();
-		this.student_id = student_id;
-		this.unternehmen_id = unternehmen_id;
+		this.studentenname = studentenname;
+		this.unternehmensname = unternehmensname;
+	}	
+	
+	
+	public String getStudentenname() {
+		return studentenname;
 	}
-	public int getStudent_id() {
-		return student_id;
+	public void setStudentenname(String studentenname) {
+		this.studentenname = studentenname;
 	}
-	public void setStudent_id(int student_id) {
-		this.student_id = student_id;
+	public String getUnternehmensname() {
+		return unternehmensname;
 	}
-	public int getUnternehmen_id() {
-		return unternehmen_id;
+	public void setUnternehmensname(String unternehmensname) {
+		this.unternehmensname = unternehmensname;
 	}
-	public void setUnternehmen_id(int unternehmen_id) {
-		this.unternehmen_id = unternehmen_id;
-	}
+
+	
+	
 }

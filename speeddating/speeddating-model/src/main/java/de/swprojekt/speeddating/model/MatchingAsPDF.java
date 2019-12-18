@@ -23,13 +23,12 @@ import com.itextpdf.text.pdf.Barcode128;
 import com.itextpdf.text.pdf.BaseFont;
 import com.itextpdf.text.pdf.PdfContentByte;
 import com.itextpdf.text.pdf.PdfWriter;
+
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfPCell;
 
 public class MatchingAsPDF {
 	
-
-
 	public MatchingAsPDF() {
 
 	}
@@ -71,12 +70,13 @@ public class MatchingAsPDF {
 			} else {
 				
 				for(EventMatching aEventMatching: arrayList) {
-					
-					System.out.println("abc");
-//					Studierender aStudierender 
-//					
-//					
-//					String zeilentext = "";
+				
+					String zeilentext = "";
+					zeilentext = aEventMatching.getStudentenname();
+					table.addCell(zeilentext);
+					zeilentext = aEventMatching.getUnternehmensname();
+					table.addCell(zeilentext);
+
 //					zeilentext = aStudierender.getStringFullNameOfStudent();
 //					table.addCell(zeilentext);
 //					zeilentext = aUnternehmen.getUnternehmensname();

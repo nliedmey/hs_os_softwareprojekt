@@ -82,7 +82,8 @@ public class ShowEventImpl implements IShowEventService {
 									if (aStudent.getStudent_id() == unternehmenWunsch) {
 
 //										matchingResultMap.put(aStudent, aUnternehmen);
-									    EventMatching aNewEventMatching = new EventMatching(aStudent.getStudent_id(), aUnternehmen.getUnternehmen_id());
+								
+									    EventMatching aNewEventMatching = new EventMatching(aStudent.getStringFullNameOfStudent(), aUnternehmen.getUnternehmensname());
 										eventMatchingList.add(aNewEventMatching);
 										
 										
