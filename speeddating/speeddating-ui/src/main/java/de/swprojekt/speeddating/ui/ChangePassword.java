@@ -55,13 +55,13 @@ public class ChangePassword extends VerticalLayout {
 		notificationAlterPwsuccess.addThemeVariants(NotificationVariant.LUMO_SUCCESS);
 		Label labelAlterPwsuccess = new Label("Passwort erfolgreich geaendert!");
 		notificationAlterPwsuccess.add(labelAlterPwsuccess);
-		notificationAlterPwsuccess.setDuration(2500); //Meldung wird 2,5 Sekunden lang angezeigt
+		notificationAlterPwsuccess.setDuration(2500); // Meldung wird 2,5 Sekunden lang angezeigt
 
 		Notification notificationAlterPwerror = new Notification();
 		notificationAlterPwerror.addThemeVariants(NotificationVariant.LUMO_ERROR);
 		Label labelAlterPwerror = new Label("Passwoerter stimmen nicht ueberein!");
 		notificationAlterPwerror.add(labelAlterPwerror);
-		notificationAlterPwerror.setDuration(2500); //Meldung wird 2,5 Sekunden lang angezeigt
+		notificationAlterPwerror.setDuration(2500); // Meldung wird 2,5 Sekunden lang angezeigt
 
 		VerticalLayout h1 = new VerticalLayout();
 		h1.add(passwordfieldAltesPasswort);
@@ -116,9 +116,29 @@ public class ChangePassword extends VerticalLayout {
 		});
 
 		buttonAbbrechen.addClickListener(event -> {
-			SecurityContextHolder.clearContext(); // Spring-Security-Session leeren
-			getUI().get().getSession().close(); // Vaadin Session leeren
-			buttonAbbrechen.getUI().ifPresent(ui -> ui.navigate("maincontent"));
+
+			CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication()
+					.getPrincipal(); // Usernamen des eingeloggten Nutzers holen
+
+			for (GrantedAuthority gauth : userDetails.getAuthorities()) {
+				if (gauth.getAuthority().equals("ROLE_STUDENT")) {
+					SecurityContextHolder.clearContext(); // Spring-Security-Session leeren
+//					getUI().get().getSession().close(); // Vaadin Session leeren
+					buttonAbbrechen.getUI().ifPresent(ui -> ui.navigate("ui/eventVotingView_Stud"));
+				} else if (gauth.getAuthority().equals("ROLE_UNTERNEHMEN")) {
+					SecurityContextHolder.clearContext(); // Spring-Security-Session leeren
+//					getUI().get().getSession().close(); // Vaadin Session leeren
+					buttonAbbrechen.getUI().ifPresent(ui -> ui.navigate("ui/eventVotingView_Untern"));
+				} else if (gauth.getAuthority().equals("ROLE_EVENTORGANISATOR")) {
+					SecurityContextHolder.clearContext(); // Spring-Security-Session leeren
+//					getUI().get().getSession().close(); // Vaadin Session leeren
+					buttonAbbrechen.getUI().ifPresent(ui -> ui.navigate("ui/eventorganisator/menue"));
+				} else if (gauth.getAuthority().equals("ROLE_ADMIN")) {
+					SecurityContextHolder.clearContext(); // Spring-Security-Session leeren
+//					getUI().get().getSession().close(); // Vaadin Session leeren
+					buttonAbbrechen.getUI().ifPresent(ui -> ui.navigate("ui/admin/menue"));
+				}
+			}
 		});
 	}
 }

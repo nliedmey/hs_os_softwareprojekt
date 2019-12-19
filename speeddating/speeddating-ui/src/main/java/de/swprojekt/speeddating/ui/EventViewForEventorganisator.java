@@ -132,7 +132,7 @@ public class EventViewForEventorganisator extends VerticalLayout { // VerticalLa
 
 		logoutButton.addClickListener(event -> { // Bei Buttonklick werden folgende Aktionen ausgefuehrt
 			SecurityContextHolder.clearContext(); // Spring-Security-Session leeren
-			getUI().get().getSession().close(); // Vaadin Session leeren
+			//getUI().get().getSession().close(); // Vaadin Session leeren
 			logoutButton.getUI().ifPresent(ui -> ui.navigate("login")); // zurueck auf andere Seite
 		});
 

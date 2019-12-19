@@ -21,8 +21,8 @@ public class EventorganisatorMenue extends Div {
 		Button logoutButton=new Button("Logout");
 		
 		logoutButton.addClickListener(event -> {	//Bei Buttonklick werden folgende Aktionen ausgefuehrt
-			SecurityContextHolder.clearContext();	//Spring-Security-Session leeren
-			getUI().get().getSession().close();		//Vaadin Session leeren
+			
+			SecurityContextHolder.clearContext();
 			logoutButton.getUI().ifPresent(ui->ui.navigate("login"));	//zurueck auf andere Seite 
 		});	
 		
