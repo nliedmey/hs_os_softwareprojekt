@@ -140,6 +140,18 @@ public class AddEvent extends VerticalLayout {
 				LocalDateTime endzeitpunktldt=LocalDateTime.of(endzeitpunktDatum, endzeitpunktUhrzeit);
 				Date endzeitpunkt=Date.from(endzeitpunktldt.atZone(ZoneId.systemDefault()).toInstant());
 				
+				if (endzeitpunkt.getTime() < startzeitpunkt.getTime()) {
+					
+					// Notification Meldungen mit Button verknuepfen
+					Notification notificationDatesInvalid = new Notification();
+					notificationDatesInvalid.addThemeVariants(NotificationVariant.LUMO_ERROR);
+					Label labelDatesInvalid = new Label("Enddatum darf nicht vor dem Startdatum liegen! ");
+					notificationDatesInvalid.add(labelDatesInvalid);
+					notificationDatesInvalid.setDuration(2500); //Meldung wird 2,5 Sekunden lang angezeigt
+					notificationDatesInvalid.open();
+					
+				} else {
+				
 				einEvent.setStartzeitpunkt(startzeitpunkt);
 				einEvent.setEndzeitpunkt(endzeitpunkt);
 				
@@ -162,11 +174,17 @@ public class AddEvent extends VerticalLayout {
 			
 				iAddEventService.addeEventInEventorga(erstelltesEvent.getEvent_id(), userDetails.getEntityRefId() ); //dem Eventorganisator dieses Event zuordnen (er verwaltet dies)
 				notificationSavesuccess.open(); // Erfolgreich-Meldung anzeigen
-				buttonHinzufuegen.getUI().ifPresent(ui->ui.navigate("ui/eventorganisator/menue"));	//zurueck auf andere Seite 
+				buttonHinzufuegen.getUI().ifPresent(ui->ui.navigate("ui/eventorganisator/menue"));	//zurueck auf andere Seite
+				
+			}
 			} catch (ValidationException e) {
 				e.printStackTrace();
 			}
-		});
+			
+			
+		}
+			
+				);
 		
 		logoutButton.addClickListener(event -> {	//Bei Buttonklick werden folgende Aktionen ausgefuehrt
 			SecurityContextHolder.clearContext();	//Spring-Security-Session leeren

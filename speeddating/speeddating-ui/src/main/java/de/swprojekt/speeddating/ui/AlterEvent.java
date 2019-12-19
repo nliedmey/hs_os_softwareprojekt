@@ -18,6 +18,9 @@ import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.Grid.SelectionMode;
+import com.vaadin.flow.component.html.Label;
+import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.grid.GridMultiSelectionModel;
 import com.vaadin.flow.component.grid.GridSingleSelectionModel;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -214,7 +217,22 @@ public class AlterEvent extends VerticalLayout {
 				System.out.println("Teilnehmende Unternehmen veraendert!");
 				veraendertesEventDAO.setTeilnehmendeUnternehmen(unternehmenInVeraendertemEvent);
 			}
+			
+			
+			if ( veraendertesEventDAO.getEndzeitpunkt().getTime() < veraendertesEventDAO.getStartzeitpunkt().getTime()) {
+				
+				// Notification Meldungen mit Button verknuepfen
+				Notification notificationDatesInvalid = new Notification();
+				notificationDatesInvalid.addThemeVariants(NotificationVariant.LUMO_ERROR);
+				Label labelDatesInvalid = new Label("Enddatum darf nicht vor dem Startdatum liegen! ");
+				notificationDatesInvalid.add(labelDatesInvalid);
+				notificationDatesInvalid.setDuration(2500); //Meldung wird 2,5 Sekunden lang angezeigt
+				notificationDatesInvalid.open();	
+				
+			} else {
+			
 			iAlterEventService.aenderEvent(veraendertesEventDAO);
+			}
 		});
 		
 		logoutButton.addClickListener(event -> {	//Bei Buttonklick werden folgende Aktionen ausgefuehrt

@@ -122,20 +122,12 @@ public class ChangePassword extends VerticalLayout {
 
 			for (GrantedAuthority gauth : userDetails.getAuthorities()) {
 				if (gauth.getAuthority().equals("ROLE_STUDENT")) {
-					SecurityContextHolder.clearContext(); // Spring-Security-Session leeren
-//					getUI().get().getSession().close(); // Vaadin Session leeren
 					buttonAbbrechen.getUI().ifPresent(ui -> ui.navigate("ui/eventVotingView_Stud"));
 				} else if (gauth.getAuthority().equals("ROLE_UNTERNEHMEN")) {
-					SecurityContextHolder.clearContext(); // Spring-Security-Session leeren
-//					getUI().get().getSession().close(); // Vaadin Session leeren
 					buttonAbbrechen.getUI().ifPresent(ui -> ui.navigate("ui/eventVotingView_Untern"));
 				} else if (gauth.getAuthority().equals("ROLE_EVENTORGANISATOR")) {
-					SecurityContextHolder.clearContext(); // Spring-Security-Session leeren
-//					getUI().get().getSession().close(); // Vaadin Session leeren
 					buttonAbbrechen.getUI().ifPresent(ui -> ui.navigate("ui/eventorganisator/menue"));
 				} else if (gauth.getAuthority().equals("ROLE_ADMIN")) {
-					SecurityContextHolder.clearContext(); // Spring-Security-Session leeren
-//					getUI().get().getSession().close(); // Vaadin Session leeren
 					buttonAbbrechen.getUI().ifPresent(ui -> ui.navigate("ui/admin/menue"));
 				}
 			}

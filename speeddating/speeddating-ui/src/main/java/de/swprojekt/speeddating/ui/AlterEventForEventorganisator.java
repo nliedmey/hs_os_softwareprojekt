@@ -258,9 +258,23 @@ public class AlterEventForEventorganisator extends VerticalLayout {
 				System.out.println("Teilnehmende Unternehmen veraendert!");
 				veraendertesEventDAO.setTeilnehmendeUnternehmen(unternehmenInVeraendertemEvent);
 			}
-			iAlterEventService.aenderEvent(veraendertesEventDAO);
-			notificationSavesuccess.open();
-			aendernButton.getUI().ifPresent(ui->ui.navigate("ui/eventorganisator/menue"));	//zurueck auf andere Seite 
+			
+			if ( veraendertesEventDAO.getEndzeitpunkt().getTime() < veraendertesEventDAO.getStartzeitpunkt().getTime()) {
+				
+				// Notification Meldungen mit Button verknuepfen
+				Notification notificationDatesInvalid = new Notification();
+				notificationDatesInvalid.addThemeVariants(NotificationVariant.LUMO_ERROR);
+				Label labelDatesInvalid = new Label("Enddatum darf nicht vor dem Startdatum liegen! ");
+				notificationDatesInvalid.add(labelDatesInvalid);
+				notificationDatesInvalid.setDuration(2500); //Meldung wird 2,5 Sekunden lang angezeigt
+				notificationDatesInvalid.open();	
+				
+			} else {
+			
+				iAlterEventService.aenderEvent(veraendertesEventDAO);
+				notificationSavesuccess.open();
+				aendernButton.getUI().ifPresent(ui->ui.navigate("ui/eventorganisator/menue"));	//zurueck auf andere Seite
+			}
 		});
 		
 		logoutButton.addClickListener(event -> {	//Bei Buttonklick werden folgende Aktionen ausgefuehrt
