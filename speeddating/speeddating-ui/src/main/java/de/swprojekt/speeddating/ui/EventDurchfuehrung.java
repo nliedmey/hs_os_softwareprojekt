@@ -142,8 +142,6 @@ public class EventDurchfuehrung extends HorizontalLayout {
 		// Erzeugen der Combo Box
 		ComboBox<Event> comboBox = new ComboBox<>();
 		comboBox.setItemLabelGenerator(Event::getBezeichnung);
-//		List<Event> listOfEvents = iShowEventService.showEvents();
-//		comboBox.setItems(listOfEvents);
 		comboBox.setPlaceholder("Event auswaehlen");
 		List<Event> listOfEvents = new ArrayList<>();
 
@@ -256,8 +254,8 @@ public class EventDurchfuehrung extends HorizontalLayout {
 		VerticalLayout vRechts = new VerticalLayout();
 		vRechts.add(new HorizontalLayout(comboBox, buttonEventauswahl, zurueckButton));
 		vRechts.add(new HorizontalLayout(labelRunde, labelRundeAnzahl, labelMaxRunden));
-		vRechts.add(labelTimer);
-		vRechts.add(new HorizontalLayout(buttonNaechsteRunde, buttonStart, buttonPauseFortsetzen, buttonBeenden));
+		vRechts.add(labelTimer, buttonStart, buttonPauseFortsetzen);
+		vRechts.add(new HorizontalLayout(buttonNaechsteRunde, buttonBeenden));
 
 		// Zunaechst unsichtbar. Werden nach Eventauswahl sichtbar
 		buttonStart.setVisible(false);
@@ -295,10 +293,6 @@ public class EventDurchfuehrung extends HorizontalLayout {
 				for (int j : listUnternehmenInEvent) {
 					listeUntern.add(iShowUnternehmenService.showEinUnternehmen(j));
 				}
-
-				// Anzahl bestimmen
-//				anzahlStuds = listeStuds.size();
-//				anzahlUntern = listeUntern.size();
 
 				// Schleife zum erstmaligen Beschriften der Felder
 				int i = 0;
@@ -362,6 +356,7 @@ public class EventDurchfuehrung extends HorizontalLayout {
 			} else {
 				// Zeit ist abgelaufen...
 				UI.getCurrent().setPollInterval(-1);
+				//Startet den Ton
 				clip.start();
 				popUpClose.open();
 			}
