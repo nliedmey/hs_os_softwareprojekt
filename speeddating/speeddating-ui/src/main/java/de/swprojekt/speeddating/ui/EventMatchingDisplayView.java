@@ -223,7 +223,7 @@ public class EventMatchingDisplayView extends HorizontalLayout {
 
 			// Erfolgreich-Meldung anzeigen
 			notificationMatchingsuccess.open();
-			buttonMatchingDuerchfuehren.getUI().ifPresent(ui -> ui.navigate("ui/eventorganisator/menue")); // zurueck auf andere Seite
+//			buttonMatchingDuerchfuehren.getUI().ifPresent(ui -> ui.navigate("ui/eventorganisator/menue")); // zurueck auf andere Seite
 
 //			} else {
 //				notificationNotPossible.open();

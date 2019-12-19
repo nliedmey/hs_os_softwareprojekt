@@ -31,7 +31,11 @@ public class MatchingAsPDF {
 			String directory = "C:\\Users\\mariu\\Documents"; //LOKAL; bei Server-deploy siehe unten; Link funktioniert logischerweise lokal nicht
 			//String directory=System.getProperty("jboss.server.data.dir"); //Property verweist auf Datenverzeichnes des Wildflyservers (auf Server: opt/wildfly)
 			filename=event_id+"_"+eventname+".pdf";
-			filepath = directory+"/matchingAuswertungen/"+filename;
+			//FILEPATH WEBDEPLOY
+			//filepath = directory+"/matchingAuswertungen/"+filename;
+			
+			//FILEPATH LOKAL
+			filepath = directory+"\\matchingAuswertungen\\"+filename;
 			
 			File eventauswertungenDir=new File(directory, "matchingAuswertungen"); //Unterordner wird erstellt, wenn er nicht existiert
 			eventauswertungenDir.mkdir();
@@ -45,7 +49,7 @@ public class MatchingAsPDF {
 			doc.addCreator("speeddating_gruppe");
 			doc.addTitle("Matching Ergebnis - " + eventname);
 
-			PdfWriter writer = PdfWriter.getInstance(doc, new FileOutputStream(filename));
+			PdfWriter writer = PdfWriter.getInstance(doc, new FileOutputStream(filepath));
 			writer.setEncryption(password.getBytes(), "standard".getBytes(), PdfWriter.ALLOW_COPY|PdfWriter.ALLOW_PRINTING|PdfWriter.ALLOW_DEGRADED_PRINTING, PdfWriter.STANDARD_ENCRYPTION_128); //setzt Passwort auf PDF, da Link theoretisch fuer jeden erreichbar
 			doc.open();
 
