@@ -3,6 +3,7 @@ package de.swprojekt.speeddating.ui;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -64,8 +65,18 @@ public class AlterEventorganisator extends VerticalLayout {
 		GridMultiSelectionModel<Event> selectionModelEvent;
 
 		eventorganisatorGrid = new Grid<>(Eventorganisator.class); // Tabelle initialisieren
+		
+		List<Eventorganisator> listTmp = iShowEventorganisatorService.showEventorganisatoren();
+		List<Eventorganisator> eventorganisatorlist = new ArrayList<Eventorganisator>();
+
+		for(Eventorganisator aEventorganisator: listTmp) {
+			aEventorganisator.setAnzahlVerwalteteEvents(aEventorganisator.getVerwaltet_events().size());
+			eventorganisatorlist.add(aEventorganisator);
+		}
+				
+		
 		ListDataProvider<Eventorganisator> ldpEventorganisator = DataProvider
-				.ofCollection(iShowEventorganisatorService.showEventorganisatoren()); // Dataprovider erstellen und
+				.ofCollection(eventorganisatorlist); // Dataprovider erstellen und
 																						// Quelle fuer
 		// Eventorganisatoren (via Service aus DB)
 		// festlegen
@@ -73,7 +84,8 @@ public class AlterEventorganisator extends VerticalLayout {
 																	// Tabelle festlegen
 
 		eventorganisatorGrid.removeColumnByKey("eventorganisator_id"); // event_id nicht in Tabelle mit anzeigen
-		eventorganisatorGrid.setColumns("vorname", "nachname", "fachbereich", "telefonnr", "email", "verwaltet_events"); // Spaltenordnung
+		eventorganisatorGrid.removeColumnByKey("verwaltet_events");
+		eventorganisatorGrid.setColumns("vorname", "nachname", "fachbereich", "telefonnr", "email", "anzahlVerwalteteEvents"); // Spaltenordnung
 																															// festlegen
 		eventorganisatorGrid.setSelectionMode(SelectionMode.SINGLE); // es kann immer nur ein Event gleichzeitig
 																		// bearbeitet werden
@@ -81,18 +93,24 @@ public class AlterEventorganisator extends VerticalLayout {
 				.getSelectionModel();
 
 		eventGrid = new Grid<>(Event.class); // Tabelle initialisieren
-		ListDataProvider<Event> ldpEvent = DataProvider.ofCollection(iShowEventService.showEvents()); // Dataprovider
-																										// erstellen und
-																										// Quelle fuer
-																										// Events (via
-																										// Service aus
-																										// DB)
-																										// festlegen
+		
+		List<Event> listTmp2 = iShowEventService.showEvents();
+		List<Event> eventlist = new ArrayList<Event>();
+		
+		for(Event aEvent: listTmp2) {
+			aEvent.setAnzahlTeilnehmendeStudierende(aEvent.getTeilnehmendeStudierende().size());
+			aEvent.setAnzahlTeilnehmendeUnternehmen(aEvent.getTeilnehmendeUnternehmen().size());
+			eventlist.add(aEvent);
+		}
+		ListDataProvider<Event> ldpEvent = DataProvider.ofCollection(eventlist); // 
 		eventGrid.setDataProvider(ldpEvent); // erstellten Dataprovider als Datenquelle fuer Tabelle festlegen
 
 		eventGrid.removeColumnByKey("event_id"); // studId nicht in Tabelle mit anzeigen
+		eventGrid.removeColumnByKey("teilnehmendeStudierende");
+		eventGrid.removeColumnByKey("teilnehmendeUnternehmen");
+		
 		eventGrid.setColumns("bezeichnung", "startzeitpunkt", "endzeitpunkt", "abgeschlossen",
-				"teilnehmendeStudierende", "teilnehmendeUnternehmen"); // Spaltenordnung festlegen
+				"anzahlTeilnehmendeStudierende", "anzahlTeilnehmendeUnternehmen"); // Spaltenordnung festlegen
 
 		eventGrid.setSelectionMode(SelectionMode.MULTI); // es koennen mehrere Events ausgewaehlt sein
 		eventGrid.setEnabled(false);

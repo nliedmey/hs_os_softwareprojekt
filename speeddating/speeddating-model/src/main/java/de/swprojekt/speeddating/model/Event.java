@@ -12,6 +12,7 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.JoinColumn;
+import javax.persistence.Transient;
 import javax.persistence.Id;
 
 /*
@@ -35,11 +36,15 @@ public class Event {
 	@CollectionTable(name = "event_unternehmen", joinColumns = @JoinColumn(name = "event_id"))
 	@Column(name = "unternehmen_id")
 	private Set<Integer> teilnehmendeUnternehmen; // CollectionTable weil Integers und keine Entities
+	@Transient
+	private int anzahlTeilnehmendeUnternehmen;
 
 	@ElementCollection(fetch = FetchType.EAGER)
 	@CollectionTable(name = "event_studierender", joinColumns = @JoinColumn(name = "event_id"))
 	@Column(name = "student_id")
 	private Set<Integer> teilnehmendeStudierende; // CollectionTable weil Integers und keine Entities
+	@Transient
+	private int anzahlTeilnehmendeStudierende;
 
 	// keine Entities von anderen Klassen in dieser Klasse!
 	// @ManyToMany(cascade = {CascadeType.REFRESH,CascadeType.MERGE}, fetch =
@@ -124,6 +129,22 @@ public class Event {
 
 	public void setTeilnehmendeUnternehmen(Set<Integer> teilnehmendeUnternehmen) {
 		this.teilnehmendeUnternehmen = teilnehmendeUnternehmen;
+	}
+
+	public int getAnzahlTeilnehmendeUnternehmen() {
+		return anzahlTeilnehmendeUnternehmen;
+	}
+
+	public void setAnzahlTeilnehmendeUnternehmen(int anzahlTeilnehmendeUnternehmen) {
+		this.anzahlTeilnehmendeUnternehmen = anzahlTeilnehmendeUnternehmen;
+	}
+
+	public int getAnzahlTeilnehmendeStudierende() {
+		return anzahlTeilnehmendeStudierende;
+	}
+
+	public void setAnzahlTeilnehmendeStudierende(int anzahlTeilnehmendeStudierende) {
+		this.anzahlTeilnehmendeStudierende = anzahlTeilnehmendeStudierende;
 	}
 
 	

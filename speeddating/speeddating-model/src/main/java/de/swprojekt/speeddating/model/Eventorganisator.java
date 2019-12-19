@@ -11,6 +11,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.Transient;
 
 /*
  * Klasse wird als Entity definiert
@@ -31,6 +32,8 @@ public class Eventorganisator {
 	@CollectionTable(name = "eventorganisator_event", joinColumns = @JoinColumn(name = "eventorganisator_id"))
 	@Column(name = "event_id")
 	private Set<Integer> verwaltet_events; // CollectionTable weil Integers und keine Entities
+	@Transient
+	private int anzahlVerwalteteEvents;
 
 
 	public Eventorganisator() {
@@ -115,6 +118,16 @@ public class Eventorganisator {
 
 	public void setVerwaltet_events(Set<Integer> verwaltet_events) {
 		this.verwaltet_events = verwaltet_events;
+	}
+
+
+	public int getAnzahlVerwalteteEvents() {
+		return anzahlVerwalteteEvents;
+	}
+
+
+	public void setAnzahlVerwalteteEvents(int anzahlVerwalteteEvents) {
+		this.anzahlVerwalteteEvents = anzahlVerwalteteEvents;
 	}
 
 	

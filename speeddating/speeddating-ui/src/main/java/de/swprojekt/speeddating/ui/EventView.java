@@ -5,6 +5,9 @@ import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.GridMultiSelectionModel;
 import com.vaadin.flow.component.grid.Grid.SelectionMode;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -34,12 +37,24 @@ public class EventView extends VerticalLayout {	//VerticalLayout fuehrt zu Anord
 		Button loeschenButton=new Button("Loeschen");		
 		Button logoutButton=new Button("Logout");
 		
+		List<Event> listTmp = iShowEventService.showEvents();
+		List<Event> eventlist = new ArrayList<Event>();
+
+		for(Event aEvent: listTmp) {
+			aEvent.setAnzahlTeilnehmendeStudierende(aEvent.getTeilnehmendeStudierende().size());
+			aEvent.setAnzahlTeilnehmendeUnternehmen(aEvent.getTeilnehmendeUnternehmen().size());
+			eventlist.add(aEvent);
+		}
+		
 		eventGrid = new Grid<>(Event.class);	//Tabelle initialisieren
-		ListDataProvider<Event> ldpEvent = DataProvider
-				.ofCollection(iShowEventService.showEvents());	//Dataprovider erstellen und Quelle fuer Events (via Service aus DB) festlegen 
+		//Dataprovider erstellen und Quelle fuer Events (via Service aus DB) festlegen 
+		ListDataProvider<Event> ldpEvent = DataProvider.ofCollection(eventlist);
+//		ListDataProvider<Event> ldpEvent = DataProvider.ofCollection(iShowEventService.showEvents());
 		eventGrid.setDataProvider(ldpEvent);	//erstellten Dataprovider als Datenquelle fuer Tabelle festlegen
 		
 		eventGrid.removeColumnByKey("event_id");	//event_id nicht in Tabelle mit anzeigen
+		eventGrid.removeColumnByKey("teilnehmendeUnternehmen");
+		eventGrid.removeColumnByKey("teilnehmendeStudierende");
 //		eventGrid.setColumns("bezeichnung", "startzeitpunkt", "endzeitpunkt", "abgeschlossen", "teilnehmendeStudierende", "teilnehmendeUnternehmen");	//Spaltenordnung festlegen
 		eventGrid.setSelectionMode(SelectionMode.MULTI);	//es koennen mehrere Events ausgewaehlt sein
 		selectionModelEvent = (GridMultiSelectionModel<Event>) eventGrid.getSelectionModel();

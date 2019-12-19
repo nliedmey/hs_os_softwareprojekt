@@ -9,6 +9,9 @@ import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.grid.Grid.SelectionMode;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -20,6 +23,7 @@ import com.vaadin.flow.data.provider.DataProvider;
 import com.vaadin.flow.data.provider.ListDataProvider;
 import com.vaadin.flow.router.Route;
 
+import de.swprojekt.speeddating.model.Event;
 import de.swprojekt.speeddating.model.Eventorganisator;
 import de.swprojekt.speeddating.service.deleteeventorganisator.IDeleteEventorganisatorService;
 /*
@@ -57,18 +61,29 @@ public class EventorganisatorView extends VerticalLayout { // VerticalLayout fue
 		Label labelSavesuccess = new Label("Eventorganisator erfolgreich geloescht! ");
 		notificationSavesuccess.add(labelSavesuccess);
 		notificationSavesuccess.setDuration(2500); // Meldung wird 2,5 Sekunden lang angezeigt
+		
+		
+		
+		List<Eventorganisator> listTmp = iShowEventorganisatorService.showEventorganisatoren();
+		List<Eventorganisator> eventorganisatorList = new ArrayList<Eventorganisator>();
 
-		eventorganisatorGrid = new Grid<>(Eventorganisator.class); // Tabelle initialisieren
-		ListDataProvider<Eventorganisator> ldpEventorganisator = DataProvider
-				.ofCollection(iShowEventorganisatorService.showEventorganisatoren()); // Dataprovider erstellen und
-																						// Quelle fuer
-		// Eventorganisatoren (via Service aus DB)
-		// festlegen
+		for(Eventorganisator aEventorganisator: listTmp) {
+			aEventorganisator.setAnzahlVerwalteteEvents(aEventorganisator.getVerwaltet_events().size());
+
+			eventorganisatorList.add(aEventorganisator);
+		}
+
+		eventorganisatorGrid = new Grid<>(Eventorganisator.class); // Tabelle initialisieren		
+		ListDataProvider<Eventorganisator> ldpEventorganisator = DataProvider.ofCollection(eventorganisatorList);
+//		ListDataProvider<Eventorganisator> ldpEventorganisator = DataProvider
+//				.ofCollection(iShowEventorganisatorService.showEventorganisatoren()); // Dataprovider erstellen
+																						
 		eventorganisatorGrid.setDataProvider(ldpEventorganisator); // erstellten Dataprovider als Datenquelle fuer
 																	// Tabelle festlegen
 
 		eventorganisatorGrid.removeColumnByKey("eventorganisator_id"); // event_id nicht in Tabelle mit anzeigen
-		eventorganisatorGrid.setColumns("vorname", "nachname", "fachbereich", "telefonnr", "email", "verwaltet_events"); // Spaltenordnung
+		eventorganisatorGrid.removeColumnByKey("verwaltet_events"); 
+		eventorganisatorGrid.setColumns("vorname", "nachname", "fachbereich", "telefonnr", "email", "anzahlVerwalteteEvents"); // Spaltenordnung
 																															// festlegen
 		eventorganisatorGrid.setSelectionMode(SelectionMode.MULTI); // es koennen mehrere Organisatoren gleichzeitig
 																	// geloescht werden

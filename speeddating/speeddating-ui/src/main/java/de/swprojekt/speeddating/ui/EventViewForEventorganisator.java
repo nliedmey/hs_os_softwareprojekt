@@ -81,6 +81,8 @@ public class EventViewForEventorganisator extends VerticalLayout { // VerticalLa
 		{
 			Event aEvent = iShowEventService.showEvent(event_id);
 			if (aEvent != null) {
+				aEvent.setAnzahlTeilnehmendeStudierende(aEvent.getTeilnehmendeStudierende().size());
+				aEvent.setAnzahlTeilnehmendeUnternehmen(aEvent.getTeilnehmendeUnternehmen().size());
 				listOfEvents.add(aEvent);
 			}
 		}
@@ -93,8 +95,10 @@ public class EventViewForEventorganisator extends VerticalLayout { // VerticalLa
 		eventGrid.setDataProvider(ldpEvent); // erstellten Dataprovider als Datenquelle fuer Tabelle festlegen
 
 		eventGrid.removeColumnByKey("event_id"); // event_id nicht in Tabelle mit anzeigen
+		eventGrid.removeColumnByKey("teilnehmendeStudierende");
+		eventGrid.removeColumnByKey("teilnehmendeUnternehmen");
 		eventGrid.setColumns("bezeichnung", "startzeitpunkt", "endzeitpunkt", "abgeschlossen",
-				"teilnehmendeStudierende", "teilnehmendeUnternehmen"); // Spaltenordnung festlegen
+				"anzahlTeilnehmendeStudierende", "anzahlTeilnehmendeUnternehmen"); // Spaltenordnung festlegen
 		eventGrid.setSelectionMode(SelectionMode.MULTI); // es koennen mehrere Events ausgewaehlt sein
 		selectionModelEvent = (GridMultiSelectionModel<Event>) eventGrid.getSelectionModel();
 
