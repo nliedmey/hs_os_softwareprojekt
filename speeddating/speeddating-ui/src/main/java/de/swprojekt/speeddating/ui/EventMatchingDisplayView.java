@@ -6,8 +6,7 @@ import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.grid.Grid;
-import com.vaadin.flow.component.grid.GridMultiSelectionModel;
-import com.vaadin.flow.component.grid.Grid.SelectionMode;
+import com.vaadin.flow.component.html.Anchor;
 import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.notification.NotificationVariant;
@@ -17,9 +16,9 @@ import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Random;
 import java.util.Set;
 
-import org.aspectj.weaver.patterns.NotTypePattern;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -29,7 +28,6 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.component.timepicker.TimePicker;
 import com.vaadin.flow.data.binder.Binder;
-import com.vaadin.flow.data.binder.ValidationException;
 import com.vaadin.flow.data.provider.DataProvider;
 import com.vaadin.flow.data.provider.ListDataProvider;
 import com.vaadin.flow.router.Route;
@@ -42,7 +40,6 @@ import de.swprojekt.speeddating.service.security.CustomUserDetails;
 import de.swprojekt.speeddating.service.showevent.IShowEventService;
 import de.swprojekt.speeddating.service.showstudierender.IShowStudierendeService;
 import de.swprojekt.speeddating.service.showunternehmen.IShowUnternehmenService;
-import de.swprojekt.speeddating.service.unternehmen.IUnternehmenService;
 
 /*
  * 
@@ -79,6 +76,8 @@ public class EventMatchingDisplayView extends HorizontalLayout {
 		TimePicker timepickerEndzeitpunktUhrzeit = new TimePicker("Endzeit:");
 		TextField textfieldRundendauerInMinuten = new TextField("Rundendauer (min):");
 		Checkbox checkboxAbgeschlossen = new Checkbox("Abgeschlossen:");
+		Anchor pdfLink=new Anchor(""," ");
+		Label labelPassword=new Label();
 
 		datepickerStartzeitpunktDatum.setEnabled(false);
 		timepickerStartzeitpunktUhrzeit.setEnabled(false);
@@ -211,7 +210,12 @@ public class EventMatchingDisplayView extends HorizontalLayout {
 
 			MatchingAsPDF objektForCreatingPDF = new MatchingAsPDF();
 			try {
-				objektForCreatingPDF.pdfErstellen(iShowEventService.generateMatchingResultSet(selectedEvent), selectedEvent.getBezeichnung());
+				String password="pw*"+(new Random().nextInt((9999 - 1000) + 1) + 1000); //Schluessel zwischen 1000 und 9999 generieren
+				String filename=objektForCreatingPDF.pdfErstellen(iShowEventService.generateMatchingResultSet(selectedEvent), selectedEvent.getEvent_id(), selectedEvent.getBezeichnung(), password);
+				pdfLink.setHref("http://131.173.88.192:80/matchingAuswertungen/"+filename);
+				pdfLink.setText("Download als PDF");
+				labelPassword.setText("BITTE NOTIEREN: Ihr Passwort zum Oeffnen der PDF: "+password);
+				notificationMatchingsuccess.open(); // Erfolgreich-Meldung anzeigen
 			} catch (FileNotFoundException e) {
 				System.out.println("Bei Aufruf der PDF Erstellung gibt es Probleme");
 				e.printStackTrace();
@@ -254,7 +258,9 @@ public class EventMatchingDisplayView extends HorizontalLayout {
 		v1.add(new HorizontalLayout(datepickerEndzeitpunktDatum, timepickerEndzeitpunktUhrzeit));
 		v1.add(new HorizontalLayout(textfieldRundendauerInMinuten, checkboxAbgeschlossen));
 		v1.add(new HorizontalLayout(buttonMatchingDuerchfuehren, buttonZurueck, logoutButton));
-
+		v1.add(pdfLink);
+		v1.add(labelPassword);
+		
 		VerticalLayout v2 = new VerticalLayout();
 		v2.setHeight("800px");
 		v2.setWidth("400px");

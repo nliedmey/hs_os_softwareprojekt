@@ -1,13 +1,8 @@
 package de.swprojekt.speeddating.model;
 
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
-import org.springframework.beans.factory.annotation.Autowired;
-
+import java.io.File;
 import java.io.FileNotFoundException;
 
 import com.itextpdf.text.BaseColor;
@@ -15,13 +10,8 @@ import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Font;
 import com.itextpdf.text.FontFactory;
-import com.itextpdf.text.Image;
 import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.Phrase;
-import com.itextpdf.text.pdf.Barcode;
-import com.itextpdf.text.pdf.Barcode128;
-import com.itextpdf.text.pdf.BaseFont;
-import com.itextpdf.text.pdf.PdfContentByte;
 import com.itextpdf.text.pdf.PdfWriter;
 
 import com.itextpdf.text.pdf.PdfPTable;
@@ -33,11 +23,21 @@ public class MatchingAsPDF {
 
 	}
 
-	public void pdfErstellen(ArrayList<EventMatching> arrayList, String eventname) throws FileNotFoundException {
+	public String pdfErstellen(ArrayList<EventMatching> arrayList, int event_id, String eventname, String password) throws FileNotFoundException {
+		String filepath="";
+		String filename="";
 		try {
 
-			String filename;
-			filename = "C:\\projekt\\MatchingErgebnisse-"+eventname+".pdf";
+			String directory = "C:\\Users\\mariu\\Documents"; //LOKAL; bei Server-deploy siehe unten; Link funktioniert logischerweise lokal nicht
+			//String directory=System.getProperty("jboss.server.data.dir"); //Property verweist auf Datenverzeichnes des Wildflyservers (auf Server: opt/wildfly)
+			filename=event_id+"_"+eventname+".pdf";
+			filepath = directory+"/matchingAuswertungen/"+filename;
+			
+			File eventauswertungenDir=new File(directory, "matchingAuswertungen"); //Unterordner wird erstellt, wenn er nicht existiert
+			eventauswertungenDir.mkdir();
+			
+			System.out.println("Ablage hier: "+filepath);
+			
 			Document doc = new Document();
 			doc.addAuthor("Patrick_Marius_Nico");
 			doc.addCreationDate();
@@ -46,6 +46,7 @@ public class MatchingAsPDF {
 			doc.addTitle("Matching Ergebnis - " + eventname);
 
 			PdfWriter writer = PdfWriter.getInstance(doc, new FileOutputStream(filename));
+			writer.setEncryption(password.getBytes(), "standard".getBytes(), PdfWriter.ALLOW_COPY|PdfWriter.ALLOW_PRINTING|PdfWriter.ALLOW_DEGRADED_PRINTING, PdfWriter.STANDARD_ENCRYPTION_128); //setzt Passwort auf PDF, da Link theoretisch fuer jeden erreichbar
 			doc.open();
 
 			// Uberschrift setzen
@@ -101,5 +102,6 @@ public class MatchingAsPDF {
 		} catch (DocumentException e) {
 			e.printStackTrace();
 		}
+		return filename;
 	}
 }
