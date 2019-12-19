@@ -3,6 +3,7 @@ package de.swprojekt.speeddating.ui;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.GridMultiSelectionModel;
+import com.vaadin.flow.component.html.Anchor;
 import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.notification.NotificationVariant;
@@ -11,6 +12,7 @@ import com.vaadin.flow.component.grid.Grid.SelectionMode;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
@@ -49,6 +51,8 @@ public class EventViewForEventorganisator extends VerticalLayout { // VerticalLa
 		Button loeschenButton = new Button("Loeschen");
 		Button logoutButton = new Button("Logout");
 		Button zurueckButton = new Button("Zurueck");
+		Anchor pdfLink=new Anchor(""," ");
+		Label labelPassword=new Label();
 
 		Notification notificationSavesuccess = new Notification();
 		notificationSavesuccess.addThemeVariants(NotificationVariant.LUMO_SUCCESS);
@@ -110,8 +114,12 @@ public class EventViewForEventorganisator extends VerticalLayout { // VerticalLa
 
 					MatchingAsPDF objektForCreatingPDF = new MatchingAsPDF();
 					try {
-						objektForCreatingPDF.pdfErstellen(iShowEventService.generateMatchingResultSet(selectedEvent), selectedEvent.getBezeichnung());
-						labelPDFsuccess.setText("PDF duer das Event " + selectedEvent.getBezeichnung() + " erstellt!");
+						String password="pw*"+(new Random().nextInt((9999 - 1000) + 1) + 1000); //Schluessel zwischen 1000 und 9999 generieren
+						String filename=objektForCreatingPDF.pdfErstellen(iShowEventService.generateMatchingResultSet(selectedEvent),selectedEvent.getEvent_id(), selectedEvent.getBezeichnung(),password);
+						pdfLink.setHref("http://131.173.88.192:80/matchingAuswertungen/"+filename);
+						pdfLink.setText("Download als PDF");
+						labelPassword.setText("BITTE NOTIEREN: Ihr Passwort zum Oeffnen der PDF: "+password);
+						labelPDFsuccess.setText("PDF fuer das Event " + selectedEvent.getBezeichnung() + " erstellt!");
 						notificationPDFsuccess.open();
 					} catch (FileNotFoundException e) {
 						System.out.println("Bei Aufruf der PDF Erstellung gibt es Probleme");
@@ -146,6 +154,8 @@ public class EventViewForEventorganisator extends VerticalLayout { // VerticalLa
 
 		add(eventGrid); // Hinzufuegen der Elemente zum VerticalLayout
 		add(pdfButton, loeschenButton);
+		add(pdfLink);
+		add(labelPassword);
 		add(new HorizontalLayout(zurueckButton, logoutButton));
 	}
 	// @PostConstruct //Ausfuehrung nach Konstruktoraufruf
