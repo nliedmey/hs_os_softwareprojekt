@@ -45,7 +45,7 @@ public class AddStud extends VerticalLayout {
 		TextField textfieldVorname = new TextField("Vorname: ");
 		TextField textfieldNachname = new TextField("Nachname: ");
 		TextField textfieldStrasse = new TextField("Straße: ");
-		TextField textfieldHausnummer = new TextField("Hausnummer::");
+		TextField textfieldHausnummer = new TextField("Hausnummer:");
 		TextField textfieldPLZ = new TextField("Postleitzahl: ");
 		TextField textfieldOrt = new TextField("Ort: ");
 		TextField textfieldTelefonnr = new TextField("Telefonnr.: ");
@@ -69,14 +69,10 @@ public class AddStud extends VerticalLayout {
 		
 		VerticalLayout h1 = new VerticalLayout(); // Textfelder sollen nebeneinander angeordnet werden
 		h1.add(textfieldMatrikelnr);
-		h1.add(textfieldVorname);
-		h1.add(textfieldNachname);
-		h1.add(textfieldStrasse);
-		h1.add(textfieldHausnummer);
-		h1.add(textfieldPLZ);
-		h1.add(textfieldOrt);
-		h1.add(textfieldTelefonnr);
-		h1.add(textfieldEMail);
+		h1.add(new HorizontalLayout(textfieldVorname, textfieldNachname));
+		h1.add(new HorizontalLayout(textfieldStrasse, textfieldHausnummer));
+		h1.add(new HorizontalLayout(textfieldPLZ, textfieldOrt));
+		h1.add(new HorizontalLayout(textfieldTelefonnr, textfieldEMail));
 		h1.add(buttonHinzufuegen);
 		add(h1, new HorizontalLayout(zurueckbutton, logoutButton)); // darunter wird Button angeordnet
 

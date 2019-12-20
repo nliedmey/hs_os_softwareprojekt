@@ -154,12 +154,23 @@ public class ChangeDeleteStud extends VerticalLayout {
 		binder.forField(textfieldTelefonnr).bind("telefonnr");
 		binder.forField(textfieldEMail).asRequired("E-Mail Adresse darf nicht leer sein...").bind("email");
 
-		Studierender einStudierender = new Studierender();
+		Studierender studtmp = new Studierender();
 		buttonStudAendern.addClickListener(event -> {
 			try {
-				binder.writeBean(einStudierender); // dem Objekt werden Attributwerte aus den Textfeldern (via Binder)
+				binder.writeBean(studtmp); // dem Objekt werden Attributwerte aus den Textfeldern (via Binder)
 													// zugewiesen
-				einStudierender.setStudent_id(lv_id);
+				
+				Studierender einStudierender = iShowStudierendeService.showStudierenden(lv_id);
+				einStudierender.setMatrikelnummer(studtmp.getMatrikelnummer());
+				einStudierender.setVorname(studtmp.getVorname());
+				einStudierender.setNachname(studtmp.getNachname());
+				einStudierender.setStrasse(studtmp.getStrasse());
+				einStudierender.setHausnummer(studtmp.getHausnummer());
+				einStudierender.setPlz(studtmp.getPlz());
+				einStudierender.setOrt(studtmp.getOrt());
+				einStudierender.setTelefonnr(studtmp.getTelefonnr());
+				einStudierender.setEmail(studtmp.getEmail());
+
 				iStudierenderService.changeStudierenden(einStudierender);
 				notificationAendernsuccess.open();
 //				SecurityContextHolder.clearContext();	//Spring-Security-Session leeren
@@ -191,9 +202,9 @@ public class ChangeDeleteStud extends VerticalLayout {
 		
 		buttonBestaetigenJa.addClickListener(event -> {
 			try {
-				binder.writeBean(einStudierender);
-				einStudierender.setStudent_id(lv_id);
-				iStudierenderService.deleteStudierenden(einStudierender);
+				binder.writeBean(studtmp);
+				studtmp.setStudent_id(lv_id);
+				iStudierenderService.deleteStudierenden(studtmp);
 				notificationLoeschensuccess.open();
 //			SecurityContextHolder.clearContext();	//Spring-Security-Session leeren
 //			getUI().get().getSession().close();		//Vaadin Session leeren

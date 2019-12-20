@@ -18,6 +18,7 @@ import javax.persistence.JoinColumn;
 @Entity // Entity wird in DB gespeichert (Tabellenname Standard: Klassenname)
 public class Studierender {
 
+
 	@Id // PrimaryKey
 	@GeneratedValue(strategy = GenerationType.AUTO) // automatische Generierung und hochzaehlen
 	private int student_id;
@@ -42,8 +43,24 @@ public class Studierender {
 		// TODO Auto-generated constructor stub
 	}
 
+//	public Studierender(int student_id, int matrikelnummer, String vorname, String nachname, String strasse,
+//			int hausnummer, String plz, String ort, String telefonnr, String email) {
+//		super();
+//		this.student_id = student_id;
+//		this.matrikelnummer = matrikelnummer;
+//		this.vorname = vorname;
+//		this.nachname = nachname;
+//		this.strasse = strasse;
+//		this.hausnummer = hausnummer;
+//		this.plz = plz;
+//		this.ort = ort;
+//		this.telefonnr = telefonnr;
+//		this.email = email;
+//	}
+	
 	public Studierender(int student_id, int matrikelnummer, String vorname, String nachname, String strasse,
-			int hausnummer, String plz, String ort, String telefonnr, String email) {
+			int hausnummer, String plz, String ort, String telefonnr, String email,
+			Set<Integer> studentKontaktwuensche) {
 		super();
 		this.student_id = student_id;
 		this.matrikelnummer = matrikelnummer;
@@ -55,6 +72,7 @@ public class Studierender {
 		this.ort = ort;
 		this.telefonnr = telefonnr;
 		this.email = email;
+		this.studentKontaktwuensche = studentKontaktwuensche;
 	}
 
 	public String getVorname() {
@@ -150,6 +168,10 @@ public class Studierender {
 
 	public void setStudentKontaktwuensche(Set<Integer> studentKontaktwuensche) {
 		this.studentKontaktwuensche = studentKontaktwuensche;
+	}
+	
+	public String getFullNameAndContact () {
+		return this.vorname + " " + this.nachname + ", " + this.email;
 	}
 
 }

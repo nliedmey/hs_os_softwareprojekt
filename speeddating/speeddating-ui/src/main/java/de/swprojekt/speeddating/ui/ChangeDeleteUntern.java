@@ -126,13 +126,16 @@ public class ChangeDeleteUntern extends VerticalLayout {
 				.bind("ansprechpartner");
 		binder.forField(textfieldKontaktmail).asRequired("Kontakt-EMail darf nicht leer sein...").bind("kontaktmail");
 
-		Unternehmen einUnternehmen = new Unternehmen();
+		Unternehmen einUnternehmenTmp = new Unternehmen();
 		buttonUnternAendern.addClickListener(event -> {
 			try {
-				binder.writeBean(einUnternehmen); // dem Objekt werden Attributwerte aus den Textfeldern (via Binder)
+				binder.writeBean(einUnternehmenTmp); // dem Objekt werden Attributwerte aus den Textfeldern (via Binder)
 													// zugewiesen
-				einUnternehmen.setUnternehmen_id(lv_id);
-				iUnternehmenService.changeUnternehmen(einUnternehmen);
+				Unternehmen aUnternehmen = iShowUnternehmenService.showEinUnternehmen(lv_id);
+				aUnternehmen.setUnternehmensname(einUnternehmenTmp.getUnternehmensname());
+				aUnternehmen.setAnsprechpartner(einUnternehmenTmp.getAnsprechpartner());
+				aUnternehmen.setKontaktmail(einUnternehmenTmp.getKontaktmail());
+				iUnternehmenService.changeUnternehmen(aUnternehmen);
 				notificationAendernsuccess.open();
 //				SecurityContextHolder.clearContext();	//Spring-Security-Session leeren
 //				getUI().get().getSession().close();		//Vaadin Session leeren
@@ -150,9 +153,9 @@ public class ChangeDeleteUntern extends VerticalLayout {
 
 		buttonBestaetigenJa.addClickListener(event -> {
 			try {
-				binder.writeBean(einUnternehmen);
-				einUnternehmen.setUnternehmen_id(lv_id);
-				iUnternehmenService.deleteUnternehmen(einUnternehmen);
+				binder.writeBean(einUnternehmenTmp);
+				einUnternehmenTmp.setUnternehmen_id(lv_id);
+				iUnternehmenService.deleteUnternehmen(einUnternehmenTmp);
 				notificationLoeschensuccess.open();
 				popUpBestaetigen.close();
 				buttonZurueck.getUI().ifPresent(ui -> ui.navigate("ui/eventorganisator/menue")); // zurueck auf andere

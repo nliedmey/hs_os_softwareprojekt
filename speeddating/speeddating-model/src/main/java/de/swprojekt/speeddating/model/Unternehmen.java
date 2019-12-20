@@ -32,14 +32,24 @@ public class Unternehmen {
 	public Unternehmen() {
 
 	}
-
-	public Unternehmen(int unternehmen_id, String unternehmensname, String ansprechpartner, String kontaktmail) {
+	
+	public Unternehmen(int unternehmen_id, String unternehmensname, String ansprechpartner, String kontaktmail,
+			Set<Integer> unternehmenKontaktwuensche) {
 		super();
 		this.unternehmen_id = unternehmen_id;
 		this.unternehmensname = unternehmensname;
 		this.ansprechpartner = ansprechpartner;
 		this.kontaktmail = kontaktmail;
+		this.unternehmenKontaktwuensche = unternehmenKontaktwuensche;
 	}
+
+//	public Unternehmen(int unternehmen_id, String unternehmensname, String ansprechpartner, String kontaktmail) {
+//		super();
+//		this.unternehmen_id = unternehmen_id;
+//		this.unternehmensname = unternehmensname;
+//		this.ansprechpartner = ansprechpartner;
+//		this.kontaktmail = kontaktmail;
+//	}
 
 	public int getUnternehmen_id() {
 		return unternehmen_id;
@@ -81,4 +91,7 @@ public class Unternehmen {
 		this.unternehmenKontaktwuensche = unternehmenKontaktwuensche;
 	}
 
+	public String getNameAndContact () {
+		return this.unternehmensname + ", " + this.ansprechpartner + ", " + this.kontaktmail;
+	}
 }

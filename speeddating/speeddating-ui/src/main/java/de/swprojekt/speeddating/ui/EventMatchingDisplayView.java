@@ -33,9 +33,9 @@ import com.vaadin.flow.data.provider.ListDataProvider;
 import com.vaadin.flow.router.Route;
 
 import de.swprojekt.speeddating.model.Event;
-import de.swprojekt.speeddating.model.MatchingAsPDF;
 import de.swprojekt.speeddating.model.Studierender;
 import de.swprojekt.speeddating.model.Unternehmen;
+import de.swprojekt.speeddating.service.pdf.IMatchingAsPDFService;
 import de.swprojekt.speeddating.service.security.CustomUserDetails;
 import de.swprojekt.speeddating.service.showevent.IShowEventService;
 import de.swprojekt.speeddating.service.showstudierender.IShowStudierendeService;
@@ -67,7 +67,8 @@ public class EventMatchingDisplayView extends HorizontalLayout {
 
 	@Autowired
 	public EventMatchingDisplayView(IShowEventService iShowEventService,
-			IShowStudierendeService iShowStudierendeService, IShowUnternehmenService iShowUnternehmenService) {
+			IShowStudierendeService iShowStudierendeService, IShowUnternehmenService iShowUnternehmenService,
+			IMatchingAsPDFService iMatchingAsPDFService) {
 
 		Binder<Event> binder; // verknuepft Input aus Textfeldern mit Objektattributen
 		DatePicker datepickerStartzeitpunktDatum = new DatePicker("Startdatum:");
@@ -76,8 +77,8 @@ public class EventMatchingDisplayView extends HorizontalLayout {
 		TimePicker timepickerEndzeitpunktUhrzeit = new TimePicker("Endzeit:");
 		TextField textfieldRundendauerInMinuten = new TextField("Rundendauer (min):");
 		Checkbox checkboxAbgeschlossen = new Checkbox("Abgeschlossen:");
-		Anchor pdfLink=new Anchor(""," ");
-		Label labelPassword=new Label();
+		Anchor pdfLink = new Anchor("", " ");
+		Label labelPassword = new Label();
 
 		datepickerStartzeitpunktDatum.setEnabled(false);
 		timepickerStartzeitpunktUhrzeit.setEnabled(false);
@@ -85,7 +86,7 @@ public class EventMatchingDisplayView extends HorizontalLayout {
 		timepickerEndzeitpunktUhrzeit.setEnabled(false);
 		textfieldRundendauerInMinuten.setEnabled(false);
 		checkboxAbgeschlossen.setEnabled(false);
-		//Alternative ist setReadableOnly...
+		// Alternative ist setReadableOnly...
 
 		// Button #1 hinzufuegen
 		Button buttonMatchingDuerchfuehren = new Button("Matching durchfuehren");
@@ -93,43 +94,46 @@ public class EventMatchingDisplayView extends HorizontalLayout {
 		// Button #2 hinzufuegen
 		Button buttonZurueck = new Button("Zurueck");
 		buttonZurueck.addThemeVariants(ButtonVariant.LUMO_ERROR);
-		Button logoutButton=new Button("Logout");
+		Button logoutButton = new Button("Logout");
 
 		// Notification Meldungen mit Button verknuepfen
 		Notification notificationMatchingsuccess = new Notification();
 		notificationMatchingsuccess.addThemeVariants(NotificationVariant.LUMO_SUCCESS);
 		Label labelMatchingsuccess = new Label("Matching Ergebnisse wurden als PDF bereitgestellt! ");
 		notificationMatchingsuccess.add(labelMatchingsuccess);
-		notificationMatchingsuccess.setDuration(2500); //Meldung wird 2,5 Sekunden lang angezeigt
+		notificationMatchingsuccess.setDuration(2500); // Meldung wird 2,5 Sekunden lang angezeigt
 
 		Notification notificationZurueck = new Notification();
 		notificationZurueck.addThemeVariants(NotificationVariant.LUMO_ERROR);
 		Label labelZuruecksuccess = new Label("Bearbeitung abgebrochen! ");
 		notificationZurueck.add(labelZuruecksuccess);
-		notificationZurueck.setDuration(2500); //Meldung wird 2,5 Sekunden lang angezeigt
+		notificationZurueck.setDuration(2500); // Meldung wird 2,5 Sekunden lang angezeigt
 
 		Notification notificationNotPossible = new Notification();
 		notificationNotPossible.addThemeVariants(NotificationVariant.LUMO_ERROR);
 		Label labelNotPossible = new Label("Offene Stimmabgaben, daher kein Matching moeglich! ");
 		notificationNotPossible.add(labelNotPossible);
-		notificationNotPossible.setDuration(2500); //Meldung wird 2,5 Sekunden lang angezeigt
+		notificationNotPossible.setDuration(2500); // Meldung wird 2,5 Sekunden lang angezeigt
 
 		List<Event> listOfEvents = new ArrayList<Event>();
-		CustomUserDetails userDetails=(CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();	//Id des eingeloggten Users aus SecurityKontext holen
-		
-		for(int event_id:iShowEventService.showEventsOfUser(userDetails.getEntityRefId()))	//alle Events, welche von Eventorganisator verwaltet, laden
+		CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication()
+				.getPrincipal(); // Id des eingeloggten Users aus SecurityKontext holen
+
+		for (int event_id : iShowEventService.showEventsOfUser(userDetails.getEntityRefId())) // alle Events, welche von
+																								// Eventorganisator
+																								// verwaltet, laden
 		{
 			listOfEvents.add(iShowEventService.showEvent(event_id));
 		}
-		
+
 		// Erzeugen der Combo Box
 		ComboBox<Event> comboBox = new ComboBox<>();
 		comboBox.setLabel("Event auswaehlen");
 		comboBox.setItemLabelGenerator(Event::getBezeichnung);
-		ListDataProvider<Event> ldpEvent = DataProvider
-				.ofCollection(listOfEvents); // Dataprovider erstellen und Quelle fuer
-																			// Events (via Service aus DB)
-																			// festlegen
+		ListDataProvider<Event> ldpEvent = DataProvider.ofCollection(listOfEvents); // Dataprovider erstellen und Quelle
+																					// fuer
+																					// Events (via Service aus DB)
+																					// festlegen
 		comboBox.setDataProvider(ldpEvent); // erstellten Dataprovider als Datenquelle fuer Tabelle festlegen
 		comboBox.addValueChangeListener(event -> {
 			Event aEvent = comboBox.getValue();
@@ -190,7 +194,7 @@ public class EventMatchingDisplayView extends HorizontalLayout {
 				unternehmenGrid2.setDataProvider(ldpUnternehmen2);
 
 			} else {
-			
+
 			}
 		});
 
@@ -208,13 +212,18 @@ public class EventMatchingDisplayView extends HorizontalLayout {
 			;
 			Event selectedEvent = iShowEventService.showEvent(aEvent.getEvent_id());
 
-			MatchingAsPDF objektForCreatingPDF = new MatchingAsPDF();
+//			MatchingAsPDF objektForCreatingPDF = new MatchingAsPDF();
 			try {
-				String password="pw*"+(new Random().nextInt((9999 - 1000) + 1) + 1000); //Schluessel zwischen 1000 und 9999 generieren
-				String filename=objektForCreatingPDF.pdfErstellen(iShowEventService.generateMatchingResultSet(selectedEvent), selectedEvent.getEvent_id(), selectedEvent.getBezeichnung(), password);
-				pdfLink.setHref("http://131.173.88.192:80/matchingAuswertungen/"+filename);
+				String password = "pw*" + (new Random().nextInt((9999 - 1000) + 1) + 1000); // Schluessel zwischen 1000
+																							// und 9999 generieren
+				String filename = iMatchingAsPDFService.pdfMatchingErgebnisseErstellen(
+						iShowEventService.generateMatchingResultSet(selectedEvent), selectedEvent.getEvent_id(),
+						selectedEvent.getBezeichnung(), password);
+//				String filename=objektForCreatingPDF.pdfErstellen(iShowEventService.generateMatchingResultSet(selectedEvent), selectedEvent.getEvent_id(), selectedEvent.getBezeichnung(), password);	
+
+				pdfLink.setHref("http://131.173.88.192:80/matchingAuswertungen/" + filename);
 				pdfLink.setText("Download als PDF");
-				labelPassword.setText("BITTE NOTIEREN: Ihr Passwort zum Oeffnen der PDF: "+password);
+				labelPassword.setText("BITTE NOTIEREN: Ihr Passwort zum Oeffnen der PDF: " + password);
 				notificationMatchingsuccess.open(); // Erfolgreich-Meldung anzeigen
 			} catch (FileNotFoundException e) {
 				System.out.println("Bei Aufruf der PDF Erstellung gibt es Probleme");
@@ -229,11 +238,11 @@ public class EventMatchingDisplayView extends HorizontalLayout {
 //				notificationNotPossible.open();
 //			}			
 		});
-		
-		logoutButton.addClickListener(event -> {	//Bei Buttonklick werden folgende Aktionen ausgefuehrt
-			SecurityContextHolder.clearContext();	//Spring-Security-Session leeren
-			//getUI().get().getSession().close();		//Vaadin Session leeren
-			logoutButton.getUI().ifPresent(ui->ui.navigate("login"));	//zurueck auf andere Seite 
+
+		logoutButton.addClickListener(event -> { // Bei Buttonklick werden folgende Aktionen ausgefuehrt
+			SecurityContextHolder.clearContext(); // Spring-Security-Session leeren
+			// getUI().get().getSession().close(); //Vaadin Session leeren
+			logoutButton.getUI().ifPresent(ui -> ui.navigate("login")); // zurueck auf andere Seite
 		});
 
 		unternehmenGrid.removeColumnByKey("unternehmen_id");
@@ -260,7 +269,7 @@ public class EventMatchingDisplayView extends HorizontalLayout {
 		v1.add(new HorizontalLayout(buttonMatchingDuerchfuehren, buttonZurueck, logoutButton));
 		v1.add(pdfLink);
 		v1.add(labelPassword);
-		
+
 		VerticalLayout v2 = new VerticalLayout();
 		v2.setHeight("800px");
 		v2.setWidth("400px");
