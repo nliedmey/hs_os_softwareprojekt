@@ -75,8 +75,8 @@ public class AddUntern extends VerticalLayout {
 			try {
 				binder.writeBean(einUnternehmen);
 				Unternehmen neuesUnternehmen=iUnternehmenService.speicherUnternehmen(einUnternehmen);
-				iRegisterUserService.save(neuesUnternehmen.getUnternehmensname()+"_"+neuesUnternehmen.getUnternehmen_id(), "pass*"+neuesUnternehmen.getUnternehmen_id(), "UNTERNEHMEN", neuesUnternehmen.getUnternehmen_id()); //Einloggbenutzer anlegen fuer das Unternehmen
-				//Nutzername: Unternehmensname_Unternehmenid, Initialpasswort: pass*<unternehmen_id>
+				iRegisterUserService.save(neuesUnternehmen.getUnternehmensname()+"*"+neuesUnternehmen.getUnternehmen_id(), "pass*"+neuesUnternehmen.getUnternehmen_id(), "UNTERNEHMEN", neuesUnternehmen.getUnternehmen_id()); //Einloggbenutzer anlegen fuer das Unternehmen
+				//Nutzername: Unternehmensname*Unternehmenid, Initialpasswort: pass*<unternehmen_id>
 				notificationSavesuccess.open();				
 				buttonHinzufuegen.getUI().ifPresent(ui->ui.navigate("ui/eventorganisator/menue"));
 			} catch(ValidationException | com.vaadin.flow.data.binder.ValidationException e) {

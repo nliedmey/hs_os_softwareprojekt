@@ -1,7 +1,6 @@
 package de.swprojekt.speeddating.service.pdf;
 
 import java.io.FileOutputStream;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -36,10 +35,6 @@ public class MatchingAsPDFImpl implements IMatchingAsPDFService {
 	
 	@Autowired
 	IShowUnternehmenService iShowUnternehmenService;
-	
-	public MatchingAsPDFImpl() {
-
-	}
 
 	public String pdfErstellen(List<User> users, int event_id, String eventname, String password) throws FileNotFoundException {
 		String filepath="";
@@ -47,10 +42,10 @@ public class MatchingAsPDFImpl implements IMatchingAsPDFService {
 		try {
 
 			String directory = "C:\\Users\\mariu\\Documents"; //LOKAL; bei Server-deploy siehe unten; Link funktioniert logischerweise lokal nicht
-			//String directory=System.getProperty("jboss.server.data.dir"); //Property verweist auf Datenverzeichnes des Wildflyservers (auf Server: opt/wildfly)
-			filename=event_id+"_"+eventname+".pdf";
+//			String directory=System.getProperty("jboss.server.data.dir"); //Property verweist auf Datenverzeichnes des Wildflyservers (auf Server: opt/wildfly)
+			filename=event_id+"_"+eventname+"_Zugaenge.pdf";
 			//FILEPATH WEBDEPLOY
-			//filepath = directory+"/matchingAuswertungen/"+filename;
+//			filepath = directory+"/teilnehmerZugaenge/"+filename;
 			
 			//FILEPATH LOKAL
 			filepath = directory+"\\teilnehmerZugaenge\\"+filename;
@@ -72,7 +67,7 @@ public class MatchingAsPDFImpl implements IMatchingAsPDFService {
 			doc.open();
 
 			// Uberschrift setzen
-			doc.add(new Paragraph("Teilnehmer Zugaenge - "+ eventname,
+			doc.add(new Paragraph("Teilnehmer Zugaenge - "+ eventname +" - "+event_id,
 					FontFactory.getFont(FontFactory.COURIER, 18, Font.BOLD, BaseColor.BLACK)));
 			// Leerzeile einfuegen
 			doc.add(new Paragraph(" "));
@@ -127,40 +122,38 @@ public class MatchingAsPDFImpl implements IMatchingAsPDFService {
 						studierendeTable.addCell(zeilentext); //fuer Studenten wird Vor- und Nachname in Spalte "Name" angezeigt
 						zeilentext = aUser.getUsername(); 
 						studierendeTable.addCell(zeilentext);
-						zeilentext = "pass*"+aUser.getUser_id(); //uebereinstimmend mit Initalpasswort
+						zeilentext = "pass*"+aUser.getEntity_id_ref(); //uebereinstimmend mit Initalpasswort
 						studierendeTable.addCell(zeilentext); //Passwort in dritte Spalte einfuegen
+						
+						zeilentext = "-------------"; //Trenner (alle 3 Spalten) zum einfacheren Ausschneiden der Zugaenge und Austeilen an Teilnehmer
+						studierendeTable.addCell(zeilentext); 
+						studierendeTable.addCell(zeilentext);
+						studierendeTable.addCell(zeilentext);
 					}
 					else if(userRole.equals("UNTERNEHMEN"))
 					{
 						zeilentext = iShowUnternehmenService.showEinUnternehmen(aUser.getEntity_id_ref()).getUnternehmensname();
 						unternehmenTable.addCell(zeilentext); //fuer Unternehmen wird Unternehmensname in Spalte "Name" angezeigt
 						zeilentext = aUser.getUsername(); 
-						studierendeTable.addCell(zeilentext);
-						zeilentext = "pass*"+aUser.getUser_id(); //uebereinstimmend mit Initalpasswort
-						studierendeTable.addCell(zeilentext); //Passwort in dritte Spalte einfuegen
+						unternehmenTable.addCell(zeilentext);
+						zeilentext = "pass*"+aUser.getEntity_id_ref(); //uebereinstimmend mit Initalpasswort
+						unternehmenTable.addCell(zeilentext); //Passwort in dritte Spalte einfuegen
+						
+						zeilentext = "-------------"; //Trenner (alle 3 Spalten) zum einfacheren Ausschneiden der Zugaenge und Austeilen an Teilnehmer
+						unternehmenTable.addCell(zeilentext); 
+						unternehmenTable.addCell(zeilentext);
+						unternehmenTable.addCell(zeilentext);
 					}
-					
-
-//					zeilentext = aStudierender.getStringFullNameOfStudent();
-//					studierendeTable.addCell(zeilentext);
-//					zeilentext = aUnternehmen.getUnternehmensname();
-//					studierendeTable.addCell(zeilentext);
 				}
 		
-				
-//				for (Map.Entry<Studierender, Unternehmen> entry : matchingResultMap.entrySet()) {
-//					String zeilentext = "";
-//					Studierender aStudierender = entry.getKey();
-//					Unternehmen aUnternehmen = entry.getValue();
-//					zeilentext = aStudierender.getStringFullNameOfStudent();
-//					studierendeTable.addCell(zeilentext);
-//					zeilentext = aUnternehmen.getUnternehmensname();
-//					studierendeTable.addCell(zeilentext);
-//				}
 			}
 			studierendeTable.completeRow();
 			unternehmenTable.completeRow();
+			doc.add(new Paragraph("Studierende"));
 			doc.add(studierendeTable);
+			
+			doc.add(new Paragraph(" ")); // Leerzeile zwischen Tabellen einfuegen
+			doc.add(new Paragraph("Unternehmen"));
 			doc.add(unternehmenTable);
 			doc.close();
 
