@@ -1,5 +1,6 @@
 package de.swprojekt.speeddating.service.showuser;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -45,12 +46,27 @@ public class ShowUserImpl implements IShowUserService {
 	}
 	
 	@Override
-	public List<Integer> showUnternehmenUserInEvent(int event_id) {
-		return iUserRepository.findUnternehmenUserByEventId(event_id);
+	public List<User> showStudierendeUserInEvent(int event_id) {
+		List<Integer> gefundeneStudierendeUserIDZuEvent=iUserRepository.findStudierendeUserByEventId(event_id);
+		List<User> gefundeneStudierendeUserZuEvent=new ArrayList<User>();
+		for(int studierendeUserId:gefundeneStudierendeUserIDZuEvent)
+		{
+			gefundeneStudierendeUserZuEvent.add(iUserRepository.findById(studierendeUserId).get());
+		}
+		return gefundeneStudierendeUserZuEvent;
 	}
 	
-	public List<Integer> showStudierendeUserInEvent(int event_id) {
-		return iUserRepository.findStudierendeUserByEventId(event_id);
+	@Override
+	public List<User> showUnternehmenUserInEvent(int event_id) {
+		List<Integer> gefundeneUnternehmenUserIDZuEvent=iUserRepository.findUnternehmenUserByEventId(event_id);
+		List<User> gefundeneUnternehmenUserZuEvent=new ArrayList<User>();
+		for(int unternehmenUserId:gefundeneUnternehmenUserIDZuEvent)
+		{
+			gefundeneUnternehmenUserZuEvent.add(iUserRepository.findById(unternehmenUserId).get());
+		}
+		return gefundeneUnternehmenUserZuEvent;
 	}
+	
+	
 
 }

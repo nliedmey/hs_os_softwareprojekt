@@ -57,26 +57,29 @@ public class UserViewForEvent extends VerticalLayout {	//VerticalLayout fuehrt z
 		unternehmenUserGrid = new Grid<>(User.class);	//Tabelle initialisieren
 		studierenderUserGrid = new Grid<>(User.class);	//Tabelle initialisieren
 		
-		List<Integer> gefundeneUnternehmenUserIDZuEvent=iShowUserService.showUnternehmenUserInEvent(comboboxEvent.getValue().getEvent_id()); //Unternehmens-User zu einem Event finden
-		List<User> gefundeneUnternehmenUserZuEvent=new ArrayList<User>(); 
-		for(int unternehmenUserId:gefundeneUnternehmenUserIDZuEvent)
-		{
-			gefundeneUnternehmenUserZuEvent.add(iShowUserService.showUser(unternehmenUserId));
-		}
+//		List<Integer> gefundeneUnternehmenUserIDZuEvent=iShowUserService.showUnternehmenUserInEvent(comboboxEvent.getValue().getEvent_id()); //Unternehmens-User zu einem Event finden
+//		List<User> gefundeneUnternehmenUserZuEvent=new ArrayList<User>(); 
+//		for(int unternehmenUserId:gefundeneUnternehmenUserIDZuEvent)
+//		{
+//			gefundeneUnternehmenUserZuEvent.add(iShowUserService.showUser(unternehmenUserId));
+//		}
 		
-		List<Integer> gefundeneStudierendeUserIDZuEvent=iShowUserService.showStudierendeUserInEvent(comboboxEvent.getValue().getEvent_id()); //Studierende-User zu einem Event finden
-		List<User> gefundeneStudierendeUserZuEvent=new ArrayList<User>(); 
-		for(int studierendeUserId:gefundeneStudierendeUserIDZuEvent)
-		{
-			gefundeneStudierendeUserZuEvent.add(iShowUserService.showUser(studierendeUserId));
-		}
+//		List<Integer> gefundeneStudierendeUserIDZuEvent=iShowUserService.showStudierendeUserInEvent(comboboxEvent.getValue().getEvent_id()); //Studierende-User zu einem Event finden
+//		List<User> gefundeneStudierendeUserZuEvent=new ArrayList<User>(); 
+//		for(int studierendeUserId:gefundeneStudierendeUserIDZuEvent)
+//		{
+//			gefundeneStudierendeUserZuEvent.add(iShowUserService.showUser(studierendeUserId));
+//		}
+		
+		List<User> gefundeneStudierendeUserZuEvent=iShowUserService.showStudierendeUserInEvent(comboboxEvent.getValue().getEvent_id());
+		List<User> gefundeneUnternehmenUserZuEvent=iShowUserService.showUnternehmenUserInEvent(comboboxEvent.getValue().getEvent_id());
 		
 		ListDataProvider<User> ldpUnternehmenUser = DataProvider
 				.ofCollection(gefundeneUnternehmenUserZuEvent);	//Dataprovider erstellen und Quelle fuer User (via Service aus DB) festlegen 
 		unternehmenUserGrid.setDataProvider(ldpUnternehmenUser);	//erstellten Dataprovider als Datenquelle fuer Tabelle festlegen
 
 		unternehmenUserGrid.removeColumnByKey("password");	//Passwort (verschluesselt) nicht in Tabelle mit anzeigen
-		unternehmenUserGrid.setColumns("user_id", "username", "roles");	//Spaltenordnung festlegen
+		unternehmenUserGrid.setColumns("user_id", "username");	//Spaltenordnung festlegen
 		
 		ListDataProvider<User> ldpStudierendeUser = DataProvider
 				.ofCollection(gefundeneStudierendeUserZuEvent);	//Dataprovider erstellen und Quelle fuer User (via Service aus DB) festlegen 
@@ -90,26 +93,14 @@ public class UserViewForEvent extends VerticalLayout {	//VerticalLayout fuehrt z
 			
 			
 			gefundeneUnternehmenUserZuEvent.clear(); //alte Eintraege clearen
-			gefundeneUnternehmenUserIDZuEvent.clear();
 			gefundeneStudierendeUserZuEvent.clear();
-			gefundeneStudierendeUserIDZuEvent.clear();
 			
 			
 			if (aEvent != null) {
 				System.out.println(comboboxEvent.getValue().getEvent_id());
-				gefundeneUnternehmenUserIDZuEvent.addAll(iShowUserService.showUnternehmenUserInEvent(comboboxEvent.getValue().getEvent_id())); //Unternehmens-User zu einem Event finden
-				for(int unternehmenUserId:gefundeneUnternehmenUserIDZuEvent)
-				{
-					gefundeneUnternehmenUserZuEvent.add(iShowUserService.showUser(unternehmenUserId));
-					System.out.println("add unt"+unternehmenUserId);
-				}
-				
-				gefundeneStudierendeUserIDZuEvent.addAll(iShowUserService.showStudierendeUserInEvent(comboboxEvent.getValue().getEvent_id())); //Studierende-User zu einem Event finden
-				for(int studierendeUserId:gefundeneStudierendeUserIDZuEvent)
-				{
-					gefundeneStudierendeUserZuEvent.add(iShowUserService.showUser(studierendeUserId));
-					System.out.println("add stud"+studierendeUserId);
-				}
+				gefundeneStudierendeUserZuEvent.addAll(iShowUserService.showStudierendeUserInEvent(comboboxEvent.getValue().getEvent_id()));
+				gefundeneUnternehmenUserZuEvent.addAll(iShowUserService.showUnternehmenUserInEvent(comboboxEvent.getValue().getEvent_id()));
+		
 				unternehmenUserGrid.getDataProvider().refreshAll(); //nach dem Aendern des ComboBox-Wertes werden die Tabellen aktualisiert
 				studierenderUserGrid.getDataProvider().refreshAll();
 				
