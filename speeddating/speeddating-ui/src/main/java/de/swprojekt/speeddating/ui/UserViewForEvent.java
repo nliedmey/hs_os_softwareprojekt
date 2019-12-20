@@ -3,10 +3,15 @@ package de.swprojekt.speeddating.ui;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.html.Anchor;
 import com.vaadin.flow.component.html.Label;
+import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.notification.NotificationVariant;
 
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
@@ -19,7 +24,10 @@ import com.vaadin.flow.data.provider.ListDataProvider;
 import com.vaadin.flow.router.Route;
 
 import de.swprojekt.speeddating.model.Event;
+import de.swprojekt.speeddating.model.MatchingAsPDF;
 import de.swprojekt.speeddating.model.User;
+import de.swprojekt.speeddating.repository.IUserRepository;
+import de.swprojekt.speeddating.service.pdf.IMatchingAsPDFService;
 import de.swprojekt.speeddating.service.security.CustomUserDetails;
 import de.swprojekt.speeddating.service.showevent.IShowEventService;
 /*
@@ -27,19 +35,29 @@ import de.swprojekt.speeddating.service.showevent.IShowEventService;
  */
 import de.swprojekt.speeddating.service.showuser.IShowUserService;
 
-@Route("ui/user")	//Erreichbar ueber Adresse: http://localhost:8080/speeddating-web-7.0-SNAPSHOT/ui/user
+@Route("ui/userForEventorganisator")	//Erreichbar ueber Adresse: http://localhost:8080/speeddating-web-7.0-SNAPSHOT/ui/userForEventorganisator
 @Secured("ROLE_EVENTORGANISATOR")	//nur User mit Rolle ADMIN koennen auf Seite zugreifen, @Secured prueft auch bei RouterLink-Weiterleitungen
 //@Secured kann auch an einzelnen Methoden angewendet werden
 public class UserViewForEvent extends VerticalLayout {	//VerticalLayout fuehrt zu Anordnung von Elementen untereinander statt nebeneinander (HorizontalLayout)
 	
 	@Autowired	//Konstruktor-basierte Injection, Parameter wird autowired (hier: Interface)
-	public UserViewForEvent(IShowUserService iShowUserService, IShowEventService iShowEventService) {
+	public UserViewForEvent(IShowUserService iShowUserService, IShowEventService iShowEventService, IMatchingAsPDFService iMatchingAsPDFService) {
 	
 		Grid<User> unternehmenUserGrid;	//Tabelle mit Unternehmens-Usern
 		Grid<User> studierenderUserGrid;	//Tabelle mit Studierender-Usern
 		
+		Button zugaengePDFErstellenButton=new Button("PDF fuer Zugaenge erstellen");
 		Button logoutButton=new Button("Logout");
 	    Button zurueckButton = new Button("Zurueck");
+	    Anchor pdfLink=new Anchor(""," ");
+		Label labelPassword=new Label();
+		
+		Notification notificationMatchingsuccess = new Notification();
+		notificationMatchingsuccess.addThemeVariants(NotificationVariant.LUMO_SUCCESS);
+		Label labelMatchingsuccess = new Label("Matching Ergebnisse wurden als PDF bereitgestellt! ");
+		notificationMatchingsuccess.add(labelMatchingsuccess);
+		notificationMatchingsuccess.setDuration(2500); //Meldung wird 2,5 Sekunden lang angezeigt
+		
 	    ComboBox<Event> comboboxEvent = new ComboBox<>();
 		comboboxEvent.setLabel("Event auswaehlen");
 		comboboxEvent.setItemLabelGenerator(Event::getBezeichnung);
@@ -55,21 +73,7 @@ public class UserViewForEvent extends VerticalLayout {	//VerticalLayout fuehrt z
 		comboboxEvent.setValue(listOfEvents.get(0)); //ein Event ist standardmaessig ausgewaehlt (i.d.R. existiert auch nur eins je Student)
 		
 		unternehmenUserGrid = new Grid<>(User.class);	//Tabelle initialisieren
-		studierenderUserGrid = new Grid<>(User.class);	//Tabelle initialisieren
-		
-//		List<Integer> gefundeneUnternehmenUserIDZuEvent=iShowUserService.showUnternehmenUserInEvent(comboboxEvent.getValue().getEvent_id()); //Unternehmens-User zu einem Event finden
-//		List<User> gefundeneUnternehmenUserZuEvent=new ArrayList<User>(); 
-//		for(int unternehmenUserId:gefundeneUnternehmenUserIDZuEvent)
-//		{
-//			gefundeneUnternehmenUserZuEvent.add(iShowUserService.showUser(unternehmenUserId));
-//		}
-		
-//		List<Integer> gefundeneStudierendeUserIDZuEvent=iShowUserService.showStudierendeUserInEvent(comboboxEvent.getValue().getEvent_id()); //Studierende-User zu einem Event finden
-//		List<User> gefundeneStudierendeUserZuEvent=new ArrayList<User>(); 
-//		for(int studierendeUserId:gefundeneStudierendeUserIDZuEvent)
-//		{
-//			gefundeneStudierendeUserZuEvent.add(iShowUserService.showUser(studierendeUserId));
-//		}
+		studierenderUserGrid = new Grid<>(User.class);	
 		
 		List<User> gefundeneStudierendeUserZuEvent=iShowUserService.showStudierendeUserInEvent(comboboxEvent.getValue().getEvent_id());
 		List<User> gefundeneUnternehmenUserZuEvent=iShowUserService.showUnternehmenUserInEvent(comboboxEvent.getValue().getEvent_id());
@@ -109,6 +113,28 @@ public class UserViewForEvent extends VerticalLayout {	//VerticalLayout fuehrt z
 			}
 		});
 		
+		
+		zugaengePDFErstellenButton.addClickListener(event -> {
+			Event selectedEvent = comboboxEvent.getValue();
+
+			try {
+				String password="pw*"+(new Random().nextInt((9999 - 1000) + 1) + 1000); //Schluessel zwischen 1000 und 9999 generieren
+				List<User> usersInEvent=iShowUserService.showStudierendeUserInEvent(comboboxEvent.getValue().getEvent_id());
+				usersInEvent.addAll(iShowUserService.showUnternehmenUserInEvent(comboboxEvent.getValue().getEvent_id()));
+				String filename=iMatchingAsPDFService.pdfErstellen(usersInEvent, selectedEvent.getEvent_id(), selectedEvent.getBezeichnung(), password);
+				pdfLink.setHref("http://131.173.88.192:80/teilnehmerZugaenge/"+filename);
+				pdfLink.setText("Download als PDF");
+				labelPassword.setText("BITTE NOTIEREN: Ihr Passwort zum Oeffnen der PDF: "+password);
+				notificationMatchingsuccess.open(); // Erfolgreich-Meldung anzeigen
+			} catch (FileNotFoundException e) {
+				System.out.println("Bei Aufruf der PDF Erstellung gibt es Probleme");
+				e.printStackTrace();
+			}
+			notificationMatchingsuccess.open();		// Erfolgreich-Meldung anzeigen	
+		});
+		
+		
+		
 		logoutButton.addClickListener(event -> {	//Bei Buttonklick werden folgende Aktionen ausgefuehrt
 			SecurityContextHolder.clearContext();	//Spring-Security-Session leeren
 			//getUI().get().getSession().close();		//Vaadin Session leeren
@@ -123,11 +149,9 @@ public class UserViewForEvent extends VerticalLayout {	//VerticalLayout fuehrt z
 		add(unternehmenUserGrid);	//Hinzufuegen der Elemente zum VerticalLayout
 		add(new Label("STUDIERENDE"));
 		add(studierenderUserGrid);
+		add(zugaengePDFErstellenButton);
+		add(labelPassword);
+		add(pdfLink);
 		add(new HorizontalLayout(zurueckButton, logoutButton));
 	}
-	//@PostConstruct	//Ausfuehrung nach Konstruktoraufruf
-	//public void init()
-	//{
-	//	
-	//}
 }

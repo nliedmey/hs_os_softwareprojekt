@@ -107,10 +107,10 @@ public class AddStud extends VerticalLayout {
 				Studierender neuerStud = iAddStudierenderService.saveStudierenden(einStudierender); // Uebergabe an
 																									// Service zur
 																									// Speicherung in DB
-				iRegisterUserService.save(neuerStud.getNachname() + "_" + neuerStud.getMatrikelnummer(), "standard",
+				iRegisterUserService.save(neuerStud.getNachname() + "_" + neuerStud.getMatrikelnummer(), "pass*"+neuerStud.getStudent_id(),
 						"STUDENT", neuerStud.getStudent_id()); // Einloggbenutzer anlegen fuer den Studenten
 				
-				// Nutzername: Nachname_Matrikelnummer, Initialpasswort: standard
+				// Nutzername: Nachname_Matrikelnummer, Initialpasswort: pass*<student_id>
 				notificationSavesuccess.open(); // Erfolgreich-Meldung anzeigen
 				buttonHinzufuegen.getUI().ifPresent(ui -> ui.navigate("ui/eventorganisator/menue")); // zurueck auf andere Seite
 
