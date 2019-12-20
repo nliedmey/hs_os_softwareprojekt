@@ -1,6 +1,7 @@
 package de.swprojekt.speeddating.service.pdf;
 
 import java.io.FileOutputStream;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -146,10 +147,6 @@ public class MatchingAsPDFImpl implements IMatchingAsPDFService {
 						unternehmenTable.addCell(zeilentext);
 					}
 				}
-<<<<<<< HEAD
-=======
-		
->>>>>>> branch 'master' of https://Pattik017@bitbucket.org/nliedmey/speeddatingrep.git
 			}
 			studierendeTable.completeRow();
 			unternehmenTable.completeRow();
