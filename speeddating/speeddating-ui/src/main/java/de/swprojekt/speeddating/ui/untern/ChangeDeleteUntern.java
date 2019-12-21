@@ -20,7 +20,10 @@ import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.binder.ValidationException;
 import com.vaadin.flow.router.Route;
 
+import de.swprojekt.speeddating.model.Event;
 import de.swprojekt.speeddating.model.Unternehmen;
+import de.swprojekt.speeddating.service.security.CustomUserDetails;
+import de.swprojekt.speeddating.service.showevent.IShowEventService;
 import de.swprojekt.speeddating.service.showunternehmen.IShowUnternehmenService;
 import de.swprojekt.speeddating.service.unternehmen.IUnternehmenService;
 import de.swprojekt.speeddating.ui.MainLayout;
@@ -39,7 +42,7 @@ public class ChangeDeleteUntern extends VerticalLayout {
 	// Parameter (hier: IAddStudierenderService) wird also automatisch autowired
 	@Autowired
 	public ChangeDeleteUntern(IUnternehmenService iUnternehmenService,
-			IShowUnternehmenService iShowUnternehmenService) {
+			IShowUnternehmenService iShowUnternehmenService, IShowEventService iShowEventService) {
 		// Deklaration
 
 		Binder<Unternehmen> binder; // verknuepft Input aus Textfeldern mit Objektattributen
@@ -97,6 +100,12 @@ public class ChangeDeleteUntern extends VerticalLayout {
 		Label labelAbbruchsuccess = new Label("Bearbeitung abgebrochen! ");
 		notificationAbbruch.add(labelAbbruchsuccess);
 		notificationAbbruch.setDuration(2500); //Meldung wird 2,5 Sekunden lang angezeigt
+		
+		Notification notificationNotPossible = new Notification();
+		notificationNotPossible.addThemeVariants(NotificationVariant.LUMO_ERROR);
+		Label labelNotPossiblesuccess = new Label("Unternehmen kann nicht geloescht werden, da Eventzuordnungen vorhanden! ");
+		notificationNotPossible.add(labelNotPossiblesuccess);
+		notificationNotPossible.setDuration(2500); // Meldung wird 2,5 Sekunden lang angezeigt
 		
 		// Bestaetigungs-Popup
 		Button buttonBestaetigenJa = new Button("Ja");
@@ -156,11 +165,36 @@ public class ChangeDeleteUntern extends VerticalLayout {
 			try {
 				binder.writeBean(einUnternehmenTmp);
 				einUnternehmenTmp.setUnternehmen_id(lv_id);
-				iUnternehmenService.deleteUnternehmen(einUnternehmenTmp);
-				notificationLoeschensuccess.open();
-				popUpBestaetigen.close();
-				buttonZurueck.getUI().ifPresent(ui -> ui.navigate("ui/eventorganisator/menue")); // zurueck auf andere
-																									// Seite
+				
+				boolean isDeletable = true;
+
+				CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext()
+						.getAuthentication().getPrincipal(); //ID des eingeloggten Users aus SecurityKontext holen
+				
+				for (int event_id : iShowEventService.showEventsOfUser(userDetails.getEntityRefId())) {
+					Event selectedEvent = iShowEventService.showEvent(event_id);
+					for (Integer unternehmen_id : selectedEvent.getTeilnehmendeUnternehmen()) {
+						if (unternehmen_id == lv_id) {
+							System.out.println("Unternehmen kann nicht geloescht werden, da es in einem Event vorhanden ist");
+							isDeletable = false;
+						}
+					}
+				}				
+
+				if (isDeletable == true) {
+					iUnternehmenService.deleteUnternehmen(einUnternehmenTmp);
+					notificationLoeschensuccess.open();
+					popUpBestaetigen.close();
+					buttonZurueck.getUI().ifPresent(ui -> ui.navigate("ui/eventorganisator/menue")); // zurueck auf andere
+																										// Seite
+				} else {
+					
+					notificationNotPossible.open();	
+					popUpBestaetigen.close();
+					buttonZurueck.getUI().ifPresent(ui -> ui.navigate("ui/eventorganisator/menue"));
+			
+				}
+				
 			} catch (ValidationException e) {
 				e.printStackTrace();
 			}

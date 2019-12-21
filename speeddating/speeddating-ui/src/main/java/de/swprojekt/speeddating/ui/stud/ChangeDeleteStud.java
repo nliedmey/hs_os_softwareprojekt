@@ -21,8 +21,11 @@ import com.vaadin.flow.data.binder.ValidationException;
 import com.vaadin.flow.data.converter.StringToIntegerConverter;
 import com.vaadin.flow.router.Route;
 
+import de.swprojekt.speeddating.model.Event;
 import de.swprojekt.speeddating.model.Studierender;
 import de.swprojekt.speeddating.service.addstudierender.IStudierenderService;
+import de.swprojekt.speeddating.service.security.CustomUserDetails;
+import de.swprojekt.speeddating.service.showevent.IShowEventService;
 import de.swprojekt.speeddating.service.showstudierender.IShowStudierendeService;
 import de.swprojekt.speeddating.ui.MainLayout;
 
@@ -40,7 +43,7 @@ public class ChangeDeleteStud extends VerticalLayout {
 	// Parameter (hier: IAddStudierenderService) wird also automatisch autowired
 	@Autowired
 	public ChangeDeleteStud(IStudierenderService iStudierenderService,
-			IShowStudierendeService iShowStudierendeService) {
+			IShowStudierendeService iShowStudierendeService, IShowEventService iShowEventService) {
 		// Deklaration
 
 		Binder<Studierender> binder; // verknuepft Input aus Textfeldern mit Objektattributen
@@ -110,6 +113,12 @@ public class ChangeDeleteStud extends VerticalLayout {
 		Label labelAbbruchsuccess = new Label("Studentbearbeitung abgebrochen! ");
 		notificationAbbruch.add(labelAbbruchsuccess);
 		notificationAbbruch.setDuration(2500); // Meldung wird 2,5 Sekunden lang angezeigt
+		
+		Notification notificationNotPossible = new Notification();
+		notificationNotPossible.addThemeVariants(NotificationVariant.LUMO_ERROR);
+		Label labelNotPossiblesuccess = new Label("Student kann nicht geloescht werden, da Eventzuordnungen vorhanden! ");
+		notificationNotPossible.add(labelNotPossiblesuccess);
+		notificationNotPossible.setDuration(2500); // Meldung wird 2,5 Sekunden lang angezeigt
 
 		// Bestaetigungs-Popup
 		Button buttonBestaetigenJa = new Button("Ja");
@@ -205,13 +214,32 @@ public class ChangeDeleteStud extends VerticalLayout {
 			try {
 				binder.writeBean(studtmp);
 				studtmp.setStudent_id(lv_id);
-				iStudierenderService.deleteStudierenden(studtmp);
-				notificationLoeschensuccess.open();
-//			SecurityContextHolder.clearContext();	//Spring-Security-Session leeren
-//			getUI().get().getSession().close();		//Vaadin Session leeren
-				popUpBestaetigen.close();
-				buttonZurueck.getUI().ifPresent(ui -> ui.navigate("ui/eventorganisator/menue")); // zurueck auf andere
-																									// Seite
+
+				boolean isDeletable = true;
+
+				CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext()
+						.getAuthentication().getPrincipal(); //ID des eingeloggten Users aus SecurityKontext holen
+				
+				for (int event_id : iShowEventService.showEventsOfUser(userDetails.getEntityRefId())) {
+					Event selectedEvent = iShowEventService.showEvent(event_id);
+					for (Integer student_id: selectedEvent.getTeilnehmendeStudierende()) {
+						if (student_id == lv_id) {
+							System.out.println("Student kann nicht geloescht werden, da er in einem Event vorhanden ist");
+							isDeletable = false;
+						}
+					}
+				}
+
+				if (isDeletable == true) {
+					iStudierenderService.deleteStudierenden(studtmp);
+					notificationLoeschensuccess.open();
+					popUpBestaetigen.close();
+					buttonZurueck.getUI().ifPresent(ui -> ui.navigate("ui/eventorganisator/menue")); // zurueck auf Seite
+				} else {
+					notificationNotPossible.open();	
+					popUpBestaetigen.close();
+					buttonZurueck.getUI().ifPresent(ui -> ui.navigate("ui/eventorganisator/menue"));
+				}
 			} catch (ValidationException e) {
 				e.printStackTrace();
 			}
