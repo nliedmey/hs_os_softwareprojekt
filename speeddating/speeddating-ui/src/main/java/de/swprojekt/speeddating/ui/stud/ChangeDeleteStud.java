@@ -53,7 +53,6 @@ public class ChangeDeleteStud extends VerticalLayout {
 		TextField textfieldOrt = new TextField("Ort: ");
 		TextField textfieldTelefonnr = new TextField("Telefonnr.: ");
 		TextField textfieldEMail = new TextField("E-Mail Adresse: ");
-		
 
 		// Erzeugen der Combo Box
 		ComboBox<Studierender> comboBox = new ComboBox<>();
@@ -98,27 +97,27 @@ public class ChangeDeleteStud extends VerticalLayout {
 		notificationAendernsuccess.addThemeVariants(NotificationVariant.LUMO_SUCCESS);
 		Label labelAendernsuccess = new Label("Student erfolgreich aktualisiert! ");
 		notificationAendernsuccess.add(labelAendernsuccess);
-		notificationAendernsuccess.setDuration(2500); //Meldung wird 2,5 Sekunden lang angezeigt
+		notificationAendernsuccess.setDuration(2500); // Meldung wird 2,5 Sekunden lang angezeigt
 
 		Notification notificationLoeschensuccess = new Notification();
 		notificationLoeschensuccess.addThemeVariants(NotificationVariant.LUMO_SUCCESS);
 		Label labelLoeschensuccess = new Label("Student erfolgreich geloescht! ");
 		notificationLoeschensuccess.add(labelLoeschensuccess);
-		notificationLoeschensuccess.setDuration(2500); //Meldung wird 2,5 Sekunden lang angezeigt
+		notificationLoeschensuccess.setDuration(2500); // Meldung wird 2,5 Sekunden lang angezeigt
 
 		Notification notificationAbbruch = new Notification();
 		notificationAbbruch.addThemeVariants(NotificationVariant.LUMO_ERROR);
 		Label labelAbbruchsuccess = new Label("Studentbearbeitung abgebrochen! ");
 		notificationAbbruch.add(labelAbbruchsuccess);
-		notificationAbbruch.setDuration(2500); //Meldung wird 2,5 Sekunden lang angezeigt
-		
+		notificationAbbruch.setDuration(2500); // Meldung wird 2,5 Sekunden lang angezeigt
+
 		// Bestaetigungs-Popup
 		Button buttonBestaetigenJa = new Button("Ja");
 		Button buttonBestaetigenNein = new Button("Nein");
 		Dialog popUpBestaetigen = new Dialog();
 		popUpBestaetigen.add(new Label("Den Studierenden endgueltig loeschen?"));
 		popUpBestaetigen.add(buttonBestaetigenJa, buttonBestaetigenNein);
-		
+
 		// *** Erzeugen des Layouts START ***
 		VerticalLayout h1 = new VerticalLayout(); // Textfelder sollen nebeneinander angeordnet werden
 		h1.add(comboBox);
@@ -136,7 +135,7 @@ public class ChangeDeleteStud extends VerticalLayout {
 
 		h1.add(new HorizontalLayout(buttonStudAendern, buttonStudLoeschen));
 		h1.add(new HorizontalLayout(buttonZurueck, logoutButton)); // darunter wird Button
-		add(h1);																				// angeordnet
+		add(h1); // angeordnet
 		// *** Erzeugen des Layouts ENDE ***
 
 		binder = new Binder<>(Studierender.class); // Klasse fuer Binder festlegen (kennt somit Objektattribute)
@@ -159,8 +158,8 @@ public class ChangeDeleteStud extends VerticalLayout {
 		buttonStudAendern.addClickListener(event -> {
 			try {
 				binder.writeBean(studtmp); // dem Objekt werden Attributwerte aus den Textfeldern (via Binder)
-													// zugewiesen
-				
+											// zugewiesen
+
 				Studierender einStudierender = iShowStudierendeService.showStudierenden(lv_id);
 				einStudierender.setMatrikelnummer(studtmp.getMatrikelnummer());
 				einStudierender.setVorname(studtmp.getVorname());
@@ -176,7 +175,8 @@ public class ChangeDeleteStud extends VerticalLayout {
 				notificationAendernsuccess.open();
 //				SecurityContextHolder.clearContext();	//Spring-Security-Session leeren
 //				getUI().get().getSession().close();		//Vaadin Session leeren
-				buttonStudAendern.getUI().ifPresent(ui -> ui.navigate("ui/eventorganisator/menue")); // zurueck auf andere Seite
+				buttonStudAendern.getUI().ifPresent(ui -> ui.navigate("ui/eventorganisator/menue")); // zurueck auf
+																										// andere Seite
 				// }
 				// }
 			} catch (ValidationException e) {
@@ -197,10 +197,10 @@ public class ChangeDeleteStud extends VerticalLayout {
 //			} catch (ValidationException e) {
 //				e.printStackTrace();
 //			}
-			
+
 			popUpBestaetigen.open();
 		});
-		
+
 		buttonBestaetigenJa.addClickListener(event -> {
 			try {
 				binder.writeBean(studtmp);
@@ -210,12 +210,13 @@ public class ChangeDeleteStud extends VerticalLayout {
 //			SecurityContextHolder.clearContext();	//Spring-Security-Session leeren
 //			getUI().get().getSession().close();		//Vaadin Session leeren
 				popUpBestaetigen.close();
-				buttonZurueck.getUI().ifPresent(ui -> ui.navigate("ui/eventorganisator/menue")); // zurueck auf andere Seite
+				buttonZurueck.getUI().ifPresent(ui -> ui.navigate("ui/eventorganisator/menue")); // zurueck auf andere
+																									// Seite
 			} catch (ValidationException e) {
 				e.printStackTrace();
 			}
 		});
-		
+
 		buttonBestaetigenNein.addClickListener(event -> {
 			popUpBestaetigen.close();
 		});
@@ -223,13 +224,13 @@ public class ChangeDeleteStud extends VerticalLayout {
 		buttonZurueck.addClickListener(event -> {
 			// Erfolgreich-Meldung anzeigen
 			notificationAbbruch.open();
-			buttonZurueck.getUI().ifPresent(ui->ui.navigate("ui/eventorganisator/menue"));	//zurueck auf andere Seite 
-			
+			buttonZurueck.getUI().ifPresent(ui -> ui.navigate("ui/eventorganisator/menue")); // zurueck auf andere Seite
+
 		});
 
 		logoutButton.addClickListener(event -> { // Bei Buttonklick werden folgende Aktionen ausgefuehrt
 			SecurityContextHolder.clearContext(); // Spring-Security-Session leeren
-			//getUI().get().getSession().close(); // Vaadin Session leeren
+			// getUI().get().getSession().close(); // Vaadin Session leeren
 			logoutButton.getUI().ifPresent(ui -> ui.navigate("login")); // zurueck auf andere Seite
 		});
 	}

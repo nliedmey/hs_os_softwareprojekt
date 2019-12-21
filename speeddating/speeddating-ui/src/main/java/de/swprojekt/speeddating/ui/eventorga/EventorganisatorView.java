@@ -31,11 +31,8 @@ import de.swprojekt.speeddating.service.deleteeventorganisator.IDeleteEventorgan
  */
 import de.swprojekt.speeddating.service.showeventorganisator.IShowEventorganisatorService;
 
-@Route("ui/eventorganisator") // Erreichbar ueber Adresse:
-								// http://localhost:8080/speeddating-web-7.0-SNAPSHOT/ui/eventorganisator
-@Secured("ROLE_ADMIN") // nur User mit Rolle ADMIN koennen auf Seite zugreifen, @Secured prueft auch
-						// bei RouterLink-Weiterleitungen
-//@Secured kann auch an einzelnen Methoden angewendet werden
+@Route("ui/eventorganisator")
+@Secured("ROLE_ADMIN")
 public class EventorganisatorView extends VerticalLayout { // VerticalLayout fuehrt zu Anordnung von Elementen
 															// untereinander statt nebeneinander (HorizontalLayout)
 
@@ -61,30 +58,29 @@ public class EventorganisatorView extends VerticalLayout { // VerticalLayout fue
 		Label labelSavesuccess = new Label("Eventorganisator erfolgreich geloescht! ");
 		notificationSavesuccess.add(labelSavesuccess);
 		notificationSavesuccess.setDuration(2500); // Meldung wird 2,5 Sekunden lang angezeigt
-		
-		
-		
+
 		List<Eventorganisator> listTmp = iShowEventorganisatorService.showEventorganisatoren();
 		List<Eventorganisator> eventorganisatorList = new ArrayList<Eventorganisator>();
 
-		for(Eventorganisator aEventorganisator: listTmp) {
+		for (Eventorganisator aEventorganisator : listTmp) {
 			aEventorganisator.setAnzahlVerwalteteEvents(aEventorganisator.getVerwaltet_events().size());
 
 			eventorganisatorList.add(aEventorganisator);
 		}
 
-		eventorganisatorGrid = new Grid<>(Eventorganisator.class); // Tabelle initialisieren		
+		eventorganisatorGrid = new Grid<>(Eventorganisator.class); // Tabelle initialisieren
 		ListDataProvider<Eventorganisator> ldpEventorganisator = DataProvider.ofCollection(eventorganisatorList);
 //		ListDataProvider<Eventorganisator> ldpEventorganisator = DataProvider
 //				.ofCollection(iShowEventorganisatorService.showEventorganisatoren()); // Dataprovider erstellen
-																						
+
 		eventorganisatorGrid.setDataProvider(ldpEventorganisator); // erstellten Dataprovider als Datenquelle fuer
 																	// Tabelle festlegen
 
 		eventorganisatorGrid.removeColumnByKey("eventorganisator_id"); // event_id nicht in Tabelle mit anzeigen
-		eventorganisatorGrid.removeColumnByKey("verwaltet_events"); 
-		eventorganisatorGrid.setColumns("vorname", "nachname", "fachbereich", "telefonnr", "email", "anzahlVerwalteteEvents"); // Spaltenordnung
-																															// festlegen
+		eventorganisatorGrid.removeColumnByKey("verwaltet_events");
+		eventorganisatorGrid.setColumns("vorname", "nachname", "fachbereich", "telefonnr", "email",
+				"anzahlVerwalteteEvents"); // Spaltenordnung
+											// festlegen
 		eventorganisatorGrid.setSelectionMode(SelectionMode.MULTI); // es koennen mehrere Organisatoren gleichzeitig
 																	// geloescht werden
 		selectionModelEventorganisator = (GridMultiSelectionModel<Eventorganisator>) eventorganisatorGrid
@@ -97,7 +93,7 @@ public class EventorganisatorView extends VerticalLayout { // VerticalLayout fue
 		});
 
 		buttonBestaetigenJa.addClickListener(event -> {
-			for (Eventorganisator eo : selectionModelEventorganisator.getSelectedItems()){
+			for (Eventorganisator eo : selectionModelEventorganisator.getSelectedItems()) {
 				iDeleteEventorganisatorService.loescheEventorganisator(eo);
 			}
 			notificationSavesuccess.open(); // Erfolgreich-Meldung anzeigen
@@ -111,7 +107,7 @@ public class EventorganisatorView extends VerticalLayout { // VerticalLayout fue
 
 		logoutButton.addClickListener(event -> { // Bei Buttonklick werden folgende Aktionen ausgefuehrt
 			SecurityContextHolder.clearContext(); // Spring-Security-Session leeren
-			//getUI().get().getSession().close(); // Vaadin Session leeren
+			// getUI().get().getSession().close(); // Vaadin Session leeren
 			logoutButton.getUI().ifPresent(ui -> ui.navigate("login")); // zurueck auf andere Seite
 		});
 

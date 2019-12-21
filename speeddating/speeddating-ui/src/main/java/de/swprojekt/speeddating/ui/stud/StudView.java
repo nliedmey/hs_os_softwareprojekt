@@ -19,42 +19,44 @@ import de.swprojekt.speeddating.service.showstudierender.IShowStudierendeService
  * View fuer die Anzeige vorhandener Studierender
  */
 
-@Route("ui/studs")	//Erreichbar ueber Adresse: http://localhost:8080/speeddating-web-7.0-SNAPSHOT/ui/studs
-@Secured("ROLE_EVENTORGANISATOR")	//nur User mit Rolle ADMIN koennen auf Seite zugreifen, @Secured prueft auch bei RouterLink-Weiterleitungen
-//@Secured kann auch an einzelnen Methoden angewendet werden
-public class StudView extends VerticalLayout {	//VerticalLayout fuehrt zu Anordnung von Elementen untereinander statt nebeneinander (HorizontalLayout)
+@Route("ui/studs")
+@Secured("ROLE_EVENTORGANISATOR")
+public class StudView extends VerticalLayout { // VerticalLayout fuehrt zu Anordnung von Elementen untereinander statt
+												// nebeneinander (HorizontalLayout)
 
-	@Autowired	//Konstruktor-basierte Injection, Parameter wird autowired (hier: Interface)
+	@Autowired // Konstruktor-basierte Injection, Parameter wird autowired (hier: Interface)
 	public StudView(IShowStudierendeService iShowStudierendeService) {
-	
-		Grid<Studierender> studierenderGrid;	//Tabelle mit Studierenden
-		Button logoutButton=new Button("Logout");
-	    Button zurueckButton = new Button("Zurueck");
-		
-		studierenderGrid = new Grid<>(Studierender.class);	//Tabelle initialisieren
+
+		Grid<Studierender> studierenderGrid; // Tabelle mit Studierenden
+		Button logoutButton = new Button("Logout");
+		Button zurueckButton = new Button("Zurueck");
+
+		studierenderGrid = new Grid<>(Studierender.class); // Tabelle initialisieren
 		ListDataProvider<Studierender> ldpStudent = DataProvider
-				.ofCollection(iShowStudierendeService.showStudierende());	//Dataprovider erstellen und Quelle fuer Studierende (via Service aus DB) festlegen 
-		studierenderGrid.setDataProvider(ldpStudent);	//erstellten Dataprovider als Datenquelle fuer Tabelle festlegen
+				.ofCollection(iShowStudierendeService.showStudierende()); // Dataprovider erstellen und Quelle fuer
+																			// Studierende (via Service aus DB)
+																			// festlegen
+		studierenderGrid.setDataProvider(ldpStudent); // erstellten Dataprovider als Datenquelle fuer Tabelle festlegen
 
-		studierenderGrid.removeColumnByKey("student_id");	//studId nicht in Tabelle mit anzeigen
-		studierenderGrid.setColumns("vorname", "nachname");	//Spaltenordnung festlegen
-		
-		logoutButton.addClickListener(event -> {	//Bei Buttonklick werden folgende Aktionen ausgefuehrt
-			SecurityContextHolder.clearContext();	//Spring-Security-Session leeren
-			//getUI().get().getSession().close();		//Vaadin Session leeren
-			logoutButton.getUI().ifPresent(ui->ui.navigate("maincontent"));	//zurueck auf andere Seite 
-		});
-		
-		zurueckButton.addClickListener(event -> {	//Bei Buttonklick werden folgende Aktionen ausgefuehrt
-			zurueckButton.getUI().ifPresent(ui->ui.navigate("ui/eventorganisator/menue"));	//zurueck auf andere Seite 
+		studierenderGrid.removeColumnByKey("student_id"); // studId nicht in Tabelle mit anzeigen
+		studierenderGrid.setColumns("vorname", "nachname"); // Spaltenordnung festlegen
+
+		logoutButton.addClickListener(event -> { // Bei Buttonklick werden folgende Aktionen ausgefuehrt
+			SecurityContextHolder.clearContext(); // Spring-Security-Session leeren
+			// getUI().get().getSession().close(); //Vaadin Session leeren
+			logoutButton.getUI().ifPresent(ui -> ui.navigate("maincontent")); // zurueck auf andere Seite
 		});
 
-		add(studierenderGrid);	//Hinzufuegen der Elemente zum VerticalLayout
+		zurueckButton.addClickListener(event -> { // Bei Buttonklick werden folgende Aktionen ausgefuehrt
+			zurueckButton.getUI().ifPresent(ui -> ui.navigate("ui/eventorganisator/menue")); // zurueck auf andere Seite
+		});
+
+		add(studierenderGrid); // Hinzufuegen der Elemente zum VerticalLayout
 		add(new HorizontalLayout(zurueckButton, logoutButton));
 	}
-	//@PostConstruct	//Ausfuehrung nach Konstruktoraufruf
-	//public void init()
-	//{
-	//	
-	//}
+	// @PostConstruct //Ausfuehrung nach Konstruktoraufruf
+	// public void init()
+	// {
+	//
+	// }
 }

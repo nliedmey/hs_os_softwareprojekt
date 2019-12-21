@@ -24,45 +24,45 @@ import de.swprojekt.speeddating.ui.stud.StudView;
 import de.swprojekt.speeddating.ui.untern.AddUntern;
 import de.swprojekt.speeddating.ui.untern.ChangeDeleteUntern;
 import de.swprojekt.speeddating.ui.untern.UnternView;
+
 /*
  * Menue fuer Eventorganisatoren, wird nach Login automatisch betreten
  */
-@Route(value="ui/eventorganisator/menue", layout=MainLayout.class)	//Layout wird von MainLayout uebernommen und neues aus Konstruktor hinzugefuegt
+@Route(value = "ui/eventorganisator/menue", layout = MainLayout.class) 
 @Secured("ROLE_EVENTORGANISATOR")
 public class EventorganisatorMenue extends Div {
-	
+
 	public EventorganisatorMenue() {
-		
-		Button logoutButton=new Button("Logout");
-		
-		logoutButton.addClickListener(event -> {	//Bei Buttonklick werden folgende Aktionen ausgefuehrt
-			
+
+		Button logoutButton = new Button("Logout");
+
+		logoutButton.addClickListener(event -> { // Bei Buttonklick werden folgende Aktionen ausgefuehrt
+
 			SecurityContextHolder.clearContext();
-			logoutButton.getUI().ifPresent(ui->ui.navigate("login"));	//zurueck auf andere Seite 
-		});	
-		
-		VerticalLayout v1=new VerticalLayout();		
+			logoutButton.getUI().ifPresent(ui -> ui.navigate("login")); // zurueck auf andere Seite
+		});
+
+		VerticalLayout v1 = new VerticalLayout();
 		v1.add(new Label("Eventorganisator-Menue"));
-		v1.add(new RouterLink("Events anzeigen/loeschen",EventViewForEventorganisator.class));
-		v1.add(new RouterLink("Event hinzufuegen",AddEvent.class));
-		v1.add(new RouterLink("Events aendern",AlterEventForEventorganisator.class));
-		v1.add(new RouterLink("Event Zugaenge zeigen",UserViewForEvent.class));
-		v1.add(new RouterLink("Events durchfuehren",EventDurchfuehrung.class));
-		v1.add(new RouterLink("Events Matchings auswerten",EventMatchingDisplayView.class));
+		v1.add(new RouterLink("Events anzeigen/loeschen", EventViewForEventorganisator.class));
+		v1.add(new RouterLink("Event hinzufuegen", AddEvent.class));
+		v1.add(new RouterLink("Events aendern", AlterEventForEventorganisator.class));
+		v1.add(new RouterLink("Event Zugaenge zeigen", UserViewForEvent.class));
+		v1.add(new RouterLink("Events durchfuehren", EventDurchfuehrung.class));
+		v1.add(new RouterLink("Events Matchings auswerten", EventMatchingDisplayView.class));
 		v1.add("-----------");
-		v1.add(new RouterLink("Studenten anzeigen",StudView.class));
-		v1.add(new RouterLink("Studenten hinzufuegen",AddStud.class));
-		v1.add(new RouterLink("Studenten aendern/loeschen",ChangeDeleteStud.class));
+		v1.add(new RouterLink("Studenten anzeigen", StudView.class));
+		v1.add(new RouterLink("Studenten hinzufuegen", AddStud.class));
+		v1.add(new RouterLink("Studenten aendern/loeschen", ChangeDeleteStud.class));
 		v1.add("-----------");
-		v1.add(new RouterLink("Unternehmen anzeigen",UnternView.class));
-		v1.add(new RouterLink("Unternehmen hinzufuegen",AddUntern.class));
-		v1.add(new RouterLink("Unternehmen aendern/loeschen",ChangeDeleteUntern.class));
+		v1.add(new RouterLink("Unternehmen anzeigen", UnternView.class));
+		v1.add(new RouterLink("Unternehmen hinzufuegen", AddUntern.class));
+		v1.add(new RouterLink("Unternehmen aendern/loeschen", ChangeDeleteUntern.class));
 		v1.add("-----------");
-		v1.add(new RouterLink("Mein Passwort aendern",ChangePassword.class));
+		v1.add(new RouterLink("Mein Passwort aendern", ChangePassword.class));
 		v1.add(logoutButton);
 		add(v1);
-		
-	}
-	
-}
 
+	}
+
+}

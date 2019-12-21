@@ -43,15 +43,8 @@ import de.swprojekt.speeddating.service.showunternehmen.IShowUnternehmenService;
  * View fuer die Durchfuehrung des Events
  */
 
-@Route("ui/eventDurchfuehrung") // Erreichbar ueber Adresse:
-								// http://localhost:8080/speeddating-web-7.0-SNAPSHOT/ui/events
-@Secured("ROLE_EVENTORGANISATOR") // nur User mit Rolle EVENTORGANISATOR koennen auf Seite zugreifen, @Secured
-									// prueft auch bei RouterLink-Weiterleitungen
-//@Secured kann auch an einzelnen Methoden angewendet werden
-
-//NOTIZEN
-//Timer fehlt
-//Es werden noch alle Events, und nicht nur die des Organisatoren angezeigt!
+@Route("ui/eventDurchfuehrung") // Erreichbar ueber Adresse: //localhost:8080/speeddating-web-7.0-SNAPSHOT/ui/events
+@Secured("ROLE_EVENTORGANISATOR") 
 public class EventDurchfuehrung extends HorizontalLayout {
 
 	// Deklarationen
@@ -76,13 +69,12 @@ public class EventDurchfuehrung extends HorizontalLayout {
 	@Autowired
 	public EventDurchfuehrung(IShowEventService iShowEventService, IShowUnternehmenService iShowUnternehmenService,
 			IShowStudierendeService iShowStudierendeService, IAlterEventService iAlterEventService) {
-		
-		
+
 		Notification notificationEventBeendetsuccess = new Notification();
 		notificationEventBeendetsuccess.addThemeVariants(NotificationVariant.LUMO_SUCCESS);
 		Label labelBeendetGeklicktsuccess = new Label("Event erfolgreich beendet! ");
 		notificationEventBeendetsuccess.add(labelBeendetGeklicktsuccess);
-		notificationEventBeendetsuccess.setDuration(2500); //Meldung wird 2,5 Sekunden lang angezeigt
+		notificationEventBeendetsuccess.setDuration(2500); // Meldung wird 2,5 Sekunden lang angezeigt
 
 		// Buttons und Felder erzeugen
 		Label labelTabelle = new Label("Tabelle");
@@ -145,27 +137,30 @@ public class EventDurchfuehrung extends HorizontalLayout {
 		comboBox.setPlaceholder("Event auswaehlen");
 		List<Event> listOfEvents = new ArrayList<>();
 
-		//Alle Events des angemeldeten Organisators laden
-		CustomUserDetails userDetails=(CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();	//Id des eingeloggten Users aus SecurityKontext holen
-		
-		for(int event_id:iShowEventService.showEventsOfUser(userDetails.getEntityRefId()))	//alle Events, an welchen der User beteiligt ist, laden
+		// Alle Events des angemeldeten Organisators laden
+		CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication()
+				.getPrincipal(); // Id des eingeloggten Users aus SecurityKontext holen
+
+		for (int event_id : iShowEventService.showEventsOfUser(userDetails.getEntityRefId())) // alle Events, an welchen
+																								// der User beteiligt
+																								// ist, laden
 		{
-			
+
 			listOfEvents.add(iShowEventService.showEvent(event_id));
-			
+
 		}
 
 		List<Event> listOfEventsLoeschen = new ArrayList<>();
-		//Abgeschlossene Events aus Liste entfernen
-		if(!listOfEvents.isEmpty()) {
-			for(Event aEvent : listOfEvents) {
-				if(aEvent.isAbgeschlossen()){
+		// Abgeschlossene Events aus Liste entfernen
+		if (!listOfEvents.isEmpty()) {
+			for (Event aEvent : listOfEvents) {
+				if (aEvent.isAbgeschlossen()) {
 					listOfEventsLoeschen.add(aEvent);
 				}
 			}
 			listOfEvents.removeAll(listOfEventsLoeschen);
 			comboBox.setItems(listOfEvents);
-			if(listOfEvents.isEmpty()) {
+			if (listOfEvents.isEmpty()) {
 				comboBox.setPlaceholder("Keine Events");
 			}
 		} else {
@@ -181,11 +176,11 @@ public class EventDurchfuehrung extends HorizontalLayout {
 		// Listen
 		List<Unternehmen> listeUntern = new ArrayList();
 		List<Studierender> listeStuds = new ArrayList();
-		
-		//Pooling zunächst deaktivieren fuer Timer
+
+		// Pooling zunächst deaktivieren fuer Timer
 		UI.getCurrent().setPollInterval(-1);
 
-		//SoundPlayer fuer Signalton
+		// SoundPlayer fuer Signalton
 		try {
 			clip = AudioSystem.getClip();
 			URL link = this.getClass().getResource("./WAV001.WAV");
@@ -197,7 +192,7 @@ public class EventDurchfuehrung extends HorizontalLayout {
 
 			e.printStackTrace();
 		}
-		
+
 		// Layouts
 
 		// Timer-Popup
@@ -205,14 +200,14 @@ public class EventDurchfuehrung extends HorizontalLayout {
 		Dialog popUpClose = new Dialog();
 		popUpClose.add(new Label("Zeit abgelaufen!"));
 		popUpClose.add(buttonClose);
-		
+
 		// Bestaetigungs-Popup
 		Button buttonBestaetigenJa = new Button("Ja");
 		Button buttonBestaetigenNein = new Button("Nein");
 		Dialog popUpBestaetigen = new Dialog();
 		popUpBestaetigen.add(new Label("Das Event endgueltig beenden?"));
 		popUpBestaetigen.add(buttonBestaetigenJa, buttonBestaetigenNein);
-		
+
 		// Links
 		VerticalLayout vLinks = new VerticalLayout();
 		HorizontalLayout h1 = new HorizontalLayout();
@@ -328,8 +323,9 @@ public class EventDurchfuehrung extends HorizontalLayout {
 				labelMaxRunden.setVisible(true);
 				labelMaxRunden.setText("/ " + Integer.toString(listeStuds.size()));
 				labelTimer.setVisible(true);
-				
-				//Button nachsteRunde zunächst disabled. Wird enabled, nachdem Zeit abgelaufen ist
+
+				// Button nachsteRunde zunächst disabled. Wird enabled, nachdem Zeit abgelaufen
+				// ist
 				buttonNaechsteRunde.setEnabled(false);
 			}
 		});
@@ -356,7 +352,7 @@ public class EventDurchfuehrung extends HorizontalLayout {
 			} else {
 				// Zeit ist abgelaufen...
 				UI.getCurrent().setPollInterval(-1);
-				//Startet den Ton
+				// Startet den Ton
 				clip.start();
 				popUpClose.open();
 			}
@@ -402,20 +398,20 @@ public class EventDurchfuehrung extends HorizontalLayout {
 				// buttonNaechsteRunde.setEnabled(false);
 			}
 
-			//Zeit wieder aus max setzen
+			// Zeit wieder aus max setzen
 			geplanteRundenzeit = aEvent.getRundendauerInMinuten();
 			secGepl = geplanteRundenzeit * 60;
 
 			time = String.format("%02d:%02d", TimeUnit.SECONDS.toMinutes(secGepl),
 					TimeUnit.SECONDS.toSeconds(secGepl) % TimeUnit.MINUTES.toSeconds(1));
 			labelTimer.setText(time);
-			
-			//Button wieder disbale
+
+			// Button wieder disbale
 			buttonNaechsteRunde.setEnabled(false);
-			//Timer-Buttons enable
+			// Timer-Buttons enable
 			buttonStart.setEnabled(true);
 			buttonPauseFortsetzen.setEnabled(true);
-			
+
 		});
 
 		buttonClose.addClickListener(event -> {
@@ -428,19 +424,19 @@ public class EventDurchfuehrung extends HorizontalLayout {
 		buttonBeenden.addClickListener(event -> {
 			popUpBestaetigen.open();
 		});
-		
-		buttonBestaetigenJa.addClickListener(event ->{
+
+		buttonBestaetigenJa.addClickListener(event -> {
 			aEvent.setAbgeschlossen(true);
 			iAlterEventService.aenderEvent(aEvent);
 			notificationEventBeendetsuccess.open();
 			buttonBeenden.getUI().ifPresent(ui -> ui.navigate("ui/eventorganisator/menue"));
 			popUpBestaetigen.close();
 		});
-		
-		buttonBestaetigenNein.addClickListener(event ->{
+
+		buttonBestaetigenNein.addClickListener(event -> {
 			popUpBestaetigen.close();
 		});
-		
+
 	}
 
 }

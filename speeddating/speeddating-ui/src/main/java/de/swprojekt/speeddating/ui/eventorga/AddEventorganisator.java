@@ -32,7 +32,8 @@ public class AddEventorganisator extends VerticalLayout {
 	@Autowired // BestPractice: Konstruktor-Injection im Vergleich zu
 				// Attribut/Methoden-Injection
 				// Parameter (hier: IAddEventorganisatorService) wird also automatisch autowired
-	public AddEventorganisator(IAddEventorganisatorService iAddEventorganisatorService, IRegisterUserService iRegisterUserService) {
+	public AddEventorganisator(IAddEventorganisatorService iAddEventorganisatorService,
+			IRegisterUserService iRegisterUserService) {
 
 		// Deklaration
 		Binder<Eventorganisator> binder; // verknuepft Input aus Textfeldern mit Objektattributen
@@ -43,13 +44,12 @@ public class AddEventorganisator extends VerticalLayout {
 		TextField textfieldFachbereich = new TextField("Fachbereich:");
 		TextField textfieldTelefonnr = new TextField("Telefonnr:");
 		TextField textfieldEmail = new TextField("Email:");
-		
+
 		// Button hinzufuegen
 		Button buttonHinzufuegen = new Button("Eventorganisator anlegen");
-		Button logoutButton=new Button("Logout");
+		Button logoutButton = new Button("Logout");
 		Button zurueckButton = new Button("Zurueck");
 
-		
 		buttonHinzufuegen.addThemeVariants(ButtonVariant.LUMO_SUCCESS);
 
 		// Notification Meldungen mit Button verknuepfen
@@ -57,15 +57,15 @@ public class AddEventorganisator extends VerticalLayout {
 		notificationSavesuccess.addThemeVariants(NotificationVariant.LUMO_SUCCESS);
 		Label labelSavesuccess = new Label("Eventorganisator erfolgreich hinzugefuegt! ");
 		notificationSavesuccess.add(labelSavesuccess);
-		notificationSavesuccess.setDuration(2500); //Meldung wird 2,5 Sekunden lang angezeigt
-				
+		notificationSavesuccess.setDuration(2500); // Meldung wird 2,5 Sekunden lang angezeigt
+
 		VerticalLayout v1 = new VerticalLayout(); // Textfelder sollen untereinander angeordnet werden
 		v1.add(textfieldVorname);
 		v1.add(textfieldNachname);
 		v1.add(textfieldFachbereich);
 		v1.add(textfieldTelefonnr);
 		v1.add(textfieldEmail);
-		v1.add(buttonHinzufuegen);	
+		v1.add(buttonHinzufuegen);
 		v1.add(new HorizontalLayout(zurueckButton, logoutButton));
 		add(v1); // darunter wird Button angeordnet
 
@@ -77,32 +77,36 @@ public class AddEventorganisator extends VerticalLayout {
 		binder.forField(textfieldFachbereich).asRequired("Fachbereich darf nicht leer sein...").bind("fachbereich");
 		binder.forField(textfieldTelefonnr).asRequired("Telefonnr darf nicht leer sein...").bind("telefonnr");
 		binder.forField(textfieldEmail).asRequired("Email darf nicht leer sein...").bind("email");
-		//binder.forField(textfieldHausnummer).withConverter(new StringToIntegerConverter("Eingabe muss numerisch sein")).bind("hausnummer");
-		
+		// binder.forField(textfieldHausnummer).withConverter(new
+		// StringToIntegerConverter("Eingabe muss numerisch sein")).bind("hausnummer");
+
 		Eventorganisator einEventorganisator = new Eventorganisator();
 		buttonHinzufuegen.addClickListener(event -> {
 			try {
-				binder.writeBean(einEventorganisator); // dem Objekt werden Attributwerte aus den Textfeldern (via Binder) zugewiesen
-				Eventorganisator neuerEventorga=iAddEventorganisatorService.speicherEventorganisator(einEventorganisator); // Uebergabe an Service zur Speicherung in DB
-				iRegisterUserService.save(neuerEventorga.getNachname()+"_"+neuerEventorga.getEventorganisator_id(), "standard", "EVENTORGANISATOR", neuerEventorga.getEventorganisator_id()); //Einloggbenutzer anlegen fuer den Eventorganisator
+				binder.writeBean(einEventorganisator); // dem Objekt werden Attributwerte aus den Textfeldern (via
+														// Binder) zugewiesen
+				Eventorganisator neuerEventorga = iAddEventorganisatorService
+						.speicherEventorganisator(einEventorganisator); // Uebergabe an Service zur Speicherung in DB
+				iRegisterUserService.save(neuerEventorga.getNachname() + "_" + neuerEventorga.getEventorganisator_id(),
+						"standard", "EVENTORGANISATOR", neuerEventorga.getEventorganisator_id()); // Einloggbenutzer
+																									// anlegen fuer den
+																									// Eventorganisator
 				notificationSavesuccess.open(); // Erfolgreich-Meldung anzeigen
-				buttonHinzufuegen.getUI().ifPresent(ui->ui.navigate("ui/admin/menue"));	//zurueck auf andere Seite 
+				buttonHinzufuegen.getUI().ifPresent(ui -> ui.navigate("ui/admin/menue")); // zurueck auf andere Seite
 			} catch (ValidationException e) {
 				e.printStackTrace();
 			}
 		});
-		
-		logoutButton.addClickListener(event -> {	//Bei Buttonklick werden folgende Aktionen ausgefuehrt
-			SecurityContextHolder.clearContext();	//Spring-Security-Session leeren
-			//getUI().get().getSession().close();		//Vaadin Session leeren
-			logoutButton.getUI().ifPresent(ui->ui.navigate("login"));	//zurueck auf andere Seite 
-		});
-		
 
-		zurueckButton.addClickListener(event -> {	//Bei Buttonklick werden folgende Aktionen ausgefuehrt
-			logoutButton.getUI().ifPresent(ui->ui.navigate("ui/admin/menue"));	//zurueck auf andere Seite 
+		logoutButton.addClickListener(event -> { // Bei Buttonklick werden folgende Aktionen ausgefuehrt
+			SecurityContextHolder.clearContext(); // Spring-Security-Session leeren
+			// getUI().get().getSession().close(); //Vaadin Session leeren
+			logoutButton.getUI().ifPresent(ui -> ui.navigate("login")); // zurueck auf andere Seite
 		});
 
+		zurueckButton.addClickListener(event -> { // Bei Buttonklick werden folgende Aktionen ausgefuehrt
+			logoutButton.getUI().ifPresent(ui -> ui.navigate("ui/admin/menue")); // zurueck auf andere Seite
+		});
 
 	}
 }

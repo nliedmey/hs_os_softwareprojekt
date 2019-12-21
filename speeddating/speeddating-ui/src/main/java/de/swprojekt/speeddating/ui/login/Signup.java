@@ -11,6 +11,7 @@ import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.Route;
 
 import de.swprojekt.speeddating.service.security.IRegisterUserService;
+
 /*
  * View fuer die eigenstaendige Registrierung von Benutzern
  */
@@ -18,7 +19,7 @@ import de.swprojekt.speeddating.service.security.IRegisterUserService;
 public class Signup extends VerticalLayout {
 
 	private TextField username;
-	private PasswordField passwordField;	//PasswordField ermoeglicht Verdeckung von Eingabe
+	private PasswordField passwordField; // PasswordField ermoeglicht Verdeckung von Eingabe
 	private PasswordField passwordAgainField;
 	private Button saveButton;
 
@@ -28,18 +29,19 @@ public class Signup extends VerticalLayout {
 		passwordField = new PasswordField("Passwort");
 		passwordAgainField = new PasswordField("Passwort wiederholen");
 		saveButton = new Button("Save");
-		saveButton.addThemeVariants(ButtonVariant.LUMO_SUCCESS);	//Design von Button anpassen
+		saveButton.addThemeVariants(ButtonVariant.LUMO_SUCCESS); // Design von Button anpassen
 
 		saveButton.addClickListener(event -> {
-			if (passwordField.getValue().equals(passwordAgainField.getValue())) {	//wenn Passwoerter uebereinstimmen
-				//iRegisterUserService.save(username.getValue(), passwordField.getValue(),"NORMAL",);	//speichern von User via Service
-				saveButton.getUI().ifPresent(ui->ui.navigate("login"));	//anschliessend auf Loginpage weiterleiten
-			} else {	//Passwoerter stimmen nicht ueberein
+			if (passwordField.getValue().equals(passwordAgainField.getValue())) { // wenn Passwoerter uebereinstimmen
+				// iRegisterUserService.save(username.getValue(),
+				// passwordField.getValue(),"NORMAL",); //speichern von User via Service
+				saveButton.getUI().ifPresent(ui -> ui.navigate("login")); // anschliessend auf Loginpage weiterleiten
+			} else { // Passwoerter stimmen nicht ueberein
 				Notification.show("Passwoerter stimmen nicht ueberein!");
 			}
 
 		});
 
-		add(username, passwordField, passwordAgainField, saveButton);	//Seitenelemente hinzufuegen
+		add(username, passwordField, passwordAgainField, saveButton); // Seitenelemente hinzufuegen
 	}
 }

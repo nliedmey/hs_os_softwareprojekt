@@ -57,17 +57,16 @@ public class AddStud extends VerticalLayout {
 		buttonHinzufuegen.addThemeVariants(ButtonVariant.LUMO_SUCCESS);
 		Button zurueckbutton = new Button("Zurueck");
 		zurueckbutton.addThemeVariants(ButtonVariant.LUMO_ERROR);
-		
-		Button logoutButton=new Button("Logout");
 
+		Button logoutButton = new Button("Logout");
 
 		// Notification Meldungen mit Button verknuepfen
 		Notification notificationSavesuccess = new Notification();
 		notificationSavesuccess.addThemeVariants(NotificationVariant.LUMO_SUCCESS);
 		Label labelSavesuccess = new Label("Student erfolgreich hinzugefuegt! ");
 		notificationSavesuccess.add(labelSavesuccess);
-		notificationSavesuccess.setDuration(2500); //Meldung wird 2,5 Sekunden lang angezeigt
-		
+		notificationSavesuccess.setDuration(2500); // Meldung wird 2,5 Sekunden lang angezeigt
+
 		VerticalLayout h1 = new VerticalLayout(); // Textfelder sollen nebeneinander angeordnet werden
 		h1.add(textfieldMatrikelnr);
 		h1.add(new HorizontalLayout(textfieldVorname, textfieldNachname));
@@ -104,26 +103,29 @@ public class AddStud extends VerticalLayout {
 				Studierender neuerStud = iAddStudierenderService.saveStudierenden(einStudierender); // Uebergabe an
 																									// Service zur
 																									// Speicherung in DB
-				iRegisterUserService.save(neuerStud.getNachname() + "*" + neuerStud.getMatrikelnummer(), "pass*"+neuerStud.getStudent_id(),
-						"STUDENT", neuerStud.getStudent_id()); // Einloggbenutzer anlegen fuer den Studenten
-				
+				iRegisterUserService.save(neuerStud.getNachname() + "*" + neuerStud.getMatrikelnummer(),
+						"pass*" + neuerStud.getStudent_id(), "STUDENT", neuerStud.getStudent_id()); // Einloggbenutzer
+																									// anlegen fuer den
+																									// Studenten
+
 				// Nutzername: Nachname*Matrikelnummer, Initialpasswort: pass*<student_id>
 				notificationSavesuccess.open(); // Erfolgreich-Meldung anzeigen
-				buttonHinzufuegen.getUI().ifPresent(ui -> ui.navigate("ui/eventorganisator/menue")); // zurueck auf andere Seite
+				buttonHinzufuegen.getUI().ifPresent(ui -> ui.navigate("ui/eventorganisator/menue")); // zurueck auf
+																										// andere Seite
 
 			} catch (ValidationException e) {
 				e.printStackTrace();
 			}
 		});
 
-		zurueckbutton.addClickListener(event -> {	//Bei Buttonklick werden folgende Aktionen ausgefuehrt
-			zurueckbutton.getUI().ifPresent(ui->ui.navigate("ui/eventorganisator/menue"));	//zurueck auf andere Seite 
+		zurueckbutton.addClickListener(event -> { // Bei Buttonklick werden folgende Aktionen ausgefuehrt
+			zurueckbutton.getUI().ifPresent(ui -> ui.navigate("ui/eventorganisator/menue")); // zurueck auf andere Seite
 		});
-		
-		logoutButton.addClickListener(event -> {	//Bei Buttonklick werden folgende Aktionen ausgefuehrt
-			SecurityContextHolder.clearContext();	//Spring-Security-Session leeren
-			//getUI().get().getSession().close();		//Vaadin Session leeren
-			logoutButton.getUI().ifPresent(ui->ui.navigate("login"));	//zurueck auf andere Seite 
+
+		logoutButton.addClickListener(event -> { // Bei Buttonklick werden folgende Aktionen ausgefuehrt
+			SecurityContextHolder.clearContext(); // Spring-Security-Session leeren
+			// getUI().get().getSession().close(); //Vaadin Session leeren
+			logoutButton.getUI().ifPresent(ui -> ui.navigate("login")); // zurueck auf andere Seite
 		});
 
 	}

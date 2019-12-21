@@ -22,30 +22,28 @@ import de.swprojekt.speeddating.ui.MainLayout;
 @Route(value = "admininit", layout = MainLayout.class) // Abgeleitet von Root-Layout MainLayout
 public class AdminInit extends VerticalLayout {
 
-
-
 	@Autowired
-	public AdminInit(IRoleRepository iRoleRepository, IUserRepository iUserRepository, BCryptPasswordEncoder passwordEncoder) {
+	public AdminInit(IRoleRepository iRoleRepository, IUserRepository iUserRepository,
+			BCryptPasswordEncoder passwordEncoder) {
 
-		Button buttonAdminerstellen=new Button("ADMIN ERSTELLEN");
-		Label labelPWUsername=new Label("Name: admin, pw: admin, kann Menue ueber /ui/admin/menue erreichen und von dort eventorgas etc. erstellen");
-		
-		User einUser=new User();
+		Button buttonAdminerstellen = new Button("ADMIN ERSTELLEN");
+		Label labelPWUsername = new Label(
+				"Name: admin, pw: admin, kann Menue ueber /ui/admin/menue erreichen und von dort eventorgas etc. erstellen");
+
+		User einUser = new User();
 		einUser.setPassword(passwordEncoder.encode("admin"));
 		einUser.setUsername("admin");
-		Set<Role> roles=new HashSet<Role>();
+		Set<Role> roles = new HashSet<Role>();
 		roles.add(iRoleRepository.findByRolename("ADMIN"));
 		einUser.setRoles(roles);
-	
-		
+
 		buttonAdminerstellen.addClickListener(event -> {
 			iUserRepository.save(einUser);
 			System.out.println("ADMIN ERSTELLT!");
-			
+
 		});
 		add(labelPWUsername);
 		add(buttonAdminerstellen);
-		
 
 	}
 

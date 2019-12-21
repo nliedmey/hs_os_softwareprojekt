@@ -65,7 +65,7 @@ public class ShowEventImpl implements IShowEventService {
 		Set<Integer> studentKontaktWuensche = new HashSet<>();
 		Set<Integer> unternehmenKontaktWuensche = new HashSet<>();
 		ArrayList<EventMatching> eventMatchingList = new ArrayList<EventMatching>();
-		
+
 		for (Integer student_id : aEvent.getTeilnehmendeStudierende()) {
 			Studierender aStudent = iShowStudierendeService.showStudierenden(student_id);
 			studentKontaktWuensche.clear();
@@ -81,15 +81,10 @@ public class ShowEventImpl implements IShowEventService {
 								for (Integer unternehmenWunsch : unternehmenKontaktWuensche) {
 									if (aStudent.getStudent_id() == unternehmenWunsch) {
 
-//										matchingResultMap.put(aStudent, aUnternehmen);
-								
-									    EventMatching aNewEventMatching = new EventMatching(aStudent.getFullNameAndContact(), aUnternehmen.getNameAndContact());
+										EventMatching aNewEventMatching = new EventMatching(
+												aStudent.getFullNameAndContact(), aUnternehmen.getNameAndContact());
 										eventMatchingList.add(aNewEventMatching);
-										
-										
-//									System.out.println("Jawohl, das ist ein Matching per For -> Student"
-//											+ aStudent.getStudent_id() + " und das Unternehmen"
-//											+ aUnternehmen.getUnternehmen_id() + "gehoeren zusammen");				
+
 									}
 								}
 							}

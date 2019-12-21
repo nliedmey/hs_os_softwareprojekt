@@ -33,11 +33,8 @@ import de.swprojekt.speeddating.service.showevent.IShowEventService;
  * View fuer die Anzeige vorhandener Events
  */
 
-@Route("ui/eventsForOrganisator") // Erreichbar ueber Adresse:
-									// http://localhost:8080/speeddating-web-7.0-SNAPSHOT/ui/events
-@Secured("ROLE_EVENTORGANISATOR") // nur User mit Rolle EVENTORGANISATOR koennen auf Seite zugreifen, @Secured
-									// prueft auch bei RouterLink-Weiterleitungen
-//@Secured kann auch an einzelnen Methoden angewendet werden
+@Route("ui/eventsForOrganisator")
+@Secured("ROLE_EVENTORGANISATOR")
 public class EventViewForEventorganisator extends VerticalLayout { // VerticalLayout fuehrt zu Anordnung von Elementen
 																	// untereinander statt nebeneinander
 																	// (HorizontalLayout)

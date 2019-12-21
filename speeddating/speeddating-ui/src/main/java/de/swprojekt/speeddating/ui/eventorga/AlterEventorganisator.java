@@ -55,30 +55,31 @@ public class AlterEventorganisator extends VerticalLayout {
 		TextField textfieldFachbereich = new TextField("Fachbereich:");
 		TextField textfieldTelefonnr = new TextField("Telefonnr:");
 		TextField textfieldEmail = new TextField("Email:");
-		
+
 		Notification notificationSavesuccess = new Notification();
 		notificationSavesuccess.addThemeVariants(NotificationVariant.LUMO_SUCCESS);
 		Label labelSavesuccess = new Label("Eventorganisator erfolgreich aktualisiert! ");
 		notificationSavesuccess.add(labelSavesuccess);
-		notificationSavesuccess.setDuration(2500); //Meldung wird 2,5 Sekunden lang angezeigt
+		notificationSavesuccess.setDuration(2500); // Meldung wird 2,5 Sekunden lang angezeigt
 
 		Grid<Event> eventGrid; // Tabelle mit Events, welcher Eventorganisator verwaltet
 		GridMultiSelectionModel<Event> selectionModelEvent;
 
 		eventorganisatorGrid = new Grid<>(Eventorganisator.class); // Tabelle initialisieren
-		
+
 		List<Eventorganisator> listTmp = iShowEventorganisatorService.showEventorganisatoren();
 		List<Eventorganisator> eventorganisatorlist = new ArrayList<Eventorganisator>();
 
-		for(Eventorganisator aEventorganisator: listTmp) {
+		for (Eventorganisator aEventorganisator : listTmp) {
 			aEventorganisator.setAnzahlVerwalteteEvents(aEventorganisator.getVerwaltet_events().size());
 			eventorganisatorlist.add(aEventorganisator);
 		}
-				
-		
-		ListDataProvider<Eventorganisator> ldpEventorganisator = DataProvider
-				.ofCollection(eventorganisatorlist); // Dataprovider erstellen und
-																						// Quelle fuer
+
+		ListDataProvider<Eventorganisator> ldpEventorganisator = DataProvider.ofCollection(eventorganisatorlist); // Dataprovider
+																													// erstellen
+																													// und
+																													// Quelle
+																													// fuer
 		// Eventorganisatoren (via Service aus DB)
 		// festlegen
 		eventorganisatorGrid.setDataProvider(ldpEventorganisator); // erstellten Dataprovider als Datenquelle fuer
@@ -86,30 +87,31 @@ public class AlterEventorganisator extends VerticalLayout {
 
 		eventorganisatorGrid.removeColumnByKey("eventorganisator_id"); // event_id nicht in Tabelle mit anzeigen
 		eventorganisatorGrid.removeColumnByKey("verwaltet_events");
-		eventorganisatorGrid.setColumns("vorname", "nachname", "fachbereich", "telefonnr", "email", "anzahlVerwalteteEvents"); // Spaltenordnung
-																															// festlegen
+		eventorganisatorGrid.setColumns("vorname", "nachname", "fachbereich", "telefonnr", "email",
+				"anzahlVerwalteteEvents"); // Spaltenordnung
+											// festlegen
 		eventorganisatorGrid.setSelectionMode(SelectionMode.SINGLE); // es kann immer nur ein Event gleichzeitig
 																		// bearbeitet werden
 		selectionModelEventorganisator = (GridSingleSelectionModel<Eventorganisator>) eventorganisatorGrid
 				.getSelectionModel();
 
 		eventGrid = new Grid<>(Event.class); // Tabelle initialisieren
-		
+
 		List<Event> listTmp2 = iShowEventService.showEvents();
 		List<Event> eventlist = new ArrayList<Event>();
-		
-		for(Event aEvent: listTmp2) {
+
+		for (Event aEvent : listTmp2) {
 			aEvent.setAnzahlTeilnehmendeStudierende(aEvent.getTeilnehmendeStudierende().size());
 			aEvent.setAnzahlTeilnehmendeUnternehmen(aEvent.getTeilnehmendeUnternehmen().size());
 			eventlist.add(aEvent);
 		}
-		ListDataProvider<Event> ldpEvent = DataProvider.ofCollection(eventlist); // 
+		ListDataProvider<Event> ldpEvent = DataProvider.ofCollection(eventlist); //
 		eventGrid.setDataProvider(ldpEvent); // erstellten Dataprovider als Datenquelle fuer Tabelle festlegen
 
 		eventGrid.removeColumnByKey("event_id"); // studId nicht in Tabelle mit anzeigen
 		eventGrid.removeColumnByKey("teilnehmendeStudierende");
 		eventGrid.removeColumnByKey("teilnehmendeUnternehmen");
-		
+
 		eventGrid.setColumns("bezeichnung", "startzeitpunkt", "endzeitpunkt", "abgeschlossen",
 				"anzahlTeilnehmendeStudierende", "anzahlTeilnehmendeUnternehmen"); // Spaltenordnung festlegen
 
@@ -189,12 +191,12 @@ public class AlterEventorganisator extends VerticalLayout {
 
 			iAlterEventorganisatorService.aenderEventorganisator(veraenderterEventorganisatorDAO);
 			notificationSavesuccess.open(); // Erfolgreich-Meldung anzeigen
-			aendernButton.getUI().ifPresent(ui->ui.navigate("ui/admin/menue"));	//zurueck auf andere Seite 
+			aendernButton.getUI().ifPresent(ui -> ui.navigate("ui/admin/menue")); // zurueck auf andere Seite
 		});
 
 		logoutButton.addClickListener(event -> { // Bei Buttonklick werden folgende Aktionen ausgefuehrt
 			SecurityContextHolder.clearContext(); // Spring-Security-Session leeren
-			//getUI().get().getSession().close(); // Vaadin Session leeren
+			// getUI().get().getSession().close(); // Vaadin Session leeren
 			logoutButton.getUI().ifPresent(ui -> ui.navigate("login")); // zurueck auf andere Seite
 		});
 

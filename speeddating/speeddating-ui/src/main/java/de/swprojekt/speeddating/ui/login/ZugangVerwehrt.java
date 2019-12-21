@@ -1,9 +1,9 @@
 package de.swprojekt.speeddating.ui.login;
 
-
 import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.Route;
+
 /*
  * Fehlerseite, wird angezeigt bei fehlenden Rechten fuer Seitenaufruf
  */
@@ -11,10 +11,9 @@ import com.vaadin.flow.router.Route;
 public class ZugangVerwehrt extends VerticalLayout {
 
 	private Label zugangVerwehrtLabel;
-	
 
 	public ZugangVerwehrt() {
-		zugangVerwehrtLabel=new Label("ZUGANG verwehrt! Keine Rechte fuer Seitenaufruf!");
+		zugangVerwehrtLabel = new Label("ZUGANG verwehrt! Keine Rechte fuer Seitenaufruf!");
 		add(zugangVerwehrtLabel);
 	}
 

@@ -21,8 +21,7 @@ public class Unternehmen {
 	private String unternehmensname;
 	private String ansprechpartner;
 	private String kontaktmail;
-	
-	
+
 	@ElementCollection(fetch = FetchType.EAGER)
 	@CollectionTable(name = "unternehmen_wants_studenten", joinColumns = @JoinColumn(name = "unternehmen_id"))
 	@Column(name = "student_id")
@@ -32,7 +31,7 @@ public class Unternehmen {
 	public Unternehmen() {
 
 	}
-	
+
 	public Unternehmen(int unternehmen_id, String unternehmensname, String ansprechpartner, String kontaktmail,
 			Set<Integer> unternehmenKontaktwuensche) {
 		super();
@@ -42,14 +41,6 @@ public class Unternehmen {
 		this.kontaktmail = kontaktmail;
 		this.unternehmenKontaktwuensche = unternehmenKontaktwuensche;
 	}
-
-//	public Unternehmen(int unternehmen_id, String unternehmensname, String ansprechpartner, String kontaktmail) {
-//		super();
-//		this.unternehmen_id = unternehmen_id;
-//		this.unternehmensname = unternehmensname;
-//		this.ansprechpartner = ansprechpartner;
-//		this.kontaktmail = kontaktmail;
-//	}
 
 	public int getUnternehmen_id() {
 		return unternehmen_id;
@@ -91,7 +82,7 @@ public class Unternehmen {
 		this.unternehmenKontaktwuensche = unternehmenKontaktwuensche;
 	}
 
-	public String getNameAndContact () {
+	public String getNameAndContact() {
 		return this.unternehmensname + ", " + this.ansprechpartner + ", " + this.kontaktmail;
 	}
 }

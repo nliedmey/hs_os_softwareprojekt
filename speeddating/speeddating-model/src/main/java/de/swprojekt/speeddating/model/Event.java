@@ -45,15 +45,6 @@ public class Event {
 	private Set<Integer> teilnehmendeStudierende; // CollectionTable weil Integers und keine Entities
 	@Transient
 	private int anzahlTeilnehmendeStudierende;
-
-	// keine Entities von anderen Klassen in dieser Klasse!
-	// @ManyToMany(cascade = {CascadeType.REFRESH,CascadeType.MERGE}, fetch =
-	// FetchType.EAGER) // ein event kann mehrere Studenten haben, einem Studenten
-	// koennen mehrere Events zugeordnet sein
-	// @JoinTable(name = "event_studierender", joinColumns = @JoinColumn(name =
-	// "event_id"), inverseJoinColumns = @JoinColumn(name = "student_id"))
-	// //mappingtabelle event_studierender erstellen
-	// private List<Integer> teilnehmendeStudierende;
 	
 	public Event() {
 		// TODO Auto-generated constructor stub
@@ -66,6 +57,23 @@ public class Event {
 		this.endzeitpunkt = endzeitpunkt;
 		this.abgeschlossen = abgeschlossen;
 	}
+	
+	public Event(int event_id, String bezeichnung, Date startzeitpunkt, Date endzeitpunkt, int rundendauerInMinuten,
+			boolean abgeschlossen, Set<Integer> teilnehmendeUnternehmen, int anzahlTeilnehmendeUnternehmen,
+			Set<Integer> teilnehmendeStudierende, int anzahlTeilnehmendeStudierende) {
+		super();
+		this.event_id = event_id;
+		this.bezeichnung = bezeichnung;
+		this.startzeitpunkt = startzeitpunkt;
+		this.endzeitpunkt = endzeitpunkt;
+		this.rundendauerInMinuten = rundendauerInMinuten;
+		this.abgeschlossen = abgeschlossen;
+		this.teilnehmendeUnternehmen = teilnehmendeUnternehmen;
+		this.anzahlTeilnehmendeUnternehmen = anzahlTeilnehmendeUnternehmen;
+		this.teilnehmendeStudierende = teilnehmendeStudierende;
+		this.anzahlTeilnehmendeStudierende = anzahlTeilnehmendeStudierende;
+	}
+	
 
 	public int getEvent_id() {
 		return event_id;

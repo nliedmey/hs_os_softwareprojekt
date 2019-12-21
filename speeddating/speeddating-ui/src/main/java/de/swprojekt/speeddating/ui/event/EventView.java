@@ -24,62 +24,61 @@ import de.swprojekt.speeddating.service.showevent.IShowEventService;
  * View fuer die Anzeige vorhandener Events
  */
 
-@Route("ui/events/show")	//Erreichbar ueber Adresse: http://localhost:8080/speeddating-web-7.0-SNAPSHOT/ui/events	
-@Secured("ROLE_ADMIN") //nur User mit Rolle ADMIN koennen auf Seite zugreifen, @Secured prueft auch bei RouterLink-Weiterleitungen
-//@Secured kann auch an einzelnen Methoden angewendet werden
-public class EventView extends VerticalLayout {	//VerticalLayout fuehrt zu Anordnung von Elementen untereinander statt nebeneinander (HorizontalLayout)
+@Route("ui/events/show")
+@Secured("ROLE_ADMIN")
+public class EventView extends VerticalLayout { // VerticalLayout fuehrt zu Anordnung von Elementen untereinander statt
+												// nebeneinander (HorizontalLayout)
 
-	@Autowired	//Konstruktor-basierte Injection, Parameter wird autowired (hier: Interface)
+	@Autowired // Konstruktor-basierte Injection, Parameter wird autowired (hier: Interface)
 	public EventView(IShowEventService iShowEventService, IDeleteEventService iDeleteEventService) {
-	
-		Grid<Event> eventGrid;	//Tabelle mit Events
+
+		Grid<Event> eventGrid; // Tabelle mit Events
 		GridMultiSelectionModel<Event> selectionModelEvent;
-		Button loeschenButton=new Button("Loeschen");		
-		Button logoutButton=new Button("Logout");
-		
+		Button loeschenButton = new Button("Loeschen");
+		Button logoutButton = new Button("Logout");
+
 		List<Event> listTmp = iShowEventService.showEvents();
 		List<Event> eventlist = new ArrayList<Event>();
 
-		for(Event aEvent: listTmp) {
+		for (Event aEvent : listTmp) {
 			aEvent.setAnzahlTeilnehmendeStudierende(aEvent.getTeilnehmendeStudierende().size());
 			aEvent.setAnzahlTeilnehmendeUnternehmen(aEvent.getTeilnehmendeUnternehmen().size());
 			eventlist.add(aEvent);
 		}
-		
-		eventGrid = new Grid<>(Event.class);	//Tabelle initialisieren
-		//Dataprovider erstellen und Quelle fuer Events (via Service aus DB) festlegen 
+
+		eventGrid = new Grid<>(Event.class); // Tabelle initialisieren
+		// Dataprovider erstellen und Quelle fuer Events (via Service aus DB) festlegen
 		ListDataProvider<Event> ldpEvent = DataProvider.ofCollection(eventlist);
 //		ListDataProvider<Event> ldpEvent = DataProvider.ofCollection(iShowEventService.showEvents());
-		eventGrid.setDataProvider(ldpEvent);	//erstellten Dataprovider als Datenquelle fuer Tabelle festlegen
-		
-		eventGrid.removeColumnByKey("event_id");	//event_id nicht in Tabelle mit anzeigen
+		eventGrid.setDataProvider(ldpEvent); // erstellten Dataprovider als Datenquelle fuer Tabelle festlegen
+
+		eventGrid.removeColumnByKey("event_id"); // event_id nicht in Tabelle mit anzeigen
 		eventGrid.removeColumnByKey("teilnehmendeUnternehmen");
 		eventGrid.removeColumnByKey("teilnehmendeStudierende");
 //		eventGrid.setColumns("bezeichnung", "startzeitpunkt", "endzeitpunkt", "abgeschlossen", "teilnehmendeStudierende", "teilnehmendeUnternehmen");	//Spaltenordnung festlegen
-		eventGrid.setSelectionMode(SelectionMode.MULTI);	//es koennen mehrere Events ausgewaehlt sein
+		eventGrid.setSelectionMode(SelectionMode.MULTI); // es koennen mehrere Events ausgewaehlt sein
 		selectionModelEvent = (GridMultiSelectionModel<Event>) eventGrid.getSelectionModel();
-		
-		loeschenButton.addClickListener(event -> {	//Bei Buttonklick werden folgende Aktionen ausgefuehrt
-			for(Event e:selectionModelEvent.getSelectedItems())	//markierte Events durchgehen
+
+		loeschenButton.addClickListener(event -> { // Bei Buttonklick werden folgende Aktionen ausgefuehrt
+			for (Event e : selectionModelEvent.getSelectedItems()) // markierte Events durchgehen
 			{
 				iDeleteEventService.loescheEvent(e);
 			}
 		});
-		
-		logoutButton.addClickListener(event -> {	//Bei Buttonklick werden folgende Aktionen ausgefuehrt
-			SecurityContextHolder.clearContext();	//Spring-Security-Session leeren
-			//getUI().get().getSession().close();		//Vaadin Session leeren
-			logoutButton.getUI().ifPresent(ui->ui.navigate("login"));	//zurueck auf andere Seite 
+
+		logoutButton.addClickListener(event -> { // Bei Buttonklick werden folgende Aktionen ausgefuehrt
+			SecurityContextHolder.clearContext(); // Spring-Security-Session leeren
+			// getUI().get().getSession().close(); //Vaadin Session leeren
+			logoutButton.getUI().ifPresent(ui -> ui.navigate("login")); // zurueck auf andere Seite
 		});
 
-
-		add(eventGrid);	//Hinzufuegen der Elemente zum VerticalLayout
+		add(eventGrid); // Hinzufuegen der Elemente zum VerticalLayout
 		add(loeschenButton);
 		add(logoutButton);
 	}
-	//@PostConstruct	//Ausfuehrung nach Konstruktoraufruf
-	//public void init()
-	//{
-	//	
-	//}
+	// @PostConstruct //Ausfuehrung nach Konstruktoraufruf
+	// public void init()
+	// {
+	//
+	// }
 }

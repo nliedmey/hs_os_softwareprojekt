@@ -40,15 +40,17 @@ public class Eventorganisator {
 		// TODO Auto-generated constructor stub
 	}
 
-
-	public Eventorganisator(String vorname, String nachname, String fachbereich, String telefonnr, String email,
-			Set<Integer> verwaltet_events) {
+	public Eventorganisator(int eventorganisator_id, String vorname, String nachname, String fachbereich,
+			String telefonnr, String email, Set<Integer> verwaltet_events, int anzahlVerwalteteEvents) {
+		super();
+		this.eventorganisator_id = eventorganisator_id;
 		this.vorname = vorname;
 		this.nachname = nachname;
 		this.fachbereich = fachbereich;
 		this.telefonnr = telefonnr;
 		this.email = email;
 		this.verwaltet_events = verwaltet_events;
+		this.anzahlVerwalteteEvents = anzahlVerwalteteEvents;
 	}
 
 	public int getEventorganisator_id() {
