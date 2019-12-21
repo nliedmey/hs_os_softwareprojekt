@@ -1,4 +1,4 @@
-package de.swprojekt.speeddating.ui;
+package de.swprojekt.speeddating.ui.eventorga;
 
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
@@ -20,6 +20,7 @@ import com.vaadin.flow.router.Route;
 import de.swprojekt.speeddating.model.Eventorganisator;
 import de.swprojekt.speeddating.service.addeventorganisator.IAddEventorganisatorService;
 import de.swprojekt.speeddating.service.security.IRegisterUserService;
+import de.swprojekt.speeddating.ui.MainLayout;
 
 /*
  * View zum Hinzufuegen von Eventorganisator

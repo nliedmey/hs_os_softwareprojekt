@@ -1,4 +1,4 @@
-package de.swprojekt.speeddating.ui;
+package de.swprojekt.speeddating.ui.login;
 
 import javax.validation.ValidationException;
 
@@ -24,6 +24,7 @@ import de.swprojekt.speeddating.service.security.CustomUserDetails;
 import de.swprojekt.speeddating.service.security.IRegisterUserService;
 import de.swprojekt.speeddating.service.showunternehmen.IShowUnternehmenService;
 import de.swprojekt.speeddating.service.unternehmen.IUnternehmenService;
+import de.swprojekt.speeddating.ui.MainLayout;
 
 /*
  * View zum Aendern von aktuellen Passwort

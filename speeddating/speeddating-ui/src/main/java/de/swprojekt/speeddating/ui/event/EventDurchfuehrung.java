@@ -1,4 +1,4 @@
-package de.swprojekt.speeddating.ui;
+package de.swprojekt.speeddating.ui.event;
 
 import java.io.File;
 import java.io.IOException;

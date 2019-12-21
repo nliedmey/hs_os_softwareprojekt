@@ -1,4 +1,4 @@
-package de.swprojekt.speeddating.ui;
+package de.swprojekt.speeddating.ui.login;
 
 import org.springframework.beans.factory.annotation.Autowired;
 

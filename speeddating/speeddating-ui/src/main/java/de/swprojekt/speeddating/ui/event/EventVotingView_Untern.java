@@ -1,4 +1,4 @@
-package de.swprojekt.speeddating.ui;
+package de.swprojekt.speeddating.ui.event;
 
 
 import com.vaadin.flow.component.button.Button;

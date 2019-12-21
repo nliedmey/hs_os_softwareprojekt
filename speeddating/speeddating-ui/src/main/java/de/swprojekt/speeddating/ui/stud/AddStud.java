@@ -1,4 +1,4 @@
-package de.swprojekt.speeddating.ui;
+package de.swprojekt.speeddating.ui.stud;
 
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
@@ -22,6 +22,7 @@ import de.swprojekt.speeddating.model.Studierender;
 import de.swprojekt.speeddating.service.addstudierender.IStudierenderService;
 import de.swprojekt.speeddating.service.security.IRegisterUserService;
 import de.swprojekt.speeddating.service.showstudierender.IShowStudierendeService;
+import de.swprojekt.speeddating.ui.MainLayout;
 
 /*
  * View zum Anlegen von neuem Studierenden

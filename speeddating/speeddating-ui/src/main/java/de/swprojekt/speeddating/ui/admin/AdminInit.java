@@ -1,4 +1,4 @@
-package de.swprojekt.speeddating.ui;
+package de.swprojekt.speeddating.ui.admin;
 
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.Label;
@@ -14,6 +14,7 @@ import de.swprojekt.speeddating.model.Role;
 import de.swprojekt.speeddating.model.User;
 import de.swprojekt.speeddating.repository.IRoleRepository;
 import de.swprojekt.speeddating.repository.IUserRepository;
+import de.swprojekt.speeddating.ui.MainLayout;
 
 /*
  * Temporaere Loesung zum Erstellen von ADMIN!!!SICHERHEITSRISIKO!!

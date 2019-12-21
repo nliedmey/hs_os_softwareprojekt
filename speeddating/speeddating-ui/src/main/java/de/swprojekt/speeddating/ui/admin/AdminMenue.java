@@ -1,4 +1,4 @@
-package de.swprojekt.speeddating.ui;
+package de.swprojekt.speeddating.ui.admin;
 
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -9,6 +9,12 @@ import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouterLink;
+
+import de.swprojekt.speeddating.ui.MainLayout;
+import de.swprojekt.speeddating.ui.eventorga.AddEventorganisator;
+import de.swprojekt.speeddating.ui.eventorga.AlterEventorganisator;
+import de.swprojekt.speeddating.ui.eventorga.EventorganisatorView;
+import de.swprojekt.speeddating.ui.login.ChangePassword;
 /*
  * Menue fuer Hauptadmin, wird nach Login automatisch betreten
  */

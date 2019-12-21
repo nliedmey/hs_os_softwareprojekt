@@ -1,4 +1,4 @@
-package de.swprojekt.speeddating.ui;
+package de.swprojekt.speeddating.ui.eventorga;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -32,6 +32,7 @@ import de.swprojekt.speeddating.model.Eventorganisator;
 import de.swprojekt.speeddating.service.altereventorganisator.IAlterEventorganisatorService;
 import de.swprojekt.speeddating.service.showevent.IShowEventService;
 import de.swprojekt.speeddating.service.showeventorganisator.IShowEventorganisatorService;
+import de.swprojekt.speeddating.ui.MainLayout;
 
 @Route(value = "ui/eventorganisator/alter", layout = MainLayout.class) // Abgeleitet von Root-Layout MainLayout
 @Secured("ROLE_ADMIN")

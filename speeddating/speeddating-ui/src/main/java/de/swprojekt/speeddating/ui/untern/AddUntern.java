@@ -1,4 +1,4 @@
-package de.swprojekt.speeddating.ui;
+package de.swprojekt.speeddating.ui.untern;
 
 import javax.validation.ValidationException;
 
@@ -21,6 +21,7 @@ import de.swprojekt.speeddating.model.Unternehmen;
 import de.swprojekt.speeddating.service.security.IRegisterUserService;
 import de.swprojekt.speeddating.service.showunternehmen.IShowUnternehmenService;
 import de.swprojekt.speeddating.service.unternehmen.IUnternehmenService;
+import de.swprojekt.speeddating.ui.MainLayout;
 
 /*
  * View zum Anlegen von neuen Unternehmen

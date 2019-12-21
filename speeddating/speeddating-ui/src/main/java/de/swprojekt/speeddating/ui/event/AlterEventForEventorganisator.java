@@ -1,4 +1,4 @@
-package de.swprojekt.speeddating.ui;
+package de.swprojekt.speeddating.ui.event;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -18,11 +19,11 @@ import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.Grid.SelectionMode;
+import com.vaadin.flow.component.grid.GridMultiSelectionModel;
+import com.vaadin.flow.component.grid.GridSingleSelectionModel;
 import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.notification.NotificationVariant;
-import com.vaadin.flow.component.grid.GridMultiSelectionModel;
-import com.vaadin.flow.component.grid.GridSingleSelectionModel;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
@@ -37,18 +38,20 @@ import de.swprojekt.speeddating.model.Event;
 import de.swprojekt.speeddating.model.Studierender;
 import de.swprojekt.speeddating.model.Unternehmen;
 import de.swprojekt.speeddating.service.alterevent.IAlterEventService;
+import de.swprojekt.speeddating.service.security.CustomUserDetails;
 import de.swprojekt.speeddating.service.showevent.IShowEventService;
 import de.swprojekt.speeddating.service.showstudierender.IShowStudierendeService;
 import de.swprojekt.speeddating.service.showunternehmen.IShowUnternehmenService;
+import de.swprojekt.speeddating.ui.MainLayout;
 
-@Route(value = "ui/events/alter", layout = MainLayout.class) // Abgeleitet von Root-Layout MainLayout
-@Secured("ROLE_ADMIN")
-public class AlterEvent extends VerticalLayout {
+@Route(value = "ui/events/alterForOrganisator", layout = MainLayout.class) // Abgeleitet von Root-Layout MainLayout
+@Secured("ROLE_EVENTORGANISATOR")
+public class AlterEventForEventorganisator extends VerticalLayout {
 	@Autowired // Konstruktor-basierte Injection, Parameter wird autowired (hier: Interface)
-	public AlterEvent(IShowEventService iShowEventService, IShowStudierendeService iShowStudierendeService, IShowUnternehmenService iShowUnternehmenService, IAlterEventService iAlterEventService) {
+	public AlterEventForEventorganisator(IShowEventService iShowEventService, IShowStudierendeService iShowStudierendeService, IShowUnternehmenService iShowUnternehmenService, IAlterEventService iAlterEventService) {
 
 		Binder<Event> binder; // verknuepft Input aus Textfeldern mit Objektattributen
-		 
+		
 		Grid<Event> eventGrid; // Tabelle mit Events
 		GridSingleSelectionModel<Event> selectionModelEvent;
 		
@@ -60,6 +63,7 @@ public class AlterEvent extends VerticalLayout {
 		
 		Button aendernButton=new Button("Aendern");
 		Button logoutButton=new Button("Logout");
+		Button zurueckButton = new Button("Zurueck");
 		
 		TextField textfieldBezeichnung = new TextField("Bezeichnung:");
 		DatePicker datepickerStartzeitpunktDatum=new DatePicker("Startdatum:");
@@ -69,16 +73,40 @@ public class AlterEvent extends VerticalLayout {
 		TextField textfieldRundendauerInMinuten = new TextField("Rundendauer (min):");
 		Checkbox checkboxAbgeschlossen=new Checkbox("Abgeschlossen:");
 		
-
+		Notification notificationSavesuccess = new Notification();
+		notificationSavesuccess.addThemeVariants(NotificationVariant.LUMO_SUCCESS);
+		Label labelSavesuccess = new Label("Event erfolgreich aktualisiert! ");
+		notificationSavesuccess.add(labelSavesuccess);
+		notificationSavesuccess.setDuration(2500); //Meldung wird 2,5 Sekunden lang angezeigt
+		
+		List<Event> listOfEvents = new ArrayList<Event>();
+		CustomUserDetails userDetails=(CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();	//Id des eingeloggten Users aus SecurityKontext holen
+		
+		//Hier auskommentieren, wenn Events nur fuer den Organisator geladen werden sollen
+		for(int event_id:iShowEventService.showEventsOfUser(userDetails.getEntityRefId()))	//alle Events, welche von Eventorganisator verwaltet, laden
+		{
+			
+			Event aEvent = iShowEventService.showEvent(event_id);
+			if (aEvent != null) {
+				aEvent.setAnzahlTeilnehmendeStudierende(aEvent.getTeilnehmendeStudierende().size());
+				aEvent.setAnzahlTeilnehmendeUnternehmen(aEvent.getTeilnehmendeUnternehmen().size());
+				listOfEvents.add(aEvent);
+			}
+		}
+//		listOfEvents.addAll(iShowEventService.showEvents());
+		
+		
 		eventGrid = new Grid<>(Event.class); // Tabelle initialisieren
 		ListDataProvider<Event> ldpEvent = DataProvider
-				.ofCollection(iShowEventService.showEvents()); // Dataprovider erstellen und Quelle fuer
+				.ofCollection(listOfEvents); // Dataprovider erstellen und Quelle fuer
 																			// Events (via Service aus DB)
 																			// festlegen
 		eventGrid.setDataProvider(ldpEvent); // erstellten Dataprovider als Datenquelle fuer Tabelle festlegen
 
 		eventGrid.removeColumnByKey("event_id");	//event_id nicht in Tabelle mit anzeigen
-		eventGrid.setColumns("bezeichnung", "startzeitpunkt", "endzeitpunkt", "abgeschlossen", "teilnehmendeStudierende","teilnehmendeUnternehmen");	//Spaltenordnung festlegen
+		eventGrid.removeColumnByKey("teilnehmendeStudierende");
+		eventGrid.removeColumnByKey("teilnehmendeUnternehmen");	
+		eventGrid.setColumns("bezeichnung", "startzeitpunkt", "endzeitpunkt", "abgeschlossen", "anzahlTeilnehmendeStudierende","anzahlTeilnehmendeUnternehmen");	//Spaltenordnung festlegen
 		
 		eventGrid.setSelectionMode(SelectionMode.SINGLE);	//es kann immer nur ein Event gleichzeitig bearbeitet werden
 		selectionModelEvent = (GridSingleSelectionModel<Event>) eventGrid.getSelectionModel();
@@ -117,7 +145,16 @@ public class AlterEvent extends VerticalLayout {
 				Event zuAendernderndesEvent=iShowEventService.showEvent(selectedEvent.get().getEvent_id());
 				textfieldBezeichnung.setValue(zuAendernderndesEvent.getBezeichnung());
 				//Uhrzeit und Datum aus Date herausfiltern und in date/timepicker einsetzen
-					
+				datepickerStartzeitpunktDatum.setValue(zuAendernderndesEvent.getStartzeitpunkt().toInstant().atZone(ZoneId.systemDefault()).toLocalDate()); 
+				timepickerStartzeitpunktUhrzeit.setValue(zuAendernderndesEvent.getStartzeitpunkt().toInstant().atZone(ZoneId.systemDefault()).toLocalTime());
+				datepickerEndzeitpunktDatum.setValue(zuAendernderndesEvent.getEndzeitpunkt().toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
+				timepickerEndzeitpunktUhrzeit.setValue(zuAendernderndesEvent.getEndzeitpunkt().toInstant().atZone(ZoneId.systemDefault()).toLocalTime());
+				textfieldRundendauerInMinuten.setValue(String.valueOf(zuAendernderndesEvent.getRundendauerInMinuten()));	
+				checkboxAbgeschlossen.setValue(zuAendernderndesEvent.isAbgeschlossen());
+				Collection<Integer> listStudentenInUnveraendertemEvent=new ArrayList<>(iShowEventService.showEvent(zuAendernderndesEvent.getEvent_id()).getTeilnehmendeStudierende());
+				Collection<Integer> listUnternehmenInUnveraendertemEvent=new ArrayList<>(iShowEventService.showEvent(zuAendernderndesEvent.getEvent_id()).getTeilnehmendeUnternehmen());
+			
+				
 				if (zuAendernderndesEvent.isAbgeschlossen() == true) {
 
 					aendernButton.setEnabled(false);					
@@ -128,18 +165,23 @@ public class AlterEvent extends VerticalLayout {
 					timepickerEndzeitpunktUhrzeit.setEnabled(false);
 					textfieldRundendauerInMinuten.setEnabled(false);
 					checkboxAbgeschlossen.setEnabled(false);
+					unternehmenGrid.setEnabled(false);
+					studierenderGrid.setEnabled(false);
+					
+				} else {
+					aendernButton.setEnabled(true);					
+					textfieldBezeichnung.setEnabled(true);
+					datepickerStartzeitpunktDatum.setEnabled(true);
+					timepickerStartzeitpunktUhrzeit.setEnabled(true);
+					datepickerEndzeitpunktDatum.setEnabled(true);
+					timepickerEndzeitpunktUhrzeit.setEnabled(true);
+					textfieldRundendauerInMinuten.setEnabled(true);
+					checkboxAbgeschlossen.setEnabled(true);
+					unternehmenGrid.setEnabled(true);
+					studierenderGrid.setEnabled(true);
+					
 				}
-													
-				datepickerStartzeitpunktDatum.setValue(zuAendernderndesEvent.getStartzeitpunkt().toInstant().atZone(ZoneId.systemDefault()).toLocalDate()); 
-				timepickerStartzeitpunktUhrzeit.setValue(zuAendernderndesEvent.getStartzeitpunkt().toInstant().atZone(ZoneId.systemDefault()).toLocalTime());
-				datepickerEndzeitpunktDatum.setValue(zuAendernderndesEvent.getEndzeitpunkt().toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
-				timepickerEndzeitpunktUhrzeit.setValue(zuAendernderndesEvent.getEndzeitpunkt().toInstant().atZone(ZoneId.systemDefault()).toLocalTime());
-				textfieldRundendauerInMinuten.setValue(String.valueOf(zuAendernderndesEvent.getRundendauerInMinuten()));
 				
-				checkboxAbgeschlossen.setValue(zuAendernderndesEvent.isAbgeschlossen());
-				Collection<Integer> listStudentenInUnveraendertemEvent=new ArrayList<>(iShowEventService.showEvent(zuAendernderndesEvent.getEvent_id()).getTeilnehmendeStudierende());
-				Collection<Integer> listUnternehmenInUnveraendertemEvent=new ArrayList<>(iShowEventService.showEvent(zuAendernderndesEvent.getEvent_id()).getTeilnehmendeUnternehmen());
-			
 				studierenderGrid.deselectAll(); //zunaechst alle ausgewaehlten von vorheriger Eventmarkierung entfernen
 				for(Studierender s:ldpStudent.getItems())
 				{
@@ -218,7 +260,6 @@ public class AlterEvent extends VerticalLayout {
 				veraendertesEventDAO.setTeilnehmendeUnternehmen(unternehmenInVeraendertemEvent);
 			}
 			
-			
 			if ( veraendertesEventDAO.getEndzeitpunkt().getTime() < veraendertesEventDAO.getStartzeitpunkt().getTime()) {
 				
 				// Notification Meldungen mit Button verknuepfen
@@ -231,7 +272,9 @@ public class AlterEvent extends VerticalLayout {
 				
 			} else {
 			
-			iAlterEventService.aenderEvent(veraendertesEventDAO);
+				iAlterEventService.aenderEvent(veraendertesEventDAO);
+				notificationSavesuccess.open();
+				aendernButton.getUI().ifPresent(ui->ui.navigate("ui/eventorganisator/menue"));	//zurueck auf andere Seite
 			}
 		});
 		
@@ -241,16 +284,21 @@ public class AlterEvent extends VerticalLayout {
 			logoutButton.getUI().ifPresent(ui->ui.navigate("login"));	//zurueck auf andere Seite 
 		});
 		
+		zurueckButton.addClickListener(event -> {	//Bei Buttonklick werden folgende Aktionen ausgefuehrt
+			zurueckButton.getUI().ifPresent(ui->ui.navigate("ui/eventorganisator/menue"));	//zurueck auf andere Seite 
+		});
+
+		
 		VerticalLayout v1 = new VerticalLayout(); // Textfelder sollen untereinander angeordnet werden
 		v1.add(eventGrid);
 		v1.add(textfieldBezeichnung);
 		v1.add(new HorizontalLayout(datepickerStartzeitpunktDatum,timepickerStartzeitpunktUhrzeit));
 		v1.add(new HorizontalLayout(datepickerEndzeitpunktDatum,timepickerEndzeitpunktUhrzeit));
-		v1.add(textfieldRundendauerInMinuten);
+		v1.add(new HorizontalLayout(textfieldRundendauerInMinuten, checkboxAbgeschlossen));
 		v1.add(studierenderGrid);
 		v1.add(unternehmenGrid);
 		v1.add(aendernButton);
-		v1.add(logoutButton);
+		v1.add(new HorizontalLayout(zurueckButton, logoutButton));
 		add(v1);
 		
 	}

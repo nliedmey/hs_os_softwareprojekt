@@ -1,4 +1,4 @@
-package de.swprojekt.speeddating.ui;
+package de.swprojekt.speeddating.ui.eventorga;
 
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -9,6 +9,21 @@ import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouterLink;
+
+import de.swprojekt.speeddating.ui.MainLayout;
+import de.swprojekt.speeddating.ui.event.AddEvent;
+import de.swprojekt.speeddating.ui.event.AlterEventForEventorganisator;
+import de.swprojekt.speeddating.ui.event.EventDurchfuehrung;
+import de.swprojekt.speeddating.ui.event.EventMatchingDisplayView;
+import de.swprojekt.speeddating.ui.event.EventViewForEventorganisator;
+import de.swprojekt.speeddating.ui.event.UserViewForEvent;
+import de.swprojekt.speeddating.ui.login.ChangePassword;
+import de.swprojekt.speeddating.ui.stud.AddStud;
+import de.swprojekt.speeddating.ui.stud.ChangeDeleteStud;
+import de.swprojekt.speeddating.ui.stud.StudView;
+import de.swprojekt.speeddating.ui.untern.AddUntern;
+import de.swprojekt.speeddating.ui.untern.ChangeDeleteUntern;
+import de.swprojekt.speeddating.ui.untern.UnternView;
 /*
  * Menue fuer Eventorganisatoren, wird nach Login automatisch betreten
  */
