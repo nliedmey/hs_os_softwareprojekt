@@ -35,7 +35,7 @@ public class UnternehmenImpl implements IUnternehmenService {
 		einUnternehmen.setUnternehmen_id(einUnternehmenDAO.getUnternehmen_id());
 		einUnternehmen.setUnternehmensname(einUnternehmenDAO.getUnternehmensname());
 		
-		String username = einUnternehmen.getUnternehmensname() + "_" + einUnternehmen.getUnternehmen_id();
+		String username = einUnternehmen.getUnternehmensname() + "*" + einUnternehmen.getUnternehmen_id();
 		User gefundenerUser=iUserRepository.findByUsername(username);
 		if (gefundenerUser!= null) {
 			iUserRepository.delete(gefundenerUser);

@@ -43,7 +43,7 @@ public class StudierenderImpl implements IStudierenderService {
 		einStudierender.setNachname(einStudierenderDAO.getNachname());
 		einStudierender.setMatrikelnummer(einStudierenderDAO.getMatrikelnummer());
 	
-		String username = einStudierender.getNachname() + "_" + einStudierender.getMatrikelnummer();
+		String username = einStudierender.getNachname() + "*" + einStudierender.getMatrikelnummer();
 		User gefundenerUser=iUserRepository.findByUsername(username);
 		if (gefundenerUser!= null) {
 			iUserRepository.delete(gefundenerUser);
