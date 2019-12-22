@@ -57,6 +57,12 @@ public class UserViewForEvent extends VerticalLayout {	//VerticalLayout fuehrt z
 		notificationMatchingsuccess.add(labelMatchingsuccess);
 		notificationMatchingsuccess.setDuration(2500); //Meldung wird 2,5 Sekunden lang angezeigt
 		
+		Notification notificationFailure = new Notification();
+		notificationFailure.addThemeVariants(NotificationVariant.LUMO_ERROR);
+		Label labelFailure = new Label("PDF konnte nicht erstellt werden (Datei wird von einem anderen Prozess verwendet)! ");
+		notificationFailure.add(labelFailure);
+		notificationFailure.setDuration(4500); //Meldung wird 2,5 Sekunden lang angezeigt
+		
 	    ComboBox<Event> comboboxEvent = new ComboBox<>();
 		comboboxEvent.setLabel("Event auswaehlen");
 		comboboxEvent.setItemLabelGenerator(Event::getBezeichnung);
@@ -126,10 +132,11 @@ public class UserViewForEvent extends VerticalLayout {	//VerticalLayout fuehrt z
 				labelPassword.setText("BITTE NOTIEREN: Ihr Passwort zum Oeffnen der PDF: "+password);
 				notificationMatchingsuccess.open(); // Erfolgreich-Meldung anzeigen
 			} catch (FileNotFoundException e) {
-				System.out.println("Bei Aufruf der PDF Erstellung gibt es Probleme");
+				notificationFailure.open();
+				System.out.println("Bei Aufruf der PDF Erstellung gibt es Probleme ");
 				e.printStackTrace();
 			}
-			notificationMatchingsuccess.open();		// Erfolgreich-Meldung anzeigen	
+//			notificationMatchingsuccess.open();		// Erfolgreich-Meldung anzeigen	
 		});
 		
 		
@@ -137,7 +144,7 @@ public class UserViewForEvent extends VerticalLayout {	//VerticalLayout fuehrt z
 		logoutButton.addClickListener(event -> {	//Bei Buttonklick werden folgende Aktionen ausgefuehrt
 			SecurityContextHolder.clearContext();	//Spring-Security-Session leeren
 			//getUI().get().getSession().close();		//Vaadin Session leeren
-			logoutButton.getUI().ifPresent(ui->ui.navigate("maincontent"));	//zurueck auf andere Seite 
+			logoutButton.getUI().ifPresent(ui->ui.navigate("login"));	//zurueck auf andere Seite 
 		});
 		
 		zurueckButton.addClickListener(event -> {	//Bei Buttonklick werden folgende Aktionen ausgefuehrt

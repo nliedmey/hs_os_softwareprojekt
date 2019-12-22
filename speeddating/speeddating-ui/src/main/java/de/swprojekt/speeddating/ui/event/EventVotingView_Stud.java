@@ -136,21 +136,20 @@ public class EventVotingView_Stud extends VerticalLayout { // VerticalLayout fue
 		selectionModelUnternehmen = (GridMultiSelectionModel<Unternehmen>) unternehmenGrid.getSelectionModel();
 
 		votingSendenButton.addClickListener(event -> { // Bei Buttonklick werden folgende Aktionen ausgefuehrt
-			for (Unternehmen e : selectionModelUnternehmen.getSelectedItems()) // markierte Events durchgehen
-			{
+			
 				Studierender einStudierender = iShowStudierendeService.showStudierenden(userDetails.getEntityRefId());
 
 				Set<Integer> studentKontaktwuenscheList = new HashSet<>();
+				//Wir initialiseren hier u.U. aufgrund folgender Ursache: 
+				// Wenn sich ein Student nochmal umentscheidet, dann sollen die vorherigen Wuensche ihm dies nicht verwehren
+				// daher loeschen wir alle Wuensche und speichern die neuen komplett neu ab (oder wir speichern einfach "nichts" ab und die Wuensche sind initialisiert)
 				for (Unternehmen einUnternehmen : selectionModelUnternehmen.getSelectedItems()) {
 					studentKontaktwuenscheList.add(einUnternehmen.getUnternehmen_id());
 				}
 				einStudierender.setStudentKontaktwuensche(studentKontaktwuenscheList);
 				iStudierenderService.changeStudierenden(einStudierender);
-
 				notificationVotingSuccess.open();
-//				
-
-			}
+			
 			votingSendenButton.getUI().ifPresent(ui -> ui.navigate("login")); // zurueck auf andere Seite
 		});
 

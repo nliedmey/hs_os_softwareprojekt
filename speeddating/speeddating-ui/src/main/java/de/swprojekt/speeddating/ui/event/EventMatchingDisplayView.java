@@ -115,6 +115,12 @@ public class EventMatchingDisplayView extends HorizontalLayout {
 		Label labelNotPossible = new Label("Offene Stimmabgaben, daher kein Matching moeglich! ");
 		notificationNotPossible.add(labelNotPossible);
 		notificationNotPossible.setDuration(2500); // Meldung wird 2,5 Sekunden lang angezeigt
+		
+		Notification notificationFailure = new Notification();
+		notificationFailure.addThemeVariants(NotificationVariant.LUMO_ERROR);
+		Label labelFailure = new Label("PDF konnte nicht erstellt werden (Datei wird von einem anderen Prozess verwendet)! ");
+		notificationFailure.add(labelFailure);
+		notificationFailure.setDuration(4500); 
 
 		List<Event> listOfEvents = new ArrayList<Event>();
 		CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication()
@@ -227,6 +233,7 @@ public class EventMatchingDisplayView extends HorizontalLayout {
 				labelPassword.setText("BITTE NOTIEREN: Ihr Passwort zum Oeffnen der PDF: " + password);
 				notificationMatchingsuccess.open(); // Erfolgreich-Meldung anzeigen
 			} catch (FileNotFoundException e) {
+				notificationFailure.open();
 				System.out.println("Bei Aufruf der PDF Erstellung gibt es Probleme");
 				e.printStackTrace();
 			}

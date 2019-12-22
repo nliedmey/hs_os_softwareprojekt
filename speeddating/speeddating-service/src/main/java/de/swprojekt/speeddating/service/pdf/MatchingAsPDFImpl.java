@@ -43,7 +43,8 @@ public class MatchingAsPDFImpl implements IMatchingAsPDFService {
 		String filename="";
 		try {
 
-			String directory = "C:\\Users\\mariu\\Documents"; //LOKAL; bei Server-deploy siehe unten; Link funktioniert logischerweise lokal nicht
+//			String directory = "C:\\Users\\mariu\\Documents"; //LOKAL; bei Server-deploy siehe unten; Link funktioniert logischerweise lokal nicht
+			String directory = "C:\\projekt"; //LOKAL; bei Server-deploy siehe unten; Link funktioniert logischerweise lokal nicht
 //			String directory=System.getProperty("jboss.server.data.dir"); //Property verweist auf Datenverzeichnes des Wildflyservers (auf Server: opt/wildfly)
 			filename=event_id+"_"+eventname+"_Zugaenge.pdf";
 			//FILEPATH WEBDEPLOY

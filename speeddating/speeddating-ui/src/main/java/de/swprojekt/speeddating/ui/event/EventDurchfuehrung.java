@@ -43,8 +43,9 @@ import de.swprojekt.speeddating.service.showunternehmen.IShowUnternehmenService;
  * View fuer die Durchfuehrung des Events
  */
 
-@Route("ui/eventDurchfuehrung") // Erreichbar ueber Adresse: //localhost:8080/speeddating-web-7.0-SNAPSHOT/ui/events
-@Secured("ROLE_EVENTORGANISATOR") 
+@Route("ui/eventDurchfuehrung") // Erreichbar ueber Adresse:
+								// //localhost:8080/speeddating-web-7.0-SNAPSHOT/ui/events
+@Secured("ROLE_EVENTORGANISATOR")
 public class EventDurchfuehrung extends HorizontalLayout {
 
 	// Deklarationen
@@ -130,6 +131,8 @@ public class EventDurchfuehrung extends HorizontalLayout {
 		Button buttonNaechsteRunde = new Button("Naechste Runde");
 		Button buttonPauseFortsetzen = new Button("Pause / Fortsetzen");
 		Button buttonBeenden = new Button("Beenden");
+
+		initializing();
 
 		// Erzeugen der Combo Box
 		ComboBox<Event> comboBox = new ComboBox<>();
@@ -436,6 +439,21 @@ public class EventDurchfuehrung extends HorizontalLayout {
 		buttonBestaetigenNein.addClickListener(event -> {
 			popUpBestaetigen.close();
 		});
+
+	}
+
+	private void initializing() {
+
+		anzahlRunden = 0;
+		anzahlStuds = 0;
+		anzahlUntern = 0;
+		tempRunde = 0;
+		lv_id = 0;
+		geplanteRundenzeit = 0;
+		timerLaeuft = false;
+		secGepl = 0;
+		s = 0;
+		m = 0;
 
 	}
 

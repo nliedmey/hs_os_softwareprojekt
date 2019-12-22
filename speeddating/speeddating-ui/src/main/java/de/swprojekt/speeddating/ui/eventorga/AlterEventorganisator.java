@@ -23,12 +23,14 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
+import com.vaadin.flow.data.binder.ValidationException;
 import com.vaadin.flow.data.provider.DataProvider;
 import com.vaadin.flow.data.provider.ListDataProvider;
 import com.vaadin.flow.router.Route;
 
 import de.swprojekt.speeddating.model.Event;
 import de.swprojekt.speeddating.model.Eventorganisator;
+import de.swprojekt.speeddating.model.Studierender;
 import de.swprojekt.speeddating.service.altereventorganisator.IAlterEventorganisatorService;
 import de.swprojekt.speeddating.service.showevent.IShowEventService;
 import de.swprojekt.speeddating.service.showeventorganisator.IShowEventorganisatorService;
@@ -148,6 +150,7 @@ public class AlterEventorganisator extends VerticalLayout {
 			}
 		});
 
+		Eventorganisator eventorgatmp = new Eventorganisator();
 		binder = new Binder<>(Eventorganisator.class); // Klasse fuer Binder festlegen (kennt somit Objektattribute)
 
 		// Musseingaben definieren textfieldXXX wird mit Objektattribut "xxx" verknuepft
@@ -160,38 +163,46 @@ public class AlterEventorganisator extends VerticalLayout {
 		// StringToIntegerConverter("Eingabe muss numerisch sein")).bind("hausnummer");
 
 		aendernButton.addClickListener(event -> {
-			Optional<Eventorganisator> selectedEventorganisator = selectionModelEventorganisator.getFirstSelectedItem();
-			Eventorganisator veraenderterEventorganisatorDAO = iShowEventorganisatorService
-					.showEventorganisator(selectedEventorganisator.get().getEventorganisator_id());
-			if (!textfieldVorname.getValue().equals(veraenderterEventorganisatorDAO.getVorname())) {
-				veraenderterEventorganisatorDAO.setVorname(textfieldVorname.getValue());
-			}
-			if (!textfieldNachname.getValue().equals(veraenderterEventorganisatorDAO.getNachname())) {
-				veraenderterEventorganisatorDAO.setNachname(textfieldNachname.getValue());
-			}
-			if (!textfieldFachbereich.getValue().equals(veraenderterEventorganisatorDAO.getFachbereich())) {
-				veraenderterEventorganisatorDAO.setFachbereich(textfieldFachbereich.getValue());
-			}
-			if (!textfieldTelefonnr.getValue().equals(veraenderterEventorganisatorDAO.getTelefonnr())) {
-				veraenderterEventorganisatorDAO.setTelefonnr(textfieldTelefonnr.getValue());
-			}
-			if (!textfieldEmail.getValue().equals(veraenderterEventorganisatorDAO.getEmail())) {
-				veraenderterEventorganisatorDAO.setEmail(textfieldEmail.getValue());
-			}
-			Set<Integer> eventsVonUnveraendertemEventorganisator = new HashSet<>(
-					veraenderterEventorganisatorDAO.getVerwaltet_events());
-			Set<Integer> eventsVonVeraendertemEventorganisator = new HashSet<>();
-			for (Event einAusgewaehltesEvent : selectionModelEvent.getSelectedItems()) {
-				eventsVonVeraendertemEventorganisator.add(einAusgewaehltesEvent.getEvent_id());
-			}
-			if (!eventsVonUnveraendertemEventorganisator.equals(eventsVonVeraendertemEventorganisator)) {
-				System.out.println("Eventzuordnung zu Eventorganisator veraendert!");
-				veraenderterEventorganisatorDAO.setVerwaltet_events(eventsVonVeraendertemEventorganisator);
-			}
+			try {
+				binder.writeBean(eventorgatmp);
+				Optional<Eventorganisator> selectedEventorganisator = selectionModelEventorganisator
+						.getFirstSelectedItem();
+				Eventorganisator veraenderterEventorganisatorDAO = iShowEventorganisatorService
+						.showEventorganisator(selectedEventorganisator.get().getEventorganisator_id());
+				if (!textfieldVorname.getValue().equals(veraenderterEventorganisatorDAO.getVorname())) {
+					veraenderterEventorganisatorDAO.setVorname(textfieldVorname.getValue());
+				}
+				if (!textfieldNachname.getValue().equals(veraenderterEventorganisatorDAO.getNachname())) {
+					veraenderterEventorganisatorDAO.setNachname(textfieldNachname.getValue());
+				}
+				if (!textfieldFachbereich.getValue().equals(veraenderterEventorganisatorDAO.getFachbereich())) {
+					veraenderterEventorganisatorDAO.setFachbereich(textfieldFachbereich.getValue());
+				}
+				if (!textfieldTelefonnr.getValue().equals(veraenderterEventorganisatorDAO.getTelefonnr())) {
+					veraenderterEventorganisatorDAO.setTelefonnr(textfieldTelefonnr.getValue());
+				}
+				if (!textfieldEmail.getValue().equals(veraenderterEventorganisatorDAO.getEmail())) {
+					veraenderterEventorganisatorDAO.setEmail(textfieldEmail.getValue());
+				}
+				Set<Integer> eventsVonUnveraendertemEventorganisator = new HashSet<>(
+						veraenderterEventorganisatorDAO.getVerwaltet_events());
+				Set<Integer> eventsVonVeraendertemEventorganisator = new HashSet<>();
+				for (Event einAusgewaehltesEvent : selectionModelEvent.getSelectedItems()) {
+					eventsVonVeraendertemEventorganisator.add(einAusgewaehltesEvent.getEvent_id());
+				}
+				if (!eventsVonUnveraendertemEventorganisator.equals(eventsVonVeraendertemEventorganisator)) {
+					System.out.println("Eventzuordnung zu Eventorganisator veraendert!");
+					veraenderterEventorganisatorDAO.setVerwaltet_events(eventsVonVeraendertemEventorganisator);
+				}
 
-			iAlterEventorganisatorService.aenderEventorganisator(veraenderterEventorganisatorDAO);
-			notificationSavesuccess.open(); // Erfolgreich-Meldung anzeigen
-			aendernButton.getUI().ifPresent(ui -> ui.navigate("ui/admin/menue")); // zurueck auf andere Seite
+				iAlterEventorganisatorService.aenderEventorganisator(veraenderterEventorganisatorDAO);
+				notificationSavesuccess.open(); // Erfolgreich-Meldung anzeigen
+				aendernButton.getUI().ifPresent(ui -> ui.navigate("ui/admin/menue")); // zurueck auf andere Seite
+
+			} catch (ValidationException e) {
+				System.out.println("Musseingaben wurden verletzt!");
+				e.printStackTrace();
+			}
 		});
 
 		logoutButton.addClickListener(event -> { // Bei Buttonklick werden folgende Aktionen ausgefuehrt
