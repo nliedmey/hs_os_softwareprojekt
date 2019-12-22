@@ -186,6 +186,11 @@ public class EventDurchfuehrung extends HorizontalLayout {
 		// SoundPlayer fuer Signalton
 		try {
 			clip = AudioSystem.getClip();
+			//unten fuer Webdeploy
+//			String directory=System.getProperty("jboss.server.data.dir"); //Property verweist auf Datenverzeichnes des Wildflyservers (auf Server: opt/wildfly)
+//			String filename="WAV001.WAV";
+//			String filepath = directory+"\\otherFiles\\"+filename;
+//			URL link = this.getClass().getResource(filepath);
 			URL link = this.getClass().getResource("./WAV001.WAV");
 			System.out.println(link);
 			File file = new File(link.getPath());
