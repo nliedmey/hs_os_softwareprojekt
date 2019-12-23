@@ -358,7 +358,7 @@ public class EventDurchfuehrung extends HorizontalLayout {
 
 		// Startet den Timer
 		buttonStart.addClickListener(event -> {
-
+			timerLaeuft = true;
 			buttonStart.setEnabled(false);
 			// Polling
 			UI.getCurrent().setPollInterval(1000);
@@ -368,7 +368,6 @@ public class EventDurchfuehrung extends HorizontalLayout {
 		// Zaehlt den Timer jede Sekunde um 1 herunter
 		UI.getCurrent().addPollListener(event -> {
 
-			timerLaeuft = true;
 			if (secGepl > 0) {
 				// Wenn Zeit noch nicht abgelaufen ist...
 				secGepl = secGepl - 1;
