@@ -14,6 +14,7 @@ import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.grid.Grid;
@@ -62,6 +63,7 @@ public class AlterEvent extends VerticalLayout {
 
 		Button aendernButton = new Button("Aendern");
 		Button logoutButton = new Button("Logout");
+		logoutButton.addThemeVariants(ButtonVariant.LUMO_SUCCESS);
 
 		TextField textfieldBezeichnung = new TextField("Bezeichnung:");
 		DatePicker datepickerStartzeitpunktDatum = new DatePicker("Startdatum:");

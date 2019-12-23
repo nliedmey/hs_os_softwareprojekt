@@ -48,7 +48,7 @@ public class ChangePassword extends VerticalLayout {
 		// Button hinzufuegen
 		Button buttonAendern = new Button("Passwort aendern");
 		buttonAendern.addThemeVariants(ButtonVariant.LUMO_SUCCESS);
-		Button buttonAbbrechen = new Button("Abbrechen");
+		Button buttonAbbrechen = new Button("Zurueck");
 		buttonAbbrechen.addThemeVariants(ButtonVariant.LUMO_ERROR);
 
 		// Notification

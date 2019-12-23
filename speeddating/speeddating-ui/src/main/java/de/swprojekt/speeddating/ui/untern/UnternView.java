@@ -1,6 +1,7 @@
 package de.swprojekt.speeddating.ui.untern;
 
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.grid.Grid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +31,7 @@ public class UnternView extends VerticalLayout {	//VerticalLayout fuehrt zu Anor
 		Grid<Unternehmen> unternehmenGrid;	//Tabelle mit Studierenden
 		Button logoutButton=new Button("Logout");
 		Button zurueckButton = new Button("Zurueck");
+		zurueckButton.addThemeVariants(ButtonVariant.LUMO_ERROR);
 		
 		unternehmenGrid = new Grid<>(Unternehmen.class);	//Tabelle initialisieren
 		ListDataProvider<Unternehmen> ldpUnternehmen = DataProvider

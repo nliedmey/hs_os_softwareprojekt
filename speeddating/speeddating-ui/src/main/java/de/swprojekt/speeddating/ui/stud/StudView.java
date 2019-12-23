@@ -1,6 +1,7 @@
 package de.swprojekt.speeddating.ui.stud;
 
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.grid.Grid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +31,7 @@ public class StudView extends VerticalLayout { // VerticalLayout fuehrt zu Anord
 		Grid<Studierender> studierenderGrid; // Tabelle mit Studierenden
 		Button logoutButton = new Button("Logout");
 		Button zurueckButton = new Button("Zurueck");
+		zurueckButton.addThemeVariants(ButtonVariant.LUMO_ERROR);
 
 		studierenderGrid = new Grid<>(Studierender.class); // Tabelle initialisieren
 		ListDataProvider<Studierender> ldpStudent = DataProvider

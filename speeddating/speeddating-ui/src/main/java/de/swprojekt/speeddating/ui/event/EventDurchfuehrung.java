@@ -23,6 +23,7 @@ import com.vaadin.ui.Audio;
 
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.html.Label;
@@ -137,6 +138,7 @@ public class EventDurchfuehrung extends HorizontalLayout {
 		Button buttonPauseFortsetzen = new Button("Pause / Fortsetzen");
 		Button buttonBeenden = new Button("Beenden");
 		Button zurueckMenueButton = new Button("Zurueck");
+		zurueckMenueButton.addThemeVariants(ButtonVariant.LUMO_ERROR);
 
 		initializing();
 

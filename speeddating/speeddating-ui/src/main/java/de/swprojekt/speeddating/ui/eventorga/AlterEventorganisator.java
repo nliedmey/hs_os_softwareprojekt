@@ -12,6 +12,7 @@ import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.Grid.SelectionMode;
 import com.vaadin.flow.component.html.Label;
@@ -51,6 +52,7 @@ public class AlterEventorganisator extends VerticalLayout {
 		Button aendernButton = new Button("Aendern");
 		Button logoutButton = new Button("Logout");
 		Button zurueckButton = new Button("Zurueck");
+		zurueckButton.addThemeVariants(ButtonVariant.LUMO_ERROR);
 
 		TextField textfieldVorname = new TextField("Vorname:");
 		TextField textfieldNachname = new TextField("Nachname:");
@@ -63,6 +65,12 @@ public class AlterEventorganisator extends VerticalLayout {
 		Label labelSavesuccess = new Label("Eventorganisator erfolgreich aktualisiert! ");
 		notificationSavesuccess.add(labelSavesuccess);
 		notificationSavesuccess.setDuration(2500); // Meldung wird 2,5 Sekunden lang angezeigt
+		
+		Notification notificationAbbruch = new Notification();
+		notificationAbbruch.addThemeVariants(NotificationVariant.LUMO_ERROR);
+		Label labelAbbruchsuccess = new Label("Studentbearbeitung abgebrochen! ");
+		notificationAbbruch.add(labelAbbruchsuccess);
+		notificationAbbruch.setDuration(2500); // Meldung wird 2,5 Sekunden lang angezeigt
 
 		Grid<Event> eventGrid; // Tabelle mit Events, welcher Eventorganisator verwaltet
 		GridMultiSelectionModel<Event> selectionModelEvent;
@@ -212,6 +220,7 @@ public class AlterEventorganisator extends VerticalLayout {
 		});
 
 		zurueckButton.addClickListener(event -> { // Bei Buttonklick werden folgende Aktionen ausgefuehrt
+			notificationAbbruch.open();
 			logoutButton.getUI().ifPresent(ui -> ui.navigate("ui/admin/menue")); // zurueck auf andere Seite
 		});
 

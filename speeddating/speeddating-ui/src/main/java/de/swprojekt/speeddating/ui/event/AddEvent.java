@@ -73,6 +73,7 @@ public class AddEvent extends VerticalLayout {
 		TimePicker timepickerEndzeitpunktUhrzeit = new TimePicker("Endzeit:");
 
 		Button logoutButton = new Button("Logout");
+		logoutButton.addThemeVariants(ButtonVariant.LUMO_SUCCESS);
 
 		studierenderGrid = new Grid<>(Studierender.class); // Tabelle initialisieren
 		ListDataProvider<Studierender> ldpStudent = DataProvider
@@ -101,8 +102,8 @@ public class AddEvent extends VerticalLayout {
 
 		// Button hinzufuegen
 		Button buttonHinzufuegen = new Button("Event anlegen");
-		buttonHinzufuegen.addThemeVariants(ButtonVariant.LUMO_SUCCESS);
 		Button zurueckButton = new Button("Zurueck");
+		zurueckButton.addThemeVariants(ButtonVariant.LUMO_ERROR);
 
 		// Notification Meldungen mit Button verknuepfen
 		Notification notificationSavesuccess = new Notification();

@@ -15,6 +15,7 @@ import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.grid.Grid;
@@ -65,7 +66,9 @@ public class AlterEventForEventorganisator extends VerticalLayout {
 
 		Button aendernButton = new Button("Aendern");
 		Button logoutButton = new Button("Logout");
+		logoutButton.addThemeVariants(ButtonVariant.LUMO_SUCCESS);
 		Button zurueckButton = new Button("Zurueck");
+		zurueckButton.addThemeVariants(ButtonVariant.LUMO_ERROR);
 
 		TextField textfieldBezeichnung = new TextField("Bezeichnung:");
 		DatePicker datepickerStartzeitpunktDatum = new DatePicker("Startdatum:");
@@ -80,6 +83,12 @@ public class AlterEventForEventorganisator extends VerticalLayout {
 		Label labelSavesuccess = new Label("Event erfolgreich aktualisiert! ");
 		notificationSavesuccess.add(labelSavesuccess);
 		notificationSavesuccess.setDuration(2500); // Meldung wird 2,5 Sekunden lang angezeigt
+		
+		Notification notificationAbbruch = new Notification();
+		notificationAbbruch.addThemeVariants(NotificationVariant.LUMO_ERROR);
+		Label labelAbbruchsuccess = new Label("Studentbearbeitung abgebrochen! ");
+		notificationAbbruch.add(labelAbbruchsuccess);
+		notificationAbbruch.setDuration(2500); // Meldung wird 2,5 Sekunden lang angezeigt
 
 		List<Event> listOfEvents = new ArrayList<Event>();
 		CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication()
@@ -303,6 +312,7 @@ public class AlterEventForEventorganisator extends VerticalLayout {
 		});
 
 		zurueckButton.addClickListener(event -> { // Bei Buttonklick werden folgende Aktionen ausgefuehrt
+			notificationAbbruch.open();
 			zurueckButton.getUI().ifPresent(ui -> ui.navigate("ui/eventorganisator/menue")); // zurueck auf andere Seite
 		});
 

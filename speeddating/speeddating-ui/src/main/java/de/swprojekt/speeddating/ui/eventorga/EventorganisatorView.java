@@ -1,6 +1,7 @@
 package de.swprojekt.speeddating.ui.eventorga;
 
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.GridMultiSelectionModel;
@@ -44,6 +45,7 @@ public class EventorganisatorView extends VerticalLayout { // VerticalLayout fue
 		GridMultiSelectionModel<Eventorganisator> selectionModelEventorganisator;
 		Button loeschenButton = new Button("Loeschen");
 		Button logoutButton = new Button("Logout");
+		logoutButton.addThemeVariants(ButtonVariant.LUMO_ERROR);
 		Button zurueckButton = new Button("Zurueck");
 
 		// Bestaetigungs-Popup

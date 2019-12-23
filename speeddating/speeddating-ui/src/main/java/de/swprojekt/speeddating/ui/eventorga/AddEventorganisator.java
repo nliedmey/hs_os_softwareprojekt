@@ -49,6 +49,7 @@ public class AddEventorganisator extends VerticalLayout {
 		Button buttonHinzufuegen = new Button("Eventorganisator anlegen");
 		Button logoutButton = new Button("Logout");
 		Button zurueckButton = new Button("Zurueck");
+		zurueckButton.addThemeVariants(ButtonVariant.LUMO_ERROR);
 
 		buttonHinzufuegen.addThemeVariants(ButtonVariant.LUMO_SUCCESS);
 

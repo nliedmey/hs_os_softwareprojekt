@@ -1,6 +1,7 @@
 package de.swprojekt.speeddating.ui.event;
 
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Anchor;
@@ -47,7 +48,9 @@ public class UserViewForEvent extends VerticalLayout {	//VerticalLayout fuehrt z
 		
 		Button zugaengePDFErstellenButton=new Button("PDF fuer Zugaenge erstellen");
 		Button logoutButton=new Button("Logout");
+		logoutButton.addThemeVariants(ButtonVariant.LUMO_SUCCESS);
 	    Button zurueckButton = new Button("Zurueck");
+	    zurueckButton.addThemeVariants(ButtonVariant.LUMO_ERROR);
 	    Anchor pdfLink=new Anchor(""," ");
 		Label labelPassword=new Label();
 		

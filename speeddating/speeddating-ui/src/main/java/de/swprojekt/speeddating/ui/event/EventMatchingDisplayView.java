@@ -96,6 +96,7 @@ public class EventMatchingDisplayView extends HorizontalLayout {
 		Button buttonZurueck = new Button("Zurueck");
 		buttonZurueck.addThemeVariants(ButtonVariant.LUMO_ERROR);
 		Button logoutButton = new Button("Logout");
+		logoutButton.addThemeVariants(ButtonVariant.LUMO_SUCCESS);
 
 		// Notification Meldungen mit Button verknuepfen
 		Notification notificationMatchingsuccess = new Notification();
