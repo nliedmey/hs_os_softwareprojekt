@@ -19,6 +19,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.context.SecurityContextHolder;
 
+import com.vaadin.ui.Audio;
+
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.ComboBox;
@@ -28,6 +30,7 @@ import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.Route;
 
 import de.swprojekt.speeddating.model.Event;
@@ -65,6 +68,8 @@ public class EventDurchfuehrung extends HorizontalLayout {
 
 	Clip clip;
 	Event aEvent;
+	
+	AudioPlayer player=new AudioPlayer();
 
 	@SuppressWarnings("deprecation")
 	@Autowired
@@ -184,22 +189,26 @@ public class EventDurchfuehrung extends HorizontalLayout {
 		UI.getCurrent().setPollInterval(-1);
 
 		// SoundPlayer fuer Signalton
-		try {
-			clip = AudioSystem.getClip();
+//		try {
+//			clip = AudioSystem.getClip();
 			//unten fuer Webdeploy
 //			String directory=System.getProperty("jboss.server.data.dir"); //Property verweist auf Datenverzeichnes des Wildflyservers (auf Server: opt/wildfly)
 //			String filename="WAV001.WAV";
 //			String filepath = directory+"\\otherFiles\\"+filename;
 //			URL link = this.getClass().getResource(filepath);
-			URL link = this.getClass().getResource("./WAV001.WAV");
-			System.out.println(link);
-			File file = new File(link.getPath());
-			AudioInputStream audio = AudioSystem.getAudioInputStream(file);
-			clip.open(audio);
-		} catch (LineUnavailableException | UnsupportedAudioFileException | IOException e) {
-
-			e.printStackTrace();
-		}
+			AudioPlayer player=new AudioPlayer();
+			player.setSource("http://soundbible.com/mp3/Air Horn-SoundBible.com-964603082.mp3");
+			
+//			player.play();
+//			URL link = this.getClass().getResource("./WAV001.WAV");
+//			System.out.println(link);
+//			File file = new File(link.getPath());
+//			AudioInputStream audio = AudioSystem.getAudioInputStream(file);
+//			clip.open(audio);
+//		} catch (LineUnavailableException | UnsupportedAudioFileException | IOException e) {
+//
+//			e.printStackTrace();
+//		}
 
 		// Layouts
 
@@ -271,6 +280,7 @@ public class EventDurchfuehrung extends HorizontalLayout {
 		labelTimer.setVisible(false);
 
 		add(vLinks, vRechts);
+		add(player);
 
 		zurueckButton.addClickListener(event -> { // Bei Buttonklick werden folgende Aktionen ausgefuehrt
 			zurueckButton.getUI().ifPresent(ui -> ui.navigate("ui/eventorganisator/menue")); // zurueck auf andere Seite
@@ -361,7 +371,8 @@ public class EventDurchfuehrung extends HorizontalLayout {
 				// Zeit ist abgelaufen...
 				UI.getCurrent().setPollInterval(-1);
 				// Startet den Ton
-				clip.start();
+				player.play();
+//				clip.start();
 				popUpClose.open();
 			}
 
