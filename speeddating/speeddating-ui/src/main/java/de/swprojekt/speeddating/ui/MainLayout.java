@@ -21,14 +21,14 @@ public class MainLayout extends VerticalLayout implements RouterLayout {	//stell
     public MainLayout() {
     	setSizeFull();
     	header.setWidth("100%");
-    	Button headerButton=new Button("Header");
+    	Button headerButton=new Button("Speeddating-Webanwendung");
     	headerButton.setWidth("100%");
     	header.add(headerButton);
     	
     	childWrapper.setWidth("100%");
     	
     	footer.setWidth("100%");
-    	Button footerButton=new Button("Footer");
+    	Button footerButton=new Button("Entwickelt von Patrick Bazan, Marius Lange und Nico Liedmeyer");
     	footerButton.setWidth("100%");
     	
     	footer.add(footerButton);
