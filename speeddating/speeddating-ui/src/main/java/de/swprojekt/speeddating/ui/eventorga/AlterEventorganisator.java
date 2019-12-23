@@ -68,7 +68,7 @@ public class AlterEventorganisator extends VerticalLayout {
 		
 		Notification notificationAbbruch = new Notification();
 		notificationAbbruch.addThemeVariants(NotificationVariant.LUMO_ERROR);
-		Label labelAbbruchsuccess = new Label("Studentbearbeitung abgebrochen! ");
+		Label labelAbbruchsuccess = new Label("Eventorganisatorbearbeitung abgebrochen! ");
 		notificationAbbruch.add(labelAbbruchsuccess);
 		notificationAbbruch.setDuration(2500); // Meldung wird 2,5 Sekunden lang angezeigt
 
