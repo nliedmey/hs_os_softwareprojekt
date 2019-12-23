@@ -136,6 +136,7 @@ public class EventDurchfuehrung extends HorizontalLayout {
 		Button buttonNaechsteRunde = new Button("Naechste Runde");
 		Button buttonPauseFortsetzen = new Button("Pause / Fortsetzen");
 		Button buttonBeenden = new Button("Beenden");
+		Button zurueckMenueButton = new Button("Zurueck");
 
 		initializing();
 
@@ -268,6 +269,7 @@ public class EventDurchfuehrung extends HorizontalLayout {
 		vRechts.add(new HorizontalLayout(labelRunde, labelRundeAnzahl, labelMaxRunden));
 		vRechts.add(labelTimer, buttonStart, buttonPauseFortsetzen);
 		vRechts.add(new HorizontalLayout(buttonNaechsteRunde, buttonBeenden));
+		vRechts.add(zurueckMenueButton);
 
 		// Zunaechst unsichtbar. Werden nach Eventauswahl sichtbar
 		buttonStart.setVisible(false);
@@ -278,12 +280,17 @@ public class EventDurchfuehrung extends HorizontalLayout {
 		labelRundeAnzahl.setVisible(false);
 		labelMaxRunden.setVisible(false);
 		labelTimer.setVisible(false);
+		zurueckMenueButton.setVisible(false);
 
 		add(vLinks, vRechts);
 		add(player);
 
 		zurueckButton.addClickListener(event -> { // Bei Buttonklick werden folgende Aktionen ausgefuehrt
 			zurueckButton.getUI().ifPresent(ui -> ui.navigate("ui/eventorganisator/menue")); // zurueck auf andere Seite
+		});
+		
+		zurueckMenueButton.addClickListener(event -> { // Bei Buttonklick werden folgende Aktionen ausgefuehrt
+			zurueckMenueButton.getUI().ifPresent(ui -> ui.navigate("ui/eventorganisator/menue")); // zurueck auf andere Seite
 		});
 
 		// Buttons-Funktionen
@@ -341,6 +348,7 @@ public class EventDurchfuehrung extends HorizontalLayout {
 				labelMaxRunden.setVisible(true);
 				labelMaxRunden.setText("/ " + Integer.toString(listeStuds.size()));
 				labelTimer.setVisible(true);
+				zurueckMenueButton.setVisible(true);
 
 				// Button nachsteRunde zunächst disabled. Wird enabled, nachdem Zeit abgelaufen
 				// ist
