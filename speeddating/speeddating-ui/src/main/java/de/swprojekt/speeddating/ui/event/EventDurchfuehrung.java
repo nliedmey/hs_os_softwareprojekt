@@ -227,6 +227,13 @@ public class EventDurchfuehrung extends HorizontalLayout {
 		Dialog popUpBestaetigen = new Dialog();
 		popUpBestaetigen.add(new Label("Das Event endgueltig beenden?"));
 		popUpBestaetigen.add(buttonBestaetigenJa, buttonBestaetigenNein);
+		
+		//Eventteilnehmer-Anzahl nicht ausgewogen -PopUp
+		Button buttonCloseAuswahl = new Button("Close");
+		Dialog popUpCloseAuswahl = new Dialog();
+		popUpCloseAuswahl.add(new Label("Aufteilung der Teilnehmer nicht ausgwogen."));
+		popUpCloseAuswahl.add(new Label("Bitte Event entsprechend bearbeiten."));
+		popUpCloseAuswahl.add(buttonCloseAuswahl);
 
 		// Links
 		VerticalLayout vLinks = new VerticalLayout();
@@ -327,6 +334,8 @@ public class EventDurchfuehrung extends HorizontalLayout {
 						i++;
 					}
 
+				} else {
+					popUpCloseAuswahl.open();
 				}
 
 				// Timer starten
@@ -448,6 +457,11 @@ public class EventDurchfuehrung extends HorizontalLayout {
 			buttonStart.setEnabled(false);
 			buttonPauseFortsetzen.setEnabled(false);
 		});
+		
+		buttonCloseAuswahl.addClickListener(event -> {
+			popUpCloseAuswahl.close();
+			buttonCloseAuswahl.getUI().ifPresent(ui -> ui.navigate("ui/eventorganisator/menue"));
+		});
 
 		buttonBeenden.addClickListener(event -> {
 			popUpBestaetigen.open();
@@ -457,7 +471,7 @@ public class EventDurchfuehrung extends HorizontalLayout {
 			aEvent.setAbgeschlossen(true);
 			iAlterEventService.aenderEvent(aEvent);
 			notificationEventBeendetsuccess.open();
-			buttonBeenden.getUI().ifPresent(ui -> ui.navigate("ui/eventorganisator/menue"));
+			buttonBestaetigenJa.getUI().ifPresent(ui -> ui.navigate("ui/eventorganisator/menue"));
 			popUpBestaetigen.close();
 		});
 
