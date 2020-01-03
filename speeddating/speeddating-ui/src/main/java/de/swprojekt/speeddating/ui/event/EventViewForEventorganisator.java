@@ -46,14 +46,14 @@ public class EventViewForEventorganisator extends VerticalLayout { // VerticalLa
 
 		Grid<Event> eventGrid; // Tabelle mit Events
 		GridMultiSelectionModel<Event> selectionModelEvent;
-		Button pdfButton = new Button("PDF-Download");
+//		Button pdfButton = new Button("PDF-Download");
 		Button loeschenButton = new Button("Loeschen");
 		Button logoutButton = new Button("Logout");
 		logoutButton.addThemeVariants(ButtonVariant.LUMO_SUCCESS);
 		Button zurueckButton = new Button("Zurueck");
 		zurueckButton.addThemeVariants(ButtonVariant.LUMO_ERROR);
-		Anchor pdfLink = new Anchor("", " ");
-		Label labelPassword = new Label();
+//		Anchor pdfLink = new Anchor("", " ");
+//		Label labelPassword = new Label();
 
 		Notification notificationSavesuccess = new Notification();
 		notificationSavesuccess.addThemeVariants(NotificationVariant.LUMO_SUCCESS);
@@ -107,41 +107,41 @@ public class EventViewForEventorganisator extends VerticalLayout { // VerticalLa
 		eventGrid.setSelectionMode(SelectionMode.MULTI); // es koennen mehrere Events ausgewaehlt sein
 		selectionModelEvent = (GridMultiSelectionModel<Event>) eventGrid.getSelectionModel();
 
-		pdfButton.addClickListener(event -> {
-			for (Event aEvent : selectionModelEvent.getSelectedItems()) // markierte Events durchgehen
-			{
-				Event selectedEvent = iShowEventService.showEvent(aEvent.getEvent_id());
-				if (selectedEvent.isAbgeschlossen()) {
-
-					// MatchingAsPDF objektForCreatingPDF = new MatchingAsPDF();
-					try {
-						String password = "pw*" + (new Random().nextInt((9999 - 1000) + 1) + 1000); // Schluessel
-																									// zwischen 1000 und
-																									// 9999 generieren
-
-						String filename = iMatchingAsPDFService.pdfMatchingErgebnisseErstellen(
-								iShowEventService.generateMatchingResultSet(selectedEvent), selectedEvent.getEvent_id(),
-								selectedEvent.getBezeichnung(), password);
-
-						// String
-						// filename=objektForCreatingPDF.pdfErstellen(iShowEventService.generateMatchingResultSet(selectedEvent),selectedEvent.getEvent_id(),
-						// selectedEvent.getBezeichnung(),password);
-						pdfLink.setHref("http://131.173.88.192:80/matchingAuswertungen/" + filename);
-						pdfLink.setText("Download als PDF");
-						labelPassword.setText("BITTE NOTIEREN: Ihr Passwort zum Oeffnen der PDF: " + password);
-						labelPDFsuccess.setText("PDF fuer das Event " + selectedEvent.getBezeichnung() + " erstellt!");
-						notificationPDFsuccess.open();
-					} catch (FileNotFoundException e) {
-						System.out.println("Bei Aufruf der PDF Erstellung gibt es Probleme");
-						e.printStackTrace();
-					}
-				} else {
-					labelPDFerror
-							.setText("Das Event " + selectedEvent.getBezeichnung() + " ist noch nicht abgeschlossen!");
-					notificationPDFerror.open();
-				}
-			}
-		});
+//		pdfButton.addClickListener(event -> {
+//			for (Event aEvent : selectionModelEvent.getSelectedItems()) // markierte Events durchgehen
+//			{
+//				Event selectedEvent = iShowEventService.showEvent(aEvent.getEvent_id());
+//				if (selectedEvent.isAbgeschlossen()) {
+//
+//					// MatchingAsPDF objektForCreatingPDF = new MatchingAsPDF();
+//					try {
+//						String password = "pw*" + (new Random().nextInt((9999 - 1000) + 1) + 1000); // Schluessel
+//																									// zwischen 1000 und
+//																									// 9999 generieren
+//
+//						String filename = iMatchingAsPDFService.pdfMatchingErgebnisseErstellen(
+//								iShowEventService.generateMatchingResultSet(selectedEvent), selectedEvent.getEvent_id(),
+//								selectedEvent.getBezeichnung(), password);
+//
+//						// String
+//						// filename=objektForCreatingPDF.pdfErstellen(iShowEventService.generateMatchingResultSet(selectedEvent),selectedEvent.getEvent_id(),
+//						// selectedEvent.getBezeichnung(),password);
+//						pdfLink.setHref("http://131.173.88.192:80/matchingAuswertungen/" + filename);
+//						pdfLink.setText("Download als PDF");
+//						labelPassword.setText("BITTE NOTIEREN: Ihr Passwort zum Oeffnen der PDF: " + password);
+//						labelPDFsuccess.setText("PDF fuer das Event " + selectedEvent.getBezeichnung() + " erstellt!");
+//						notificationPDFsuccess.open();
+//					} catch (FileNotFoundException e) {
+//						System.out.println("Bei Aufruf der PDF Erstellung gibt es Probleme");
+//						e.printStackTrace();
+//					}
+//				} else {
+////					labelPDFerror
+////							.setText("Das Event " + selectedEvent.getBezeichnung() + " ist noch nicht abgeschlossen!");
+////					notificationPDFerror.open();
+////				}
+//			}
+//		});
 
 		loeschenButton.addClickListener(event -> { // Bei Buttonklick werden folgende Aktionen ausgefuehrt
 			for (Event e : selectionModelEvent.getSelectedItems()) // markierte Events durchgehen
@@ -165,14 +165,10 @@ public class EventViewForEventorganisator extends VerticalLayout { // VerticalLa
 		});
 
 		add(eventGrid); // Hinzufuegen der Elemente zum VerticalLayout
-		add(pdfButton, loeschenButton);
-		add(pdfLink);
-		add(labelPassword);
+//		add(pdfButton, loeschenButton);
+		add(loeschenButton);
+//		add(pdfLink);
+//		add(labelPassword);
 		add(new HorizontalLayout(zurueckButton, logoutButton));
 	}
-	// @PostConstruct //Ausfuehrung nach Konstruktoraufruf
-	// public void init()
-	// {
-	//
-	// }
 }

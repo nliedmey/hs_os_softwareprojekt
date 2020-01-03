@@ -71,7 +71,6 @@ public class EventMatchingDisplayView extends HorizontalLayout {
 			IShowStudierendeService iShowStudierendeService, IShowUnternehmenService iShowUnternehmenService,
 			IMatchingAsPDFService iMatchingAsPDFService) {
 
-		Binder<Event> binder; // verknuepft Input aus Textfeldern mit Objektattributen
 		DatePicker datepickerStartzeitpunktDatum = new DatePicker("Startdatum:");
 		TimePicker timepickerStartzeitpunktUhrzeit = new TimePicker("Startzeit:");
 		DatePicker datepickerEndzeitpunktDatum = new DatePicker("Enddatum:");
@@ -122,6 +121,12 @@ public class EventMatchingDisplayView extends HorizontalLayout {
 		Label labelFailure = new Label("PDF konnte nicht erstellt werden (Datei wird von einem anderen Prozess verwendet)! ");
 		notificationFailure.add(labelFailure);
 		notificationFailure.setDuration(4500); 
+		
+		Notification notificationNichtAbgeschlossen = new Notification();
+		notificationNichtAbgeschlossen.addThemeVariants(NotificationVariant.LUMO_ERROR);
+		Label labelNichtAbgeschlossen = new Label("Event noch nicht abgeschlossen! Bitte zunaechst als abgeschlossen markieren! ");
+		notificationNichtAbgeschlossen.add(labelFailure);
+		notificationNichtAbgeschlossen.setDuration(4500); 
 
 		List<Event> listOfEvents = new ArrayList<Event>();
 		CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication()
@@ -217,30 +222,35 @@ public class EventMatchingDisplayView extends HorizontalLayout {
 		buttonMatchingDuerchfuehren.addClickListener(event -> {
 //			if (listOfUnternOffeneStimmen.isEmpty() && listOfStudOffeneStimmen.isEmpty()) {
 			Event aEvent = comboBox.getValue();
-			;
+			
 			Event selectedEvent = iShowEventService.showEvent(aEvent.getEvent_id());
+			if(selectedEvent.isAbgeschlossen())
+			{
+				try {
+					String password = "pw*" + (new Random().nextInt((9999 - 1000) + 1) + 1000); // Schluessel zwischen 1000
+																								// und 9999 generieren
+					String filename = iMatchingAsPDFService.pdfMatchingErgebnisseErstellen(
+							iShowEventService.generateMatchingResultSet(selectedEvent), selectedEvent.getEvent_id(),
+							selectedEvent.getBezeichnung(), password);
+					pdfLink.setHref("http://131.173.88.192:80/matchingAuswertungen/" + filename);
+					pdfLink.setText("Download als PDF");
+					labelPassword.setText("BITTE NOTIEREN: Ihr Passwort zum Oeffnen der PDF: " + password);
+					notificationMatchingsuccess.open(); // Erfolgreich-Meldung anzeigen
+				} catch (FileNotFoundException e) {
+					notificationFailure.open();
+					System.out.println("Bei Aufruf der PDF Erstellung gibt es Probleme");
+					e.printStackTrace();
+				}
 
-//			MatchingAsPDF objektForCreatingPDF = new MatchingAsPDF();
-			try {
-				String password = "pw*" + (new Random().nextInt((9999 - 1000) + 1) + 1000); // Schluessel zwischen 1000
-																							// und 9999 generieren
-				String filename = iMatchingAsPDFService.pdfMatchingErgebnisseErstellen(
-						iShowEventService.generateMatchingResultSet(selectedEvent), selectedEvent.getEvent_id(),
-						selectedEvent.getBezeichnung(), password);
-//				String filename=objektForCreatingPDF.pdfErstellen(iShowEventService.generateMatchingResultSet(selectedEvent), selectedEvent.getEvent_id(), selectedEvent.getBezeichnung(), password);	
-
-				pdfLink.setHref("http://131.173.88.192:80/matchingAuswertungen/" + filename);
-				pdfLink.setText("Download als PDF");
-				labelPassword.setText("BITTE NOTIEREN: Ihr Passwort zum Oeffnen der PDF: " + password);
-				notificationMatchingsuccess.open(); // Erfolgreich-Meldung anzeigen
-			} catch (FileNotFoundException e) {
-				notificationFailure.open();
-				System.out.println("Bei Aufruf der PDF Erstellung gibt es Probleme");
-				e.printStackTrace();
+				// Erfolgreich-Meldung anzeigen
+				notificationMatchingsuccess.open();
+			}
+			else {
+				labelNichtAbgeschlossen
+						.setText("Das Event " + selectedEvent.getBezeichnung() + " ist noch nicht abgeschlossen!");
+				notificationNichtAbgeschlossen.open();
 			}
 
-			// Erfolgreich-Meldung anzeigen
-			notificationMatchingsuccess.open();
 //			buttonMatchingDuerchfuehren.getUI().ifPresent(ui -> ui.navigate("ui/eventorganisator/menue")); // zurueck auf andere Seite
 
 //			} else {
