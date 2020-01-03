@@ -259,7 +259,7 @@ public class AlterEventForEventorganisator extends VerticalLayout {
 						.of(datepickerEndzeitpunktDatum.getValue(), timepickerEndzeitpunktUhrzeit.getValue())
 						.atZone(ZoneId.systemDefault()).toInstant()));
 			}
-			if (!checkboxAbgeschlossen.getValue() == true) {
+			if (!checkboxAbgeschlossen.getValue().equals(veraendertesEventDAO.isAbgeschlossen())) {
 				veraendertesEventDAO.setAbgeschlossen(checkboxAbgeschlossen.getValue());
 			}
 			// Testen, ob gleiche Studierende und Unternehmen zu Event zugeordnet
