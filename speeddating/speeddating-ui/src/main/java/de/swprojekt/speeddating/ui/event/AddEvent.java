@@ -95,7 +95,7 @@ public class AddEvent extends VerticalLayout {
 		unternehmenGrid.setDataProvider(ldpUnternehmen); // erstellten Dataprovider als Datenquelle fuer Tabelle
 															// festlegen
 		unternehmenGrid.removeColumnByKey("unternehmen_id"); // studId nicht in Tabelle mit anzeigen
-		unternehmenGrid.setColumns("unternehmensname", "ansprechpartner", "kontaktmail"); // Spaltenordnung festlegen
+		unternehmenGrid.setColumns("unternehmen_id","unternehmensname", "ansprechpartner", "kontaktmail"); // Spaltenordnung festlegen
 		unternehmenGrid.setSelectionMode(SelectionMode.MULTI); // multiselection bedeutet Auswahl mehrerer Unternehmen
 																// in Tabelle moeglich
 		selectionModelUnternehmen = (GridMultiSelectionModel<Unternehmen>) unternehmenGrid.getSelectionModel();

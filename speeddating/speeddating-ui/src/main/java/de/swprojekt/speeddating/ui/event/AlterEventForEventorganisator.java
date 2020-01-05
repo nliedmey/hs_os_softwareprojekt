@@ -148,7 +148,7 @@ public class AlterEventForEventorganisator extends VerticalLayout {
 															// festlegen
 
 		unternehmenGrid.removeColumnByKey("unternehmen_id"); // studId nicht in Tabelle mit anzeigen
-		unternehmenGrid.setColumns("unternehmensname", "ansprechpartner", "kontaktmail"); // Spaltenordnung festlegen
+		unternehmenGrid.setColumns("unternehmen_id","unternehmensname", "ansprechpartner", "kontaktmail"); // Spaltenordnung festlegen
 
 		unternehmenGrid.setSelectionMode(SelectionMode.MULTI); // es koennen mehrere Unternehmen ausgewaehlt sein
 		selectionModelUnternehmen = (GridMultiSelectionModel<Unternehmen>) unternehmenGrid.getSelectionModel();

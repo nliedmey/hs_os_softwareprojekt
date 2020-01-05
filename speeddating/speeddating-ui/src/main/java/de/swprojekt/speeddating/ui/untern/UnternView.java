@@ -39,7 +39,7 @@ public class UnternView extends VerticalLayout {	//VerticalLayout fuehrt zu Anor
 		unternehmenGrid.setDataProvider(ldpUnternehmen);	//erstellten Dataprovider als Datenquelle fuer Tabelle festlegen
 
 		//studierenderGrid.removeColumnByKey("studId");	//studId nicht in Tabelle mit anzeigen
-		unternehmenGrid.setColumns("unternehmensname", "ansprechpartner", "kontaktmail");	//Spaltenordnung festlegen
+		unternehmenGrid.setColumns("unternehmen_id","unternehmensname", "ansprechpartner", "kontaktmail");	//Spaltenordnung festlegen
 		
 		logoutButton.addClickListener(event -> {	//Bei Buttonklick werden folgende Aktionen ausgefuehrt
 			SecurityContextHolder.clearContext();	//Spring-Security-Session leeren
