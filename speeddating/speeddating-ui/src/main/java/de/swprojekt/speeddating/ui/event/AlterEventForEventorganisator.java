@@ -134,7 +134,7 @@ public class AlterEventForEventorganisator extends VerticalLayout {
 		studierenderGrid.setDataProvider(ldpStudent); // erstellten Dataprovider als Datenquelle fuer Tabelle festlegen
 
 		studierenderGrid.removeColumnByKey("student_id"); // studId nicht in Tabelle mit anzeigen
-		studierenderGrid.setColumns("vorname", "nachname"); // Spaltenordnung festlegen
+		studierenderGrid.setColumns("matrikelnummer","vorname", "nachname"); // Spaltenordnung festlegen
 
 		studierenderGrid.setSelectionMode(SelectionMode.MULTI); // es koennen mehrere Studierende ausgewaehlt sein
 		selectionModelStud = (GridMultiSelectionModel<Studierender>) studierenderGrid.getSelectionModel();

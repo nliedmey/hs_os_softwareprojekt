@@ -41,8 +41,9 @@ public class StudView extends VerticalLayout { // VerticalLayout fuehrt zu Anord
 		studierenderGrid.setDataProvider(ldpStudent); // erstellten Dataprovider als Datenquelle fuer Tabelle festlegen
 
 		studierenderGrid.removeColumnByKey("student_id"); // studId nicht in Tabelle mit anzeigen
-		studierenderGrid.setColumns("vorname", "nachname", "strasse", "hausnummer", "plz", "ort", "telefonnr", "email" ); // Spaltenordnung festlegen
-
+		studierenderGrid.setColumns("matrikelnummer","vorname", "nachname", "strasse", "hausnummer", "plz", "ort", "telefonnr", "email" ); // Spaltenordnung festlegen
+	
+		
 		logoutButton.addClickListener(event -> { // Bei Buttonklick werden folgende Aktionen ausgefuehrt
 			SecurityContextHolder.clearContext(); // Spring-Security-Session leeren
 			// getUI().get().getSession().close(); //Vaadin Session leeren
