@@ -84,7 +84,6 @@ public class EventDurchfuehrung extends HorizontalLayout {
 		notificationEventBeendetsuccess.setDuration(2500); // Meldung wird 2,5 Sekunden lang angezeigt
 
 		// Buttons und Felder erzeugen
-		Label labelTabelle = new Label("Tabelle");
 		Label labelRunde = new Label("Aktuelle Runde:");
 		Label labelRundeAnzahl = new Label("1");
 		Label labelMaxRunden = new Label("");
@@ -295,10 +294,12 @@ public class EventDurchfuehrung extends HorizontalLayout {
 		add(player);
 
 		zurueckButton.addClickListener(event -> { // Bei Buttonklick werden folgende Aktionen ausgefuehrt
+			initializing();
 			zurueckButton.getUI().ifPresent(ui -> ui.navigate("ui/eventorganisator/menue")); // zurueck auf andere Seite
 		});
 		
 		zurueckMenueButton.addClickListener(event -> { // Bei Buttonklick werden folgende Aktionen ausgefuehrt
+			initializing();
 			zurueckMenueButton.getUI().ifPresent(ui -> ui.navigate("ui/eventorganisator/menue")); // zurueck auf andere Seite
 		});
 
