@@ -57,11 +57,11 @@ public class UserViewForEvent extends VerticalLayout {	//VerticalLayout fuehrt z
 	    Anchor pdfLink=new Anchor(""," ");
 		Label labelPassword=new Label();
 		
-		Notification notificationMatchingsuccess = new Notification();
-		notificationMatchingsuccess.addThemeVariants(NotificationVariant.LUMO_SUCCESS);
-		Label labelMatchingsuccess = new Label("Matching Ergebnisse wurden als PDF bereitgestellt! ");
-		notificationMatchingsuccess.add(labelMatchingsuccess);
-		notificationMatchingsuccess.setDuration(2500); //Meldung wird 2,5 Sekunden lang angezeigt
+		Notification notificationPDFsuccess = new Notification();
+		notificationPDFsuccess.addThemeVariants(NotificationVariant.LUMO_SUCCESS);
+		Label labelPDFsuccess = new Label("Zugaenge wurden als PDF bereitgestellt! ");
+		notificationPDFsuccess.add(labelPDFsuccess);
+		notificationPDFsuccess.setDuration(2500); //Meldung wird 2,5 Sekunden lang angezeigt
 		
 		Notification notificationFailure = new Notification();
 		notificationFailure.addThemeVariants(NotificationVariant.LUMO_ERROR);
@@ -141,7 +141,7 @@ public class UserViewForEvent extends VerticalLayout {	//VerticalLayout fuehrt z
 				pdfLink.setHref("http://131.173.88.192:80/teilnehmerZugaenge/"+filename);
 				pdfLink.setText("Download als PDF");
 				labelPassword.setText("BITTE NOTIEREN: Ihr Passwort zum Oeffnen der PDF: "+password);
-				notificationMatchingsuccess.open(); // Erfolgreich-Meldung anzeigen
+				notificationPDFsuccess.open(); // Erfolgreich-Meldung anzeigen
 			} catch (FileNotFoundException e) {
 				notificationFailure.open();
 				System.out.println("Bei Aufruf der PDF Erstellung gibt es Probleme ");
