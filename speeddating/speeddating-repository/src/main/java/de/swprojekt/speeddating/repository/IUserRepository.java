@@ -38,5 +38,13 @@ public interface IUserRepository extends JpaRepository<User, Integer> {
 					" WHERE e.event_id=?1", 
 			  nativeQuery = true)
 	List<Integer> findStudierendeUserByEventId(int event_id); //Alle User-IDs fuer die Studierenden eines Events holen
+	
+	@Query(
+			value = "SELECT DISTINCT u.user_id" +
+					" FROM eventorganisator AS eo" + 
+					" INNER JOIN eventorganisator_event AS eoe ON eo.eventorganisator_id=eoe.eventorganisator_id" + 
+					" INNER JOIN user AS u ON u.entity_id_ref=eoe.eventorganisator_id", 
+			  nativeQuery = true)
+	List<Integer> findEventorganisatorenUser(); //Alle User-IDs fuer die Eventorganisatoren holen
 
 }

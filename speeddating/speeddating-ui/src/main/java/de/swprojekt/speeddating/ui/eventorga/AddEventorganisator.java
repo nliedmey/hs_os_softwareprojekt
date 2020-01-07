@@ -88,7 +88,7 @@ public class AddEventorganisator extends VerticalLayout {
 														// Binder) zugewiesen
 				Eventorganisator neuerEventorga = iAddEventorganisatorService
 						.speicherEventorganisator(einEventorganisator); // Uebergabe an Service zur Speicherung in DB
-				iRegisterUserService.save(neuerEventorga.getNachname() + "_" + neuerEventorga.getEventorganisator_id(),
+				iRegisterUserService.save(neuerEventorga.getNachname() + "*" + neuerEventorga.getEventorganisator_id(),
 						"standard", "EVENTORGANISATOR", neuerEventorga.getEventorganisator_id()); // Einloggbenutzer
 																									// anlegen fuer den
 																									// Eventorganisator

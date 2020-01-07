@@ -11,4 +11,5 @@ public interface IShowUserService {
 	public User showUser(int user_id);
 	public List<User> showStudierendeUserInEvent(int event_id);
 	public List<User> showUnternehmenUserInEvent(int event_id);
+	public List<User> showEventorganisatorenUser();
 }

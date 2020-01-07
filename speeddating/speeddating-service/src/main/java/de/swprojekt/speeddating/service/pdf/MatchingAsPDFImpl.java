@@ -23,6 +23,7 @@ import com.itextpdf.text.pdf.PdfWriter;
 import de.swprojekt.speeddating.model.EventMatching;
 import de.swprojekt.speeddating.model.Role;
 import de.swprojekt.speeddating.model.User;
+import de.swprojekt.speeddating.service.showeventorganisator.IShowEventorganisatorService;
 import de.swprojekt.speeddating.service.showstudierender.IShowStudierendeService;
 import de.swprojekt.speeddating.service.showunternehmen.IShowUnternehmenService;
 
@@ -37,6 +38,9 @@ public class MatchingAsPDFImpl implements IMatchingAsPDFService {
 	
 	@Autowired
 	IShowUnternehmenService iShowUnternehmenService;
+	
+	@Autowired
+	IShowEventorganisatorService iShowEventorganisatorService;
 
 	public String pdfErstellen(List<User> users, int event_id, String eventname, String password) throws FileNotFoundException {
 		String filepath="";
@@ -44,14 +48,14 @@ public class MatchingAsPDFImpl implements IMatchingAsPDFService {
 		try {
 
 //			String directory = "C:\\Users\\mariu\\Documents"; //LOKAL; bei Server-deploy siehe unten; Link funktioniert logischerweise lokal nicht
-			String directory = "C:\\projekt"; //LOKAL; bei Server-deploy siehe unten; Link funktioniert logischerweise lokal nicht
-//			String directory=System.getProperty("jboss.server.data.dir"); //Property verweist auf Datenverzeichnes des Wildflyservers (auf Server: opt/wildfly)
+//			String directory = "C:\\projekt"; //LOKAL; bei Server-deploy siehe unten; Link funktioniert logischerweise lokal nicht
+			String directory=System.getProperty("jboss.server.data.dir"); //Property verweist auf Datenverzeichnes des Wildflyservers (auf Server: opt/wildfly)
 			filename=event_id+"_"+eventname+"_Zugaenge.pdf";
 			//FILEPATH WEBDEPLOY
-//			filepath = directory+"/teilnehmerZugaenge/"+filename;
+			filepath = directory+"/teilnehmerZugaenge/"+filename;
 			
 			//FILEPATH LOKAL
-			filepath = directory+"\\teilnehmerZugaenge\\"+filename;
+//			filepath = directory+"\\teilnehmerZugaenge\\"+filename;
 			
 			File eventauswertungenDir=new File(directory, "teilnehmerZugaenge"); //Unterordner wird erstellt, wenn er nicht existiert
 			eventauswertungenDir.mkdir();
@@ -164,6 +168,88 @@ public class MatchingAsPDFImpl implements IMatchingAsPDFService {
 		}
 		return filename;
 	}
+	
+	public String pdfEventorganisatorenZugaengeErstellen(List<User> users, String password) throws FileNotFoundException {
+		String filepath="";
+		String filename="";
+		try {
+
+//			String directory = "C:\\Users\\mariu\\Documents"; //LOKAL; bei Server-deploy siehe unten; Link funktioniert logischerweise lokal nicht
+//			String directory = "C:\\projekt"; //LOKAL; bei Server-deploy siehe unten; Link funktioniert logischerweise lokal nicht
+			String directory=System.getProperty("jboss.server.data.dir"); //Property verweist auf Datenverzeichnes des Wildflyservers (auf Server: opt/wildfly)
+			filename="Eventorganisatoren_Zugaenge.pdf";
+			//FILEPATH WEBDEPLOY
+			filepath = directory+"/eventorgaZugaenge/"+filename;
+			
+			//FILEPATH LOKAL
+//			filepath = directory+"\\teilnehmerZugaenge\\"+filename;
+			
+			File eventeventorgaDir=new File(directory, "eventorgaZugaenge"); //Unterordner wird erstellt, wenn er nicht existiert
+			eventeventorgaDir.mkdir();
+			
+			System.out.println("Ablage hier: "+filepath);
+			
+			Document doc = new Document();
+			doc.addAuthor("Patrick_Marius_Nico");
+			doc.addCreationDate();
+			doc.addProducer();
+			doc.addCreator("speeddating_gruppe");
+			doc.addTitle("Eventorganisatoren Zugaenge");
+
+			PdfWriter writer = PdfWriter.getInstance(doc, new FileOutputStream(filepath));
+			writer.setEncryption(password.getBytes(), "standard".getBytes(), PdfWriter.ALLOW_COPY|PdfWriter.ALLOW_PRINTING|PdfWriter.ALLOW_DEGRADED_PRINTING, PdfWriter.STANDARD_ENCRYPTION_128); //setzt Passwort auf PDF, da Link theoretisch fuer jeden erreichbar
+			doc.open();
+
+			// Uberschrift setzen
+			doc.add(new Paragraph("Eventorganisatoren Zugaenge",
+					FontFactory.getFont(FontFactory.COURIER, 18, Font.BOLD, BaseColor.BLACK)));
+			// Leerzeile einfuegen
+			doc.add(new Paragraph(" "));
+
+			PdfPTable eventorganisatorenTable = new PdfPTable(3); //3 Spalten (Name, Username, Passwort) fuer Studierende
+			eventorganisatorenTable.setWidthPercentage(100);
+			
+			 PdfPCell header = new PdfPCell();
+		        header.setBackgroundColor(BaseColor.LIGHT_GRAY);
+		        header.setPhrase(new Phrase("Name"));
+		        eventorganisatorenTable.addCell(header);
+		        
+		        header.setPhrase(new Phrase("Username"));
+		        eventorganisatorenTable.addCell(header);
+		        
+		        header.setPhrase(new Phrase("Passwort"));
+		        eventorganisatorenTable.addCell(header);
+
+			if (users.isEmpty()) {
+				String zeilentext = "Keine User vorhanden";
+				eventorganisatorenTable.addCell(zeilentext);
+			} else {
+				for (User aUser : users) {
+					String zeilentext = iShowEventorganisatorService.showEventorganisator(aUser.getEntity_id_ref()).getVorname() + " "+ iShowEventorganisatorService.showEventorganisator(aUser.getEntity_id_ref()).getNachname();
+					eventorganisatorenTable.addCell(zeilentext); // fuer Eventorgas wird Vor- und Nachname in Spalte "Name" angezeigt
+					zeilentext = aUser.getUsername();
+					eventorganisatorenTable.addCell(zeilentext);
+					//zeilentext = "pass*" + aUser.getEntity_id_ref(); // uebereinstimmend mit Initalpasswort
+					zeilentext="standard"; //alle Eventorganisatoren haben standardmaessig "standard" als Passwort, kann von ihnen dann geaendert werden
+					eventorganisatorenTable.addCell(zeilentext); // Passwort in dritte Spalte einfuegen
+
+					zeilentext = "-------------"; // Trenner (alle 3 Spalten) 
+					eventorganisatorenTable.addCell(zeilentext);
+					eventorganisatorenTable.addCell(zeilentext);
+					eventorganisatorenTable.addCell(zeilentext);
+				}
+			}
+			eventorganisatorenTable.completeRow();
+			doc.add(new Paragraph("Eventorganisatoren"));
+			doc.add(eventorganisatorenTable);
+
+			doc.close();
+
+		} catch (DocumentException e) {
+			e.printStackTrace();
+		}
+		return filename;
+	}
 
 	@Override
 	public String pdfMatchingErgebnisseErstellen(ArrayList<EventMatching> arrayList, int event_id, String eventname,
@@ -173,14 +259,14 @@ public class MatchingAsPDFImpl implements IMatchingAsPDFService {
 		String filename="";
 		try {
 //			String directory = "C:\\Users\\mariu\\Documents"; //LOKAL; bei Server-deploy siehe unten; Link funktioniert logischerweise lokal nicht
-			String directory = "C:\\projekt";
-			//String directory=System.getProperty("jboss.server.data.dir"); //Property verweist auf Datenverzeichnes des Wildflyservers (auf Server: opt/wildfly)
+//			String directory = "C:\\projekt";
+			String directory=System.getProperty("jboss.server.data.dir"); //Property verweist auf Datenverzeichnes des Wildflyservers (auf Server: opt/wildfly)
 			filename=event_id+"_"+eventname+".pdf";
 			//FILEPATH WEBDEPLOY
-			//filepath = directory+"/matchingAuswertungen/"+filename;
+			filepath = directory+"/matchingAuswertungen/"+filename;
 			
 			//FILEPATH LOKAL
-			filepath = directory+"\\matchingAuswertungen\\"+filename;
+//			filepath = directory+"\\matchingAuswertungen\\"+filename;
 			
 			File eventauswertungenDir=new File(directory, "matchingAuswertungen"); //Unterordner wird erstellt, wenn er nicht existiert
 			eventauswertungenDir.mkdir();

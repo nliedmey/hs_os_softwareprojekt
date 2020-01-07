@@ -32,6 +32,7 @@ public class AdminMenue extends Div {
 		v1.add(new RouterLink("Eventorganisatoren anzeigen/loeschen",EventorganisatorView.class));
 		v1.add(new RouterLink("Eventorganisatoren hinzufuegen",AddEventorganisator.class));
 		v1.add(new RouterLink("Eventorganisatoren aendern",AlterEventorganisator.class));
+		v1.add(new RouterLink("Eventorganisator Zugaenge zeigen",UserViewForAdmin.class));
 		v1.add("-----------");
 		v1.add(new RouterLink("Mein Passwort aendern",ChangePassword.class));
 		add(v1, logoutButton);

@@ -67,6 +67,17 @@ public class ShowUserImpl implements IShowUserService {
 		return gefundeneUnternehmenUserZuEvent;
 	}
 	
+	@Override
+	public List<User> showEventorganisatorenUser() {
+		List<Integer> gefundeneEventorganisatorenUserID=iUserRepository.findEventorganisatorenUser();
+		List<User> gefundeneEventorganisatorenUser=new ArrayList<User>();
+		for(int eventorganisatorenUserId:gefundeneEventorganisatorenUserID)
+		{
+			gefundeneEventorganisatorenUser.add(iUserRepository.findById(eventorganisatorenUserId).get());
+		}
+		return gefundeneEventorganisatorenUser;
+	}
+	
 	
 
 }
