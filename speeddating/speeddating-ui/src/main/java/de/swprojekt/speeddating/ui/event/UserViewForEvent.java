@@ -40,6 +40,9 @@ import de.swprojekt.speeddating.service.showuser.IShowUserService;
 //@Secured kann auch an einzelnen Methoden angewendet werden
 public class UserViewForEvent extends VerticalLayout {	//VerticalLayout fuehrt zu Anordnung von Elementen untereinander statt nebeneinander (HorizontalLayout)
 	
+	List<User> gefundeneStudierendeUserZuEvent=new ArrayList<User>();
+	List<User> gefundeneUnternehmenUserZuEvent=new ArrayList<User>();
+	
 	@Autowired	//Konstruktor-basierte Injection, Parameter wird autowired (hier: Interface)
 	public UserViewForEvent(IShowUserService iShowUserService, IShowEventService iShowEventService, IMatchingAsPDFService iMatchingAsPDFService) {
 	
@@ -78,13 +81,18 @@ public class UserViewForEvent extends VerticalLayout {	//VerticalLayout fuehrt z
 			listOfEvents.add(iShowEventService.showEvent(event_id));
 		}
 		comboboxEvent.setDataProvider(new ListDataProvider<>(listOfEvents));	//Liste dient als Datanquelle fuer ComboBox
-		comboboxEvent.setValue(listOfEvents.get(0)); //ein Event ist standardmaessig ausgewaehlt (i.d.R. existiert auch nur eins je Student)
+		
+		
+		if(!listOfEvents.isEmpty())
+		{
+			comboboxEvent.setValue(listOfEvents.get(0)); //ein Event ist standardmaessig ausgewaehlt (i.d.R. existiert auch nur eins je Student)
+			gefundeneStudierendeUserZuEvent=iShowUserService.showStudierendeUserInEvent(comboboxEvent.getValue().getEvent_id());
+			gefundeneUnternehmenUserZuEvent=iShowUserService.showUnternehmenUserInEvent(comboboxEvent.getValue().getEvent_id());
+		}
+		
 		
 		unternehmenUserGrid = new Grid<>(User.class);	//Tabelle initialisieren
 		studierenderUserGrid = new Grid<>(User.class);	
-		
-		List<User> gefundeneStudierendeUserZuEvent=iShowUserService.showStudierendeUserInEvent(comboboxEvent.getValue().getEvent_id());
-		List<User> gefundeneUnternehmenUserZuEvent=iShowUserService.showUnternehmenUserInEvent(comboboxEvent.getValue().getEvent_id());
 		
 		ListDataProvider<User> ldpUnternehmenUser = DataProvider
 				.ofCollection(gefundeneUnternehmenUserZuEvent);	//Dataprovider erstellen und Quelle fuer User (via Service aus DB) festlegen 
