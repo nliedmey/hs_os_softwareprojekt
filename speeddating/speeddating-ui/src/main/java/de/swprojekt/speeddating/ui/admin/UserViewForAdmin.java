@@ -100,7 +100,7 @@ public class UserViewForAdmin extends VerticalLayout {	//VerticalLayout fuehrt z
 		});
 		
 		zurueckButton.addClickListener(event -> {	//Bei Buttonklick werden folgende Aktionen ausgefuehrt
-			zurueckButton.getUI().ifPresent(ui->ui.navigate("ui/eventorganisator/menue"));	//zurueck auf andere Seite 
+			zurueckButton.getUI().ifPresent(ui->ui.navigate("ui/admin/menue"));	//zurueck auf andere Seite 
 		});
 		add(new Label("EVENTORGANISATOREN"));
 		add(eventorganisatorenUserGrid);	//Hinzufuegen der Elemente zum VerticalLayout

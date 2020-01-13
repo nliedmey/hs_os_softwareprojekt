@@ -132,9 +132,9 @@ public class MatchingAsPDFImpl implements IMatchingAsPDFService {
 						zeilentext = "pass*"+aUser.getEntity_id_ref(); //uebereinstimmend mit Initalpasswort
 						studierendeTable.addCell(zeilentext); //Passwort in dritte Spalte einfuegen
 						zeilentext = "https://bit.ly/2QNfTve";
+						studierendeTable.addCell("Website fuer Voting:");
 						studierendeTable.addCell(zeilentext);
-						studierendeTable.addCell("");
-						studierendeTable.addCell("");
+						studierendeTable.addCell("-------------");
 						zeilentext = "-------------"; //Trenner (alle 3 Spalten) zum einfacheren Ausschneiden der Zugaenge und Austeilen an Teilnehmer
 						studierendeTable.addCell(zeilentext); 
 						studierendeTable.addCell(zeilentext);
@@ -149,9 +149,9 @@ public class MatchingAsPDFImpl implements IMatchingAsPDFService {
 						zeilentext = "pass*"+aUser.getEntity_id_ref(); //uebereinstimmend mit Initalpasswort
 						unternehmenTable.addCell(zeilentext); //Passwort in dritte Spalte einfuegen
 						zeilentext = "https://bit.ly/2QNfTve";
-						studierendeTable.addCell(zeilentext);
-						studierendeTable.addCell("");
-						studierendeTable.addCell("");
+						unternehmenTable.addCell("Website fuer Voting:");
+						unternehmenTable.addCell(zeilentext);
+						unternehmenTable.addCell("-------------");
 						zeilentext = "-------------"; //Trenner (alle 3 Spalten) zum einfacheren Ausschneiden der Zugaenge und Austeilen an Teilnehmer
 						unternehmenTable.addCell(zeilentext); 
 						unternehmenTable.addCell(zeilentext);

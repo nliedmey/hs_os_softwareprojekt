@@ -465,6 +465,7 @@ public class EventDurchfuehrung extends HorizontalLayout {
 		});
 
 		buttonBeenden.addClickListener(event -> {
+			initializing();
 			popUpBestaetigen.open();
 		});
 
