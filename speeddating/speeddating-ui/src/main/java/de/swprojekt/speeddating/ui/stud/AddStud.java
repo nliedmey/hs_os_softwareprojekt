@@ -86,8 +86,7 @@ public class AddStud extends VerticalLayout {
 		binder.forField(textfieldVorname).asRequired("Vorname darf nicht leer sein...").bind("vorname");
 		binder.forField(textfieldNachname).asRequired("Nachname darf nicht leer sein...").bind("nachname");
 		binder.forField(textfieldStrasse).bind("strasse");
-		binder.forField(textfieldHausnummer).withConverter(new StringToIntegerConverter("Eingabe muss numerisch sein"))
-				.bind("hausnummer");
+		binder.forField(textfieldHausnummer).bind("hausnummer");
 		binder.forField(textfieldPLZ).bind("plz");
 		binder.forField(textfieldOrt).bind("ort");
 		binder.forField(textfieldTelefonnr).bind("telefonnr");
