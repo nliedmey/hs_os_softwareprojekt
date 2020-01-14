@@ -229,10 +229,8 @@ public class EventDurchfuehrung extends HorizontalLayout {
 //			String filepath = directory+"\\otherFiles\\"+filename;
 //			URL link = this.getClass().getResource(filepath);
 			AudioPlayer player=new AudioPlayer();
-			String directory=System.getProperty("jboss.server.data.dir"); //Property verweist auf Datenverzeichnes des Wildflyservers (auf Server: opt/wildfly)
 			String filename="zapsplat_sport_air_horn_1x_blast_009_21146.mp3";
-			String filepath = directory+"/otherData/"+filename;
-			player.setSource(filepath);
+			player.setSource("http://131.173.88.192:80/otherData/"+filename);
 //			player.setSource("http://soundbible.com/mp3/Air Horn-SoundBible.com-964603082.mp3");
 			
 //			player.play();
