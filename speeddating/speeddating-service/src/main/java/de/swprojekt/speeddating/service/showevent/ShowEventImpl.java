@@ -17,7 +17,6 @@ import de.swprojekt.speeddating.model.EventMatching;
 import de.swprojekt.speeddating.model.Studierender;
 import de.swprojekt.speeddating.model.Unternehmen;
 import de.swprojekt.speeddating.repository.IEventRepository;
-import de.swprojekt.speeddating.repository.IUnternehmenRepository;
 import de.swprojekt.speeddating.service.showstudierender.IShowStudierendeService;
 import de.swprojekt.speeddating.service.showunternehmen.IShowUnternehmenService;
 

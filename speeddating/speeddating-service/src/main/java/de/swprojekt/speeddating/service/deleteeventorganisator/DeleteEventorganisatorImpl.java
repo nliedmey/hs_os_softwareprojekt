@@ -3,11 +3,8 @@ package de.swprojekt.speeddating.service.deleteeventorganisator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import de.swprojekt.speeddating.model.Event;
 import de.swprojekt.speeddating.model.Eventorganisator;
-import de.swprojekt.speeddating.model.Studierender;
 import de.swprojekt.speeddating.model.User;
-import de.swprojekt.speeddating.repository.IEventRepository;
 import de.swprojekt.speeddating.repository.IEventorganisatorRepository;
 import de.swprojekt.speeddating.repository.IUserRepository;
 /*

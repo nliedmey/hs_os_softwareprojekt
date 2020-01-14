@@ -3,7 +3,6 @@ package de.swprojekt.speeddating.service.unternehmen;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import de.swprojekt.speeddating.model.Studierender;
 import de.swprojekt.speeddating.model.Unternehmen;
 import de.swprojekt.speeddating.model.User;
 import de.swprojekt.speeddating.repository.IUnternehmenRepository;

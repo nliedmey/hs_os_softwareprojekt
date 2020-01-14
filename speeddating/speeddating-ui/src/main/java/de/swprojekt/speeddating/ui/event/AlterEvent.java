@@ -210,7 +210,11 @@ public class AlterEvent extends VerticalLayout {
 						.of(datepickerEndzeitpunktDatum.getValue(), timepickerEndzeitpunktUhrzeit.getValue())
 						.atZone(ZoneId.systemDefault()).toInstant()));
 			}
-			if (!checkboxAbgeschlossen.getValue() == true) {
+			System.out.println("Checkbox: "+checkboxAbgeschlossen.getValue());
+			System.out.println("verevDAO: "+veraendertesEventDAO.isAbgeschlossen());
+			if (!(checkboxAbgeschlossen.getValue().equals(veraendertesEventDAO.isAbgeschlossen()))) {
+				System.out.println("Checkbox: "+checkboxAbgeschlossen.getValue());
+				System.out.println("verevDAO: "+veraendertesEventDAO.isAbgeschlossen());
 				veraendertesEventDAO.setAbgeschlossen(checkboxAbgeschlossen.getValue());
 			}
 			// Testen, ob gleiche Studierende und Unternehmen zu Event zugeordnet

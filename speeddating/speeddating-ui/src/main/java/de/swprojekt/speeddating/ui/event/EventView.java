@@ -7,6 +7,7 @@ import com.vaadin.flow.component.grid.Grid.SelectionMode;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
@@ -18,11 +19,14 @@ import com.vaadin.flow.data.provider.ListDataProvider;
 import com.vaadin.flow.router.Route;
 
 import de.swprojekt.speeddating.model.Event;
+import de.swprojekt.speeddating.model.Eventorganisator;
+import de.swprojekt.speeddating.service.altereventorganisator.IAlterEventorganisatorService;
 import de.swprojekt.speeddating.service.deleteevent.IDeleteEventService;
 import de.swprojekt.speeddating.service.showevent.IShowEventService;
 /*
  * View fuer die Anzeige vorhandener Events
  */
+import de.swprojekt.speeddating.service.showeventorganisator.IShowEventorganisatorService;
 
 @Route("ui/events/show")
 @Secured("ROLE_ADMIN")
@@ -30,7 +34,7 @@ public class EventView extends VerticalLayout { // VerticalLayout fuehrt zu Anor
 												// nebeneinander (HorizontalLayout)
 
 	@Autowired // Konstruktor-basierte Injection, Parameter wird autowired (hier: Interface)
-	public EventView(IShowEventService iShowEventService, IDeleteEventService iDeleteEventService) {
+	public EventView(IShowEventService iShowEventService, IDeleteEventService iDeleteEventService, IShowEventorganisatorService iShowEventorganisatorService, IAlterEventorganisatorService iAlterEventorganisatorService) {
 
 		Grid<Event> eventGrid; // Tabelle mit Events
 		GridMultiSelectionModel<Event> selectionModelEvent;
@@ -63,6 +67,21 @@ public class EventView extends VerticalLayout { // VerticalLayout fuehrt zu Anor
 			for (Event e : selectionModelEvent.getSelectedItems()) // markierte Events durchgehen
 			{
 				iDeleteEventService.loescheEvent(e);
+				for(Eventorganisator eo:iShowEventorganisatorService.showEventorganisatoren())
+				{
+					System.out.println("Check organisator: "+eo.getEventorganisator_id()+"-"+eo.getNachname());
+					if(eo.getVerwaltet_events().contains(e.getEvent_id()))
+					{
+						System.out.println("EO gefunden: "+eo.getNachname());
+						Set<Integer> verwalteteEventsVorLoeschung=eo.getVerwaltet_events();
+						verwalteteEventsVorLoeschung.remove(e.getEvent_id());
+						System.out.println("Vor loeschung: "+verwalteteEventsVorLoeschung);
+						Set<Integer> verwalteteEventsNachLoeschung=verwalteteEventsVorLoeschung;
+						eo.setVerwaltet_events(verwalteteEventsNachLoeschung);
+						System.out.println("Nach loeschung: "+verwalteteEventsNachLoeschung);
+						iAlterEventorganisatorService.aenderEventorganisator(eo);
+					}
+				}
 			}
 		});
 

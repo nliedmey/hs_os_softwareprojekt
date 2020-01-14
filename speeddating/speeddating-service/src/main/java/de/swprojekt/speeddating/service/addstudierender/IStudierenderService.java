@@ -1,7 +1,5 @@
 package de.swprojekt.speeddating.service.addstudierender;
 
-import java.util.Optional;
-
 import de.swprojekt.speeddating.model.Studierender;
 
 public interface IStudierenderService {

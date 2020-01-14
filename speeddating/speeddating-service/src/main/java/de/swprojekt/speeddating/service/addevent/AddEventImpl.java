@@ -35,6 +35,7 @@ public class AddEventImpl implements IAddEventService {
 		return iEventRepository.save(einEvent);	//Speicherung in DB
 	}
 	
+	@Override
 	public void addeEventInEventorga(int event_id, int user_id)
 	{
 		System.out.println("EVENTID: "+event_id+" ,USERID: "+user_id);

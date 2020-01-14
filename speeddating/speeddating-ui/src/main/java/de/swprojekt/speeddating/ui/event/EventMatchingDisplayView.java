@@ -27,7 +27,6 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.component.timepicker.TimePicker;
-import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.provider.DataProvider;
 import com.vaadin.flow.data.provider.ListDataProvider;
 import com.vaadin.flow.router.Route;
@@ -125,7 +124,7 @@ public class EventMatchingDisplayView extends HorizontalLayout {
 		Notification notificationNichtAbgeschlossen = new Notification();
 		notificationNichtAbgeschlossen.addThemeVariants(NotificationVariant.LUMO_ERROR);
 		Label labelNichtAbgeschlossen = new Label("Event noch nicht abgeschlossen! Bitte zunaechst als abgeschlossen markieren! ");
-		notificationNichtAbgeschlossen.add(labelFailure);
+		notificationNichtAbgeschlossen.add(labelNichtAbgeschlossen);
 		notificationNichtAbgeschlossen.setDuration(4500); 
 
 		List<Event> listOfEvents = new ArrayList<Event>();
@@ -226,17 +225,20 @@ public class EventMatchingDisplayView extends HorizontalLayout {
 			Event selectedEvent = iShowEventService.showEvent(aEvent.getEvent_id());
 			if(selectedEvent.isAbgeschlossen())
 			{
+				System.out.println("ist abgeschlossen");
 				try {
 					String password = "pw*" + (new Random().nextInt((9999 - 1000) + 1) + 1000); // Schluessel zwischen 1000
 																								// und 9999 generieren
 					String filename = iMatchingAsPDFService.pdfMatchingErgebnisseErstellen(
 							iShowEventService.generateMatchingResultSet(selectedEvent), selectedEvent.getEvent_id(),
 							selectedEvent.getBezeichnung(), password);
+					System.out.println(filename);
 					pdfLink.setHref("http://131.173.88.192:80/matchingAuswertungen/" + filename);
 					pdfLink.setText("Download als PDF");
 					labelPassword.setText("BITTE NOTIEREN: Ihr Passwort zum Oeffnen der PDF: " + password);
 					notificationMatchingsuccess.open(); // Erfolgreich-Meldung anzeigen
 				} catch (FileNotFoundException e) {
+					
 					notificationFailure.open();
 					System.out.println("Bei Aufruf der PDF Erstellung gibt es Probleme");
 					e.printStackTrace();
@@ -246,8 +248,6 @@ public class EventMatchingDisplayView extends HorizontalLayout {
 				notificationMatchingsuccess.open();
 			}
 			else {
-				labelNichtAbgeschlossen
-						.setText("Das Event " + selectedEvent.getBezeichnung() + " ist noch nicht abgeschlossen!");
 				notificationNichtAbgeschlossen.open();
 			}
 

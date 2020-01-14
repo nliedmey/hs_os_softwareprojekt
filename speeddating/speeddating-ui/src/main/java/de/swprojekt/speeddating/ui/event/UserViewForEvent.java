@@ -26,7 +26,6 @@ import com.vaadin.flow.router.Route;
 
 import de.swprojekt.speeddating.model.Event;
 import de.swprojekt.speeddating.model.User;
-import de.swprojekt.speeddating.repository.IUserRepository;
 import de.swprojekt.speeddating.service.pdf.IMatchingAsPDFService;
 import de.swprojekt.speeddating.service.security.CustomUserDetails;
 import de.swprojekt.speeddating.service.showevent.IShowEventService;

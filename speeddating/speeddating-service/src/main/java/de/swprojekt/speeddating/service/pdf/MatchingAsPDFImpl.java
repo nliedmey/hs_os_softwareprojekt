@@ -42,6 +42,7 @@ public class MatchingAsPDFImpl implements IMatchingAsPDFService {
 	@Autowired
 	IShowEventorganisatorService iShowEventorganisatorService;
 
+	@Override
 	public String pdfErstellen(List<User> users, int event_id, String eventname, String password) throws FileNotFoundException {
 		String filepath="";
 		String filename="";
@@ -175,6 +176,7 @@ public class MatchingAsPDFImpl implements IMatchingAsPDFService {
 		return filename;
 	}
 	
+	@Override
 	public String pdfEventorganisatorenZugaengeErstellen(List<User> users, String password) throws FileNotFoundException {
 		String filepath="";
 		String filename="";

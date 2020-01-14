@@ -14,9 +14,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import de.swprojekt.speeddating.model.Event;
 import de.swprojekt.speeddating.model.Eventorganisator;
-import de.swprojekt.speeddating.repository.IEventRepository;
 import de.swprojekt.speeddating.repository.IEventorganisatorRepository;
 
 /*
