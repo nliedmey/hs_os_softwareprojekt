@@ -1,37 +1,27 @@
 package de.swprojekt.speeddating.ui.event;
 
-import java.io.File;
-import java.io.IOException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import javax.sound.sampled.AudioInputStream;
-import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
-import javax.sound.sampled.LineUnavailableException;
-import javax.sound.sampled.UnsupportedAudioFileException;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.context.SecurityContextHolder;
-
-import com.vaadin.ui.Audio;
 
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.combobox.ComboBox;
+import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.Route;
 
 import de.swprojekt.speeddating.model.Event;
@@ -46,9 +36,8 @@ import de.swprojekt.speeddating.service.showunternehmen.IShowUnternehmenService;
 /*
  * View fuer die Durchfuehrung des Events
  */
-
-@Route("ui/eventDurchfuehrung") // Erreichbar ueber Adresse:
-								// //localhost:8080/speeddating-web-7.0-SNAPSHOT/ui/events
+@CssImport("css/eventDurchfuehrung.css") //CSS-Datei  wird importiert; Pfad: C:\Users\mariu\git\speeddatingrep\speeddating\speeddating-web\frontend\css\eventDurchfuehrung.css
+@Route("ui/eventDurchfuehrung") 
 @Secured("ROLE_EVENTORGANISATOR")
 public class EventDurchfuehrung extends HorizontalLayout {
 
@@ -85,50 +74,91 @@ public class EventDurchfuehrung extends HorizontalLayout {
 
 		// Buttons und Felder erzeugen
 		Label labelRunde = new Label("Aktuelle Runde:");
+		labelRunde.addClassName("labelAktuelleRunde");
 		Label labelRundeAnzahl = new Label("1");
+		labelRundeAnzahl.addClassName("labelAktuelleRunde");
 		Label labelMaxRunden = new Label("");
+		labelMaxRunden.addClassName("labelAktuelleRunde");
 
 		Label labelTimer = new Label();
+		labelTimer.addClassName("labelTimer");
 		Label labelTischordnung = new Label("Tischordnung:");
+		labelTischordnung.addClassName("labelTischordnung"); //Label erhaelt CSS-Klassenname "labelTischordnung", auf diesen wird in CSS referenziert
 
 		Label labelTisch1 = new Label("Tisch 1:");
+		labelTisch1.addClassName("labelTischeTeilnehmer");
 		Label labelTisch2 = new Label("Tisch 2:");
+		labelTisch2.addClassName("labelTischeTeilnehmer");
 		Label labelTisch3 = new Label("Tisch 3:");
+		labelTisch3.addClassName("labelTischeTeilnehmer");
 		Label labelTisch4 = new Label("Tisch 4:");
+		labelTisch4.addClassName("labelTischeTeilnehmer");
 		Label labelTisch5 = new Label("Tisch 5:");
+		labelTisch5.addClassName("labelTischeTeilnehmer");
 		Label labelTisch6 = new Label("Tisch 6:");
+		labelTisch6.addClassName("labelTischeTeilnehmer");
 		Label labelTisch7 = new Label("Tisch 7:");
+		labelTisch7.addClassName("labelTischeTeilnehmer");
 		Label labelTisch8 = new Label("Tisch 8:");
+		labelTisch8.addClassName("labelTischeTeilnehmer");
 		Label labelTisch9 = new Label("Tisch 9:");
+		labelTisch9.addClassName("labelTischeTeilnehmer");
 		Label labelTisch10 = new Label("Tisch 10:");
+		labelTisch10.addClassName("labelTischeTeilnehmer");
 		Label labelTisch11 = new Label("Tisch 11:");
+		labelTisch11.addClassName("labelTischeTeilnehmer");
 		Label labelTisch12 = new Label("Tisch 12:");
-
+		labelTisch12.addClassName("labelTischeTeilnehmer");
+		
 		Label labelStud1 = new Label("");
+		labelStud1.addClassName("labelTischeTeilnehmer");
 		Label labelStud2 = new Label("");
+		labelStud2.addClassName("labelTischeTeilnehmer");
 		Label labelStud3 = new Label("");
+		labelStud3.addClassName("labelTischeTeilnehmer");
 		Label labelStud4 = new Label("");
+		labelStud4.addClassName("labelTischeTeilnehmer");
 		Label labelStud5 = new Label("");
+		labelStud5.addClassName("labelTischeTeilnehmer");
 		Label labelStud6 = new Label("");
+		labelStud6.addClassName("labelTischeTeilnehmer");
 		Label labelStud7 = new Label("");
+		labelStud7.addClassName("labelTischeTeilnehmer");
 		Label labelStud8 = new Label("");
+		labelStud8.addClassName("labelTischeTeilnehmer");
 		Label labelStud9 = new Label("");
+		labelStud9.addClassName("labelTischeTeilnehmer");
 		Label labelStud10 = new Label("");
+		labelStud10.addClassName("labelTischeTeilnehmer");
 		Label labelStud11 = new Label("");
+		labelStud11.addClassName("labelTischeTeilnehmer");
 		Label labelStud12 = new Label("");
+		labelStud12.addClassName("labelTischeTeilnehmer");
 
 		Label labelUnter1 = new Label("");
+		labelUnter1.addClassName("labelTischeTeilnehmer");
 		Label labelUnter2 = new Label("");
+		labelUnter2.addClassName("labelTischeTeilnehmer");
 		Label labelUnter3 = new Label("");
+		labelUnter3.addClassName("labelTischeTeilnehmer");
 		Label labelUnter4 = new Label("");
+		labelUnter4.addClassName("labelTischeTeilnehmer");
 		Label labelUnter5 = new Label("");
+		labelUnter5.addClassName("labelTischeTeilnehmer");
 		Label labelUnter6 = new Label("");
+		labelUnter6.addClassName("labelTischeTeilnehmer");
 		Label labelUnter7 = new Label("");
+		labelUnter7.addClassName("labelTischeTeilnehmer");
 		Label labelUnter8 = new Label("");
+		labelUnter8.addClassName("labelTischeTeilnehmer");
 		Label labelUnter9 = new Label("");
+		labelUnter9.addClassName("labelTischeTeilnehmer");
 		Label labelUnter10 = new Label("");
+		labelUnter10.addClassName("labelTischeTeilnehmer");
 		Label labelUnter11 = new Label("");
+		labelUnter11.addClassName("labelTischeTeilnehmer");
 		Label labelUnter12 = new Label("");
+		labelUnter12.addClassName("labelTischeTeilnehmer");
 
 		Button buttonEventauswahl = new Button("Event auswaehlen");
 		Button zurueckButton = new Button("Zurueck");
