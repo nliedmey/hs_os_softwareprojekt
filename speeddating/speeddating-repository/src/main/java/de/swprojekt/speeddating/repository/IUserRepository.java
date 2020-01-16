@@ -42,8 +42,7 @@ public interface IUserRepository extends JpaRepository<User, Integer> {
 	@Query(
 			value = "SELECT DISTINCT u.user_id" +
 					" FROM eventorganisator AS eo" + 
-					" INNER JOIN eventorganisator_event AS eoe ON eo.eventorganisator_id=eoe.eventorganisator_id" + 
-					" INNER JOIN user AS u ON u.entity_id_ref=eoe.eventorganisator_id", 
+					" INNER JOIN user AS u ON u.entity_id_ref=eo.eventorganisator_id", 
 			  nativeQuery = true)
 	List<Integer> findEventorganisatorenUser(); //Alle User-IDs fuer die Eventorganisatoren holen
 
