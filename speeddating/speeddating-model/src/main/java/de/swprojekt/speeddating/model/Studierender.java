@@ -25,7 +25,7 @@ public class Studierender {
 	private String vorname;
 	private String nachname;
 	private String strasse;
-	private int hausnummer;
+	private String hausnummer;
 	private String plz;
 	private String ort;
 	private String telefonnr;
@@ -42,7 +42,7 @@ public class Studierender {
 	}
 	
 	public Studierender(int student_id, int matrikelnummer, String vorname, String nachname, String strasse,
-			int hausnummer, String plz, String ort, String telefonnr, String email,
+			String hausnummer, String plz, String ort, String telefonnr, String email,
 			Set<Integer> studentKontaktwuensche) {
 		super();
 		this.student_id = student_id;
@@ -82,11 +82,11 @@ public class Studierender {
 		this.strasse = strasse;
 	}
 
-	public int getHausnummer() {
+	public String getHausnummer() {
 		return hausnummer;
 	}
 
-	public void setHausnummer(int hausnummer) {
+	public void setHausnummer(String hausnummer) {
 		this.hausnummer = hausnummer;
 	}
 

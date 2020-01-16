@@ -72,7 +72,7 @@ public class ChangeDeleteStud extends VerticalLayout {
 				textfieldVorname.setValue(aStudent.getVorname());
 				textfieldNachname.setValue(aStudent.getNachname());
 				textfieldStrasse.setValue(aStudent.getStrasse());
-				textfieldHausnummer.setValue(Integer.toString(aStudent.getHausnummer()));
+				textfieldHausnummer.setValue(aStudent.getHausnummer());
 				textfieldPLZ.setValue(aStudent.getPlz());
 				textfieldOrt.setValue(aStudent.getOrt());
 				textfieldTelefonnr.setValue(aStudent.getTelefonnr());
